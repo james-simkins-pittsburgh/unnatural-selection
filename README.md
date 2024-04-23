@@ -1,9 +1,11 @@
 # Unnatural Selection
 A marine microbiology-themed RTS game.
 
-Please note that I am keeping the copyright on the game despite making this repository public. However, if there is a portion of the code that you would like to use for a game that is different from this one 
-then I would be happy to license that part of the code under the Apache or MIT license. In other words, I am happy to share code, but I just don't want someone copying my entire game! If you do want to use
-my code, just email me at JamesMSimkins@gmail.com. 
+Please note that I am keeping the copyright on the game despite making this repository public. 
+However, if there is a portion of the code that you would like to use for a game that is different 
+from this one then I would be happy to license that part of the code under the Apache or MIT license. 
+In other words, I am happy to share code, but I just don't want someone copying my entire game! 
+If you do want to use my code, just email me at JamesMSimkins@gmail.com. 
 
 I am writing this game primarily to become a better programmer in the Rust programming language.
 
