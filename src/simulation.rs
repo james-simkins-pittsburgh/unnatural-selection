@@ -4,7 +4,7 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct BiosphereInformation {
    organism_information_vec: Vec<OrganismInformation>,
-
+   virus_information_vec: Vec<VirusInformation>
 }
 
 // This contains all the data about an individual organism.
@@ -14,22 +14,59 @@ pub struct OrganismInformation {
     y_location: i32,
     health: i16,
     energy: i16,
-    player_number: u8,
-    species_number: u8,
+    player_number: i8,
+    species_number: i8,
     attached: bool,
     background: bool,
-    no_collision_time_remaining: u8,
+    no_collision_time_remaining: i8,
 }
 
 // This contains all the data about an viruses.
-pub struct Virusnformation {
+pub struct VirusInformation {
 
     x_location: i32,
     y_location: i32,
-    player_number: u8,
-    species_number: u8,
+    player_number: i8,
+    species_number: i8,
     in_host: bool,
 }
+
+// This contains all the information about currents.
+#[derive(Component)]
+pub struct AllCurrentInformation {
+   current_information_vec: Vec<CurrentInformation>,
+}
+
+pub struct CurrentInformation {
+
+    bottom_left_x: i32,
+    bottom_left_y: i32,
+    /* Measured from right x axis with counterclockwise positive.
+`   Times 100 to avoid floating point arithmentic.
+    Ranges from minimum 0 to maxiumum 627.
+    This is the direction of acceleration. */
+    angle_in_radians_times_100: i32,
+    // Measured in game distance unit per tick squared of acceleration produced.
+    intensity: i32,
+    // In game units
+    height: i32,
+    // In game units
+    width: i32,
+    // In ticks from start
+    expiration_time: i32
+
+}
+
+// This contains all the information about the map.
+#[derive(Component)]
+pub struct MapInformation {
+
+/* The depth of the water every 10 game units staring from the right side.
+measures in 10 game unit increments. */
+water_depth_in_10_unit_increments: [i16; crate::MAP_WIDTH/1000]
+
+}
+
 
 // This is the resource containing all species information
 #[derive(Resource, Default)]
@@ -119,5 +156,5 @@ pub struct SpeciesCharacteristics {
     pub predator: bool,
     pub attack_stength: u8,
     pub attack_range: u8,
-    pub weight: u8,
+    pub mass: u8,
 }
