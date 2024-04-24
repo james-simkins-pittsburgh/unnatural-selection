@@ -1,5 +1,36 @@
 use bevy::prelude::*;
 
+// This contains all of the information about the simulation bisphere.
+#[derive(Component)]
+pub struct BiosphereInformation {
+   organism_information_vec: Vec<OrganismInformation>,
+
+}
+
+// This contains all the data about an individual organism.
+pub struct OrganismInformation {
+
+    x_location: i32,
+    y_location: i32,
+    health: i16,
+    energy: i16,
+    player_number: u8,
+    species_number: u8,
+    attached: bool,
+    background: bool,
+    no_collision_time_remaining: u8,
+}
+
+// This contains all the data about an viruses.
+pub struct Virusnformation {
+
+    x_location: i32,
+    y_location: i32,
+    player_number: u8,
+    species_number: u8,
+    in_host: bool,
+}
+
 // This is the resource containing all species information
 #[derive(Resource, Default)]
 pub struct AllSpeciesInformation {
@@ -71,19 +102,16 @@ pub enum SpeciesDomain {
 // This specifies whether or not each gene is turned on.
 #[derive(Copy, Clone, PartialEq, Default)]
 pub struct SpeciesGenome {
-
     // Many more to come!
     pub efficient_photosynthesis: bool,
     pub respiration: bool,
     pub cell_wall: bool,
-
 }
 
 // This specifies species characteristics and changes each time a gene changes
 #[derive(Copy, Clone, PartialEq, Default)]
 pub struct SpeciesCharacteristics {
-
-    // Many more to come! 
+    // Many more to come!
     pub health_rate: u8,
     pub production_rate: u8,
     pub motile: bool,
@@ -92,5 +120,4 @@ pub struct SpeciesCharacteristics {
     pub attack_stength: u8,
     pub attack_range: u8,
     pub weight: u8,
-
 }
