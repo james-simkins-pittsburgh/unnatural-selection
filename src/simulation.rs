@@ -3,13 +3,12 @@ use bevy::prelude::*;
 // This contains all of the information about the simulation bisphere.
 #[derive(Component)]
 pub struct BiosphereInformation {
-   organism_information_vec: Vec<OrganismInformation>,
-   virus_information_vec: Vec<VirusInformation>
+    organism_information_vec: Vec<OrganismInformation>,
+    virus_information_vec: Vec<VirusInformation>,
 }
 
 // This contains all the data about an individual organism.
 pub struct OrganismInformation {
-
     x_location: i32,
     y_location: i32,
     health: i16,
@@ -23,7 +22,6 @@ pub struct OrganismInformation {
 
 // This contains all the data about an viruses.
 pub struct VirusInformation {
-
     x_location: i32,
     y_location: i32,
     player_number: i8,
@@ -34,11 +32,10 @@ pub struct VirusInformation {
 // This contains all the information about currents.
 #[derive(Component)]
 pub struct AllCurrentInformation {
-   current_information_vec: Vec<CurrentInformation>,
+    current_information_vec: Vec<CurrentInformation>,
 }
 
 pub struct CurrentInformation {
-
     bottom_left_x: i32,
     bottom_left_y: i32,
     /* Measured from right x axis with counterclockwise positive.
@@ -53,20 +50,16 @@ pub struct CurrentInformation {
     // In game units
     width: i32,
     // In ticks from start
-    expiration_time: i32
-
+    expiration_time: i32,
 }
 
 // This contains all the information about the map.
 #[derive(Component)]
 pub struct MapInformation {
-
-/* The depth of the water every 10 game units staring from the right side.
+    /* The depth of the water every 10 game units staring from the right side.
 measures in 10 game unit increments. */
-water_depth_in_10_unit_increments: [i16; crate::MAP_WIDTH/1000]
-
+    water_depth_in_10_unit_increments: [i16; crate::MAP_WIDTH / 1000],
 }
-
 
 // This is the resource containing all species information
 #[derive(Resource, Default)]
@@ -149,12 +142,24 @@ pub struct SpeciesGenome {
 #[derive(Copy, Clone, PartialEq, Default)]
 pub struct SpeciesCharacteristics {
     // Many more to come!
+    // In health units per 15 ticks
     pub health_rate: u8,
+    // In energy unites per 15 ticks
     pub production_rate: u8,
+    // Does it move on its own?
     pub motile: bool,
-    pub movement_speed: u8,
+    // In nanometers per tick per tick
+    pub movement_acceleration: u8,
+    // Can it eat other organism?
     pub predator: bool,
+    // Can it eat other motile protists?
+    pub apex_predator: bool,
+    // How much damage does it do per 15 ticks?
     pub attack_stength: u8,
+    // How much energy the attack takes in per 15 ticks?
+    pub attack_absorbtion: u8,
+    // How far it can attack from
     pub attack_range: u8,
+    // How much does the organism weigh in picograms?
     pub mass: u8,
 }

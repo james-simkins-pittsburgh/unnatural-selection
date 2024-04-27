@@ -1,5 +1,5 @@
 // This hides the command prompt
-#![windows_subsystem = "windows"]
+// #![windows_subsystem = "windows"]
 
 use bevy::prelude::*;
 use bevy_embedded_assets::EmbeddedAssetPlugin;
@@ -10,6 +10,7 @@ pub mod network_communicator;
 pub mod simulation;
 pub mod computer_players;
 pub mod utility_functions;
+pub mod scaffold_code;
 pub mod test_code;
 
 /* Set as constant for testing purposes

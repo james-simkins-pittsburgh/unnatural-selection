@@ -28,7 +28,6 @@ pub struct RandomForComputerPlayers {
 }
 
 pub fn generate_random_0_359(seed: u64) -> Random0to359 {
-
     let mut prng_from_seed = ChaCha8Rng::seed_from_u64(seed);
 
     let mut random_array: [i16; 10000] = [0; 10000];
@@ -41,19 +40,13 @@ pub fn generate_random_0_359(seed: u64) -> Random0to359 {
 }
 
 pub fn next_random(random_0_to_359: &mut Random0to359) -> i16 {
+    if random_0_to_359.next_index < 99999 {
+        random_0_to_359.next_index = random_0_to_359.next_index + 1;
 
-    if random_0_to_359.next_index <99999 {
-        
-    random_0_to_359.next_index = random_0_to_359.next_index + 1;
-
-    return random_0_to_359.array [random_0_to_359.next_index -1]
-
+        return random_0_to_359.array[random_0_to_359.next_index - 1];
     } else {
-
         random_0_to_359.next_index = 0;
-    
-        return random_0_to_359.array [100000]
 
+        return random_0_to_359.array[100000];
     }
-   
 }
