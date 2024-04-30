@@ -16,8 +16,8 @@ pub mod scaffold_code;
 pub mod test_code;
 
 // Set as constant for testing purposes This will eventually not be a constant
-const MAP_WIDTH: usize = 10000;
-const MAP_MAX_HEIGHT: usize = 19000;
+pub const MAP_WIDTH: usize = 10000;
+pub const MAP_MAX_HEIGHT: usize = 19000;
 
 /* This is a toggle that allows quick testing of test code.
 Delete the following line before release. */
@@ -27,7 +27,7 @@ fn main() {
     // Delete starting here to remove test code runner before release.
 
     if USE_TEST_CODE {
-        crate::test_code::run_test_code()
+        test_code::run_test_code()
     } else {
         // End delete here.
 
@@ -35,6 +35,14 @@ fn main() {
             .add_plugins((EmbeddedAssetPlugin::default(), DefaultPlugins))
             .add_plugins(bevy_framepace::FramepacePlugin)
             .add_systems(Startup, framepace_setup)
+            .add_systems(
+                Startup,
+                (
+                    scaffold_code::quick_start::create_basic_world,
+                    scaffold_code::quick_start::populate_basic_world,
+                ).chain()
+            )
+
             .run();
         // Delete following "}" before release.
     }

@@ -1,12 +1,12 @@
 use bevy::prelude::*;
 
-#[derive(Bundle)]
-pub struct gameworld_bundle {
+#[derive(Bundle, Default)]
+pub struct GameworldBundle {
 
     pub all_biosphere_information: AllBiosphereInformation,
-    pub all_current_information: AllBiosphereInformation,
+    pub all_current_information: AllCurrentInformation,
     pub all_map_information: AllMapInformation,
-    pub all_species_information: AllMapInformation,
+    pub all_species_information: AllSpeciesInformation,
 
 }
 
@@ -14,72 +14,75 @@ pub struct gameworld_bundle {
 
 
 // This contains all of the information about the simulation bisphere.
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct AllBiosphereInformation {
-    organism_information_vec: Vec<OrganismInformation>,
-    virus_information_vec: Vec<VirusInformation>,
+    pub organism_information_vec: Vec<OrganismInformation>,
+    pub virus_information_vec: Vec<VirusInformation>,
 }
 
 // This contains all the data about an individual organism.
+#[derive(Copy, Clone, PartialEq, Default)]
 pub struct OrganismInformation {
-    x_location: i32,
-    y_location: i32,
-    health: i16,
-    energy: i16,
-    player_number: i8,
-    species_number: i8,
-    attached: bool,
-    background: bool,
-    no_collision_time_remaining: i8,
+    pub x_location: i32,
+    pub y_location: i32,
+    pub health: i16,
+    pub energy: i16,
+    pub player_number: i8,
+    pub species_number: i8,
+    pub attached: bool,
+    pub background: bool,
+    pub no_collision_time_remaining: i8,
 }
 
 // This contains all the data about an viruses.
+#[derive(Copy, Clone, PartialEq, Default)]
 pub struct VirusInformation {
-    x_location: i32,
-    y_location: i32,
-    player_number: i8,
-    species_number: i8,
-    in_host: bool,
+    pub x_location: i32,
+    pub y_location: i32,
+    pub player_number: i8,
+    pub species_number: i8,
+    pub in_host: bool,
 }
 
 // This contains all the information about currents.
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct AllCurrentInformation {
-    current_information_vec: Vec<CurrentInformation>,
+    pub current_information_vec: Vec<CurrentInformation>,
 }
 
+#[derive(Copy, Clone, PartialEq, Default)]
 pub struct CurrentInformation {
-    bottom_left_x: i32,
-    bottom_left_y: i32,
+    pub bottom_left_x: i32,
+    pub bottom_left_y: i32,
     /* Measured from right x axis with counterclockwise positive.
 `   Times 100 to avoid floating point arithmentic.
     Ranges from minimum 0 to maxiumum 627.
     This is the direction of acceleration. */
-    angle_in_radians_times_100: i32,
+    pub angle_in_radians_times_100: i32,
     // Measured in game distance unit per tick squared of acceleration produced.
-    intensity: i32,
+    pub intensity: i32,
     // In game units
-    height: i32,
+    pub height: i32,
     // In game units
-    width: i32,
+    pub width: i32,
     // In ticks from start
-    expiration_time: i32,
+    pub expiration_time: i32,
 }
 
 // This contains all the information about the map.
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct AllMapInformation {
     /* The depth of the water every 10 game units staring from the right side.
 measures in 10 game unit increments. */
-    water_depth_in_10_unit_increments: [i16; crate::MAP_WIDTH / 1000],
+    pub water_depth_in_10_unit_increments: [i16; crate::MAP_WIDTH / 1000],
 }
 
 // This is the resource containing all species information
-#[derive(Resource, Default)]
+#[derive(Component, Default)]
 pub struct AllSpeciesInformation {
     /* Information on all species is stored in this array. The first index is player number and the second
     index is species number */
-    species_array: [[SingleSpeciesInformation; 6]; 8],
+    pub species_array: [[SingleSpeciesInformation; 6]; 8],
 }
 
 #[derive(Copy, Clone, PartialEq, Default)]
