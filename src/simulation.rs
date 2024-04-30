@@ -2,16 +2,11 @@ use bevy::prelude::*;
 
 #[derive(Bundle, Default)]
 pub struct GameworldBundle {
-
     pub all_biosphere_information: AllBiosphereInformation,
     pub all_current_information: AllCurrentInformation,
     pub all_map_information: AllMapInformation,
     pub all_species_information: AllSpeciesInformation,
-
 }
-
-
-
 
 // This contains all of the information about the simulation bisphere.
 #[derive(Component, Default)]
