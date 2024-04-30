@@ -1,8 +1,21 @@
 use bevy::prelude::*;
 
+#[derive(Bundle)]
+pub struct gameworld_bundle {
+
+    pub all_biosphere_information: AllBiosphereInformation,
+    pub all_current_information: AllBiosphereInformation,
+    pub all_map_information: AllMapInformation,
+    pub all_species_information: AllMapInformation,
+
+}
+
+
+
+
 // This contains all of the information about the simulation bisphere.
 #[derive(Component)]
-pub struct BiosphereInformation {
+pub struct AllBiosphereInformation {
     organism_information_vec: Vec<OrganismInformation>,
     virus_information_vec: Vec<VirusInformation>,
 }
@@ -55,7 +68,7 @@ pub struct CurrentInformation {
 
 // This contains all the information about the map.
 #[derive(Component)]
-pub struct MapInformation {
+pub struct AllMapInformation {
     /* The depth of the water every 10 game units staring from the right side.
 measures in 10 game unit increments. */
     water_depth_in_10_unit_increments: [i16; crate::MAP_WIDTH / 1000],
