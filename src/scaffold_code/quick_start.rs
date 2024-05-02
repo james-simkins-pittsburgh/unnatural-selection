@@ -1,16 +1,13 @@
 use bevy::prelude::*;
 
-use crate::simulation::OrganismInformation;
-
 pub fn create_basic_world(mut commands: Commands) {
-    commands.spawn(crate::simulation::GameworldBundle{..Default::default()});
+    commands.spawn(crate::simulation::GameworldBundle { ..Default::default() });
 }
 
 pub fn populate_basic_world(
     mut biosphere_query: Query<&mut crate::simulation::AllBiosphereInformation>
 ) {
     for mut biosphere in biosphere_query.iter_mut() {
-
         biosphere.organism_information_vec = Vec::new();
 
         let mut x_location = 0;
@@ -101,7 +98,8 @@ pub fn populate_basic_world(
                 _ => {}
             }
 
-            biosphere.organism_information_vec.push(OrganismInformation {
+            biosphere.organism_information_vec.push(crate::simulation::OrganismInformation {
+                in_use: true,
                 x_location: x_location,
                 y_location: y_location,
                 health: 100,
@@ -111,7 +109,17 @@ pub fn populate_basic_world(
                 attached: false,
                 background: false,
                 no_collision_time_remaining: 0,
+                animation_type: crate::simulation::AnimationType::None,
+                animation_counter: 0,
             });
         }
+    }
+}
+
+pub fn add_to_graphics(
+    mut need_partner_list: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>
+) {
+    for index in 0..20 {
+        need_partner_list.organism_that_need_graphical_partner.push(index);
     }
 }

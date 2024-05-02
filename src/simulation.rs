@@ -18,6 +18,7 @@ pub struct AllBiosphereInformation {
 // This contains all the data about an individual organism.
 #[derive(Copy, Clone, PartialEq, Default)]
 pub struct OrganismInformation {
+    pub in_use: bool,
     pub x_location: i32,
     pub y_location: i32,
     pub health: i16,
@@ -27,7 +28,22 @@ pub struct OrganismInformation {
     pub attached: bool,
     pub background: bool,
     pub no_collision_time_remaining: i8,
+    pub animation_type: AnimationType,
+    pub animation_counter: i8,
 }
+
+#[derive(Copy, Clone, PartialEq, Default)]
+pub enum AnimationType {
+
+    #[default] None,    
+    Attacking,
+    Growing,
+    Lysing,
+    Fission,
+    Budding,
+
+}
+
 
 // This contains all the data about an viruses.
 #[derive(Copy, Clone, PartialEq, Default)]
