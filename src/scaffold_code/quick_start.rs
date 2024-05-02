@@ -111,6 +111,7 @@ pub fn populate_basic_world(
                 no_collision_time_remaining: 0,
                 animation_type: crate::simulation::AnimationType::None,
                 animation_counter: 0,
+                in_host: false,
             });
         }
     }

@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+
+pub mod graphics_assigner;
 // When an organism that was not in the camera area is moves into camera it's index number is added to this vec.
 #[derive(Resource)]
 pub struct OrganismsThatNeedGraphicalPartner {
@@ -11,10 +13,16 @@ pub struct OrganismsToUnboundFromGraphicalPartner {
     pub organism_to_unbound_from_graphical_partner: Vec<usize>,
 }
 
+#[derive(Resource)]
+pub struct NumberOfUnboundOrganisms {
+    pub number_unbound: i32,
+}
+
 #[derive(Component, Default)]
-pub struct MainGraphicOfOrganism {
+pub struct MainGraphicsOfOrganism {
     pub x_location: i32,
     pub y_location: i32,
+    pub corresponsing_organism_number: usize,
     pub animation_type: crate::simulation::AnimationType,
     pub animation_counter: i8,
     pub species_type: crate::simulation::SpeciesType,
@@ -26,3 +34,11 @@ pub struct MainGraphicOfOrganism {
     pub cillia_1: bool,
     pub cillia_2: bool,
 }
+
+// This marks graphical entities with assignments.
+#[derive(Component)]
+pub struct Assigned;
+
+// This marks graphical entities without assignments.
+#[derive(Component)]
+pub struct Unassigned;

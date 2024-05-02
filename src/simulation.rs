@@ -12,7 +12,6 @@ pub struct GameworldBundle {
 #[derive(Component, Default)]
 pub struct AllBiosphereInformation {
     pub organism_information_vec: Vec<OrganismInformation>,
-    pub virus_information_vec: Vec<VirusInformation>,
 }
 
 // This contains all the data about an individual organism.
@@ -30,6 +29,7 @@ pub struct OrganismInformation {
     pub no_collision_time_remaining: i8,
     pub animation_type: AnimationType,
     pub animation_counter: i8,
+    pub in_host: bool,
 }
 
 #[derive(Copy, Clone, PartialEq, Default)]
@@ -43,18 +43,6 @@ pub enum AnimationType {
     Budding,
 
 }
-
-
-// This contains all the data about an viruses.
-#[derive(Copy, Clone, PartialEq, Default)]
-pub struct VirusInformation {
-    pub x_location: i32,
-    pub y_location: i32,
-    pub player_number: i8,
-    pub species_number: i8,
-    pub in_host: bool,
-}
-
 // This contains all the information about currents.
 #[derive(Component, Default)]
 pub struct AllCurrentInformation {
