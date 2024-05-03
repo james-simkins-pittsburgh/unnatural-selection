@@ -72,10 +72,26 @@ pub fn create_graphical_entities(
 }
 
 pub fn assign_graphical_entities(
-    need_assignment_struct: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>,
-    unassigned_graphical_entities: Query<
+    mut need_assignment_struct: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>,
+    mut unassigned_graphical_entities: Query<
         &mut crate::graphical_world::MainGraphicsOfOrganism,
         With<crate::graphical_world::Unassigned>
     >,
-    number_unbound: ResMut<crate::graphical_world::NumberOfUnboundOrganisms>
-) {}
+    mut number_unbound: ResMut<crate::graphical_world::NumberOfUnboundOrganisms>
+) {
+
+    for mut graphical_entity in unassigned_graphical_entities.iter_mut() {
+
+        if need_assignment_struct.organism_that_need_graphical_partner.len() == 0 {
+            break;
+        }
+
+        // This assigns the first simulation organism on the need assignment list to a graphical entity.
+        graphical_entity.corresponsing_organism_number = need_assignment_struct.organism_that_need_graphical_partner [1];
+        // This removes that organism now that it has been assigned.
+        need_assignment_struct.organism_that_need_graphical_partner.swap_remove(1);
+        // This subtracts one from the count of graphical entities that are unbounbd.
+        number_unbound.number_unbound = number_unbound.number_unbound - 1;
+    }
+
+}
