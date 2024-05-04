@@ -42,6 +42,14 @@ fn main() {
                     scaffold_code::quick_start::populate_basic_world,
                 ).chain()
             )
+            .add_systems(
+                Update,
+                (
+                    graphical_world::graphics_assigner::unassign_graphical_entities,
+                    graphical_world::graphics_assigner::create_graphical_entities,
+                    graphical_world::graphics_assigner::assign_graphical_entities,
+                ).chain()
+            )
 
             .run();
         // Delete following "}" before release.
