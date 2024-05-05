@@ -29,6 +29,7 @@ pub struct OrganismInformation {
     pub background: bool,
     pub no_collision_time_remaining: i8,
     pub main_animation_type: AnimationType,
+    pub species_type: SpeciesType,
     pub moving_on_its_own: bool,
     pub eating: bool,
     pub eating_target: [usize; 3],

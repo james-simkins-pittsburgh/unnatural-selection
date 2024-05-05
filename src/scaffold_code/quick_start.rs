@@ -107,6 +107,7 @@ pub fn populate_basic_world(
             energy: 100,
             player_number: 1,
             species_number: 1,
+            species_type: crate::simulation::SpeciesType::Prochlorococcus,
             attached: false,
             background: false,
             no_collision_time_remaining: 0,
