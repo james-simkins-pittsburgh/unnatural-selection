@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 pub mod graphics_assigner;
 pub mod graphics_updater;
+pub mod texture_loader;
 
 // When an organism that was not in the camera area is moves into camera it's index number is added to this vec.
 #[derive(Resource)]

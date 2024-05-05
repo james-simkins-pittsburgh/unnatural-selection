@@ -27,9 +27,14 @@ pub struct OrganismInformation {
     pub attached: bool,
     pub background: bool,
     pub no_collision_time_remaining: i8,
-    pub animation_type: AnimationType,
-    pub animation_counter: i8,
+    pub main_animation_type: AnimationType,
+    pub moving_on_its_own: bool,
+    pub eating: bool,
+    pub eating_target: [usize; 3],
     pub in_host: bool,
+    pub attachment_host: usize,
+    pub inserting: bool,
+    pub animation_counter: i8,
 }
 
 #[derive(Copy, Clone, PartialEq, Default)]

@@ -7,7 +7,7 @@ and created more graphical entities when they are invisible.*/
 pub fn unassign_graphical_entities(
     mut need_unassigned_struct: ResMut<crate::graphical_world::OrganismsToUnboundFromGraphicalPartner>,
     mut assigned_graphical_entities: Query<
-        (&mut crate::graphical_world::MainGraphicsOfOrganism, Entity),
+        (&mut crate::graphical_world::MainGraphicsOfOrganism, Entity, &mut Visibility),
         With<crate::graphical_world::Assigned>
     >,
     mut number_unbound: ResMut<crate::graphical_world::NumberOfUnboundOrganisms>,
@@ -35,6 +35,8 @@ pub fn unassign_graphical_entities(
                     .entity(graphical_entity.1)
                     .remove::<crate::graphical_world::Assigned>()
                     .insert(crate::graphical_world::Unassigned);
+                // Hides the unassigned entity.
+                *graphical_entity.2  = Visibility::Hidden;
                 // Increases the number of unbound graphical entities by 1.
                 number_unbound.number_unbound = number_unbound.number_unbound + 1;
                 // Removes the unassigned organism number from the vec of organism that need to be unassigned.
@@ -64,6 +66,11 @@ pub fn create_graphical_entities(
             commands.spawn((
                 crate::graphical_world::MainGraphicsOfOrganism { ..Default::default() },
                 crate::graphical_world::Unassigned,
+                SpriteSheetBundle {
+                    visibility: Visibility::Hidden,
+                    ..default()
+                },
+
             ));
         }
         number_unbound.number_unbound =
@@ -71,6 +78,7 @@ pub fn create_graphical_entities(
     }
 }
 
+// This assigns a graphical entity to each simulation entity that is on the list for needing a binding.
 pub fn assign_graphical_entities(
     mut need_assignment_struct: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>,
     mut unassigned_graphical_entities: Query<
@@ -79,19 +87,17 @@ pub fn assign_graphical_entities(
     >,
     mut number_unbound: ResMut<crate::graphical_world::NumberOfUnboundOrganisms>
 ) {
-
     for mut graphical_entity in unassigned_graphical_entities.iter_mut() {
-
         if need_assignment_struct.organism_that_need_graphical_partner.len() == 0 {
             break;
         }
 
-        // This assigns the first simulation organism on the need assignment list to a graphical entity.
-        graphical_entity.corresponsing_organism_number = need_assignment_struct.organism_that_need_graphical_partner [1];
-        // This removes that organism now that it has been assigned.
+        // This assigns the first simulation organism on the need assignment vec to a graphical entity.
+        graphical_entity.corresponsing_organism_number =
+            need_assignment_struct.organism_that_need_graphical_partner[1];
+        // This removes that organism for the vec now that it has been assigned.
         need_assignment_struct.organism_that_need_graphical_partner.swap_remove(1);
         // This subtracts one from the count of graphical entities that are unbounbd.
         number_unbound.number_unbound = number_unbound.number_unbound - 1;
     }
-
 }
