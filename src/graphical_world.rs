@@ -23,8 +23,6 @@ pub struct NumberOfUnboundOrganisms {
 
 #[derive(Component, Default)]
 pub struct MainGraphicsOfOrganism {
-    pub x_location: i32,
-    pub y_location: i32,
     pub corresponsing_organism_number: usize,
     pub animation_type: crate::simulation::AnimationType,
     pub animation_counter: i8,
