@@ -28,6 +28,7 @@ pub struct MainGraphicsOfOrganism {
     pub animation_type: crate::simulation::AnimationType,
     pub animation_counter: i8,
     pub species_type: crate::simulation::SpeciesType,
+    pub entity_initiated: bool,
     pub texture_number: usize,
     // If true, these mark different child entities that should be created.
     // Many more needed. These are examples.

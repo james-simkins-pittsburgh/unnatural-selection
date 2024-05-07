@@ -1,5 +1,5 @@
 // This hides the command prompt
-#![windows_subsystem = "windows"]
+// #![windows_subsystem = "windows"]
 
 use bevy::prelude::*;
 use bevy_embedded_assets::EmbeddedAssetPlugin;
@@ -35,6 +35,7 @@ fn main() {
             .add_plugins((EmbeddedAssetPlugin::default(), DefaultPlugins))
             .add_plugins(bevy_framepace::FramepacePlugin)
             .add_systems(Startup, framepace_setup)
+            .add_systems(Startup, setup_camera)
             .init_resource::<graphical_world::texture_loader::TextureAtlasHandles>()
             .add_systems(Startup, graphical_world::texture_loader::texture_loader)
             .init_resource::<graphical_world::OrganismsToUnboundFromGraphicalPartner>()
@@ -45,6 +46,7 @@ fn main() {
                 (
                     scaffold_code::quick_start::create_basic_world,
                     scaffold_code::quick_start::populate_basic_world,
+                    scaffold_code::quick_start::add_to_graphics,
                 ).chain()
             )
             .add_systems(
@@ -66,4 +68,13 @@ fn main() {
 in order to double the potential size of the simulation since this is a CPU bound appllication. */
 fn framepace_setup(mut settings: ResMut<bevy_framepace::FramepaceSettings>) {
     settings.limiter = bevy_framepace::Limiter::from_framerate(30.0);
+}
+
+
+fn setup_camera(mut commands: Commands) {
+    commands.spawn((
+        Camera2dBundle {
+            ..default()
+        },
+    ));
 }

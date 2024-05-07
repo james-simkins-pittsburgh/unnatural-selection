@@ -8,13 +8,14 @@ pub fn update_graphical_world(
             &mut crate::graphical_world::MainGraphicsOfOrganism,
             &mut Transform,
             &mut crate::graphical_world::SpriteSheet,
+            &mut Visibility,
         ),
         With<crate::graphical_world::Assigned>
     >,
     texture_atlas_handles: Res<crate::graphical_world::texture_loader::TextureAtlasHandles>
 ) {
     let biosphere = biosphere.single();
-
+    
     // This updates the position of the sprite.
     for mut graphical_entity in assigned_graphical_entities.iter_mut() {
         // This calculates the z value and index value in a way that maximizes texture loading efficiency.
@@ -29,7 +30,7 @@ pub fn update_graphical_world(
             );
 
         // This updates the index and the texture / texture layout (if needed).
-        if graphical_entity.0.texture_number == z_and_index_and_texture_number.2 {
+        if graphical_entity.0.texture_number == z_and_index_and_texture_number.2 && graphical_entity.0.entity_initiated {
             // This updates the index.
             graphical_entity.2.atlas.index = z_and_index_and_texture_number.1;
         } else {
@@ -45,8 +46,10 @@ pub fn update_graphical_world(
                 ].1.layout.clone();
             // This updates the texture atlas index.
             graphical_entity.2.atlas.index = z_and_index_and_texture_number.1;
-            // This updayes the testure number.
+            // This updayes the texture number.
             graphical_entity.0.texture_number = z_and_index_and_texture_number.2;
+            // This says that the graphical entity has been initiated.
+            graphical_entity.0.entity_initiated = true;
         }
 
         // This updates the tranform of the entity.
@@ -59,8 +62,10 @@ pub fn update_graphical_world(
                 biosphere.organism_information_vec
                     [graphical_entity.0.corresponsing_organism_number].y_location as f32
             ) / 50.0,
-            z: z_and_index_and_texture_number.0,
+            z: 0.0 // z_and_index_and_texture_number.0,
         };
+
+        *graphical_entity.3 = Visibility::Visible;
 
         // Code to update the rotation of the sprite should go here.
 

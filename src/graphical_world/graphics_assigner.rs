@@ -71,7 +71,7 @@ pub fn create_graphical_entities(
                 },
                 SpatialBundle {
                     ..Default::default()
-                }
+                },
             ));
         }
         number_unbound.number_unbound =
@@ -83,10 +83,11 @@ pub fn create_graphical_entities(
 pub fn assign_graphical_entities(
     mut need_assignment_struct: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>,
     mut unassigned_graphical_entities: Query<
-        &mut crate::graphical_world::MainGraphicsOfOrganism,
+        (&mut crate::graphical_world::MainGraphicsOfOrganism, Entity),
         With<crate::graphical_world::Unassigned>
     >,
-    mut number_unbound: ResMut<crate::graphical_world::NumberOfUnboundOrganisms>
+    mut number_unbound: ResMut<crate::graphical_world::NumberOfUnboundOrganisms>,
+    mut commands: Commands
 ) {
     for mut graphical_entity in unassigned_graphical_entities.iter_mut() {
         if need_assignment_struct.organism_that_need_graphical_partner.len() == 0 {
@@ -94,10 +95,15 @@ pub fn assign_graphical_entities(
         }
 
         // This assigns the first simulation organism on the need assignment vec to a graphical entity.
-        graphical_entity.corresponsing_organism_number =
-            need_assignment_struct.organism_that_need_graphical_partner[1];
+        graphical_entity.0.corresponsing_organism_number =
+            need_assignment_struct.organism_that_need_graphical_partner[0];
+        // This removes the unassigned and adds the assigned component
+        commands
+            .entity(graphical_entity.1)
+            .remove::<crate::graphical_world::Unassigned>()
+            .insert(crate::graphical_world::Assigned);
         // This removes that organism for the vec now that it has been assigned.
-        need_assignment_struct.organism_that_need_graphical_partner.swap_remove(1);
+        need_assignment_struct.organism_that_need_graphical_partner.swap_remove(0);
         // This subtracts one from the count of graphical entities that are unbounbd.
         number_unbound.number_unbound = number_unbound.number_unbound - 1;
     }

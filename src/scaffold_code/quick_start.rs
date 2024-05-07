@@ -72,27 +72,27 @@ pub fn populate_basic_world(
                 y_location = 15000;
             }
             14 => {
-                x_location = -5000;
+                x_location = 5000;
                 y_location = -15000;
             }
             15 => {
-                x_location = -5000;
+                x_location = 5000;
                 y_location = -10000;
             }
             16 => {
-                x_location = -5000;
+                x_location = 5000;
                 y_location = -5000;
             }
             17 => {
-                x_location = -5000;
+                x_location = 5000;
                 y_location = 0;
             }
             18 => {
-                x_location = -5000;
+                x_location = 5000;
                 y_location = 10000;
             }
             19 => {
-                x_location = -10000;
+                x_location = 10000;
                 y_location = 10000;
             }
             _ => {}
@@ -124,11 +124,12 @@ pub fn populate_basic_world(
 }
 
 pub fn add_to_graphics(
-    mut need_partner_list: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>
+    mut need_partner_list: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>,
 ) {
     need_partner_list.organism_that_need_graphical_partner = Vec::new();
 
     for index in 0..20 {
-        need_partner_list.organism_that_need_graphical_partner.push(index);
+        need_partner_list.organism_that_need_graphical_partner.push(index)
     }
+
 }
