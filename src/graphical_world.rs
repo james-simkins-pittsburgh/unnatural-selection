@@ -3,7 +3,7 @@ use bevy::prelude::*;
 pub mod graphics_assigner;
 pub mod graphics_updater;
 pub mod texture_loader;
-pub mod z_and_index_calculator;
+pub mod z_and_index_and_texture_number_calculator;
 
 // When an organism that was not in the camera area is moves into camera it's index number is added to this vec.
 #[derive(Resource)]
@@ -28,6 +28,7 @@ pub struct MainGraphicsOfOrganism {
     pub animation_type: crate::simulation::AnimationType,
     pub animation_counter: i8,
     pub species_type: crate::simulation::SpeciesType,
+    pub texture_number: usize,
     // If true, these mark different child entities that should be created.
     // Many more needed. These are examples.
     pub cell_wall: bool,
@@ -35,6 +36,14 @@ pub struct MainGraphicsOfOrganism {
     pub flagella_2: bool,
     pub cillia_1: bool,
     pub cillia_2: bool,
+}
+
+// I copied the sprite sheet bundle because I wanted to be able to query it.
+#[derive(Component, Default)]
+pub struct SpriteSheet {
+    pub sprite: Sprite,
+    pub texture: Handle<Image>,
+    pub atlas: TextureAtlas,
 }
 
 // This marks graphical entities with assignments.

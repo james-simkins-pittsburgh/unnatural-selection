@@ -36,7 +36,7 @@ pub fn unassign_graphical_entities(
                     .remove::<crate::graphical_world::Assigned>()
                     .insert(crate::graphical_world::Unassigned);
                 // Hides the unassigned entity.
-                *graphical_entity.2  = Visibility::Hidden;
+                *graphical_entity.2 = Visibility::Hidden;
                 // Increases the number of unbound graphical entities by 1.
                 number_unbound.number_unbound = number_unbound.number_unbound + 1;
                 // Removes the unassigned organism number from the vec of organism that need to be unassigned.
@@ -66,11 +66,12 @@ pub fn create_graphical_entities(
             commands.spawn((
                 crate::graphical_world::MainGraphicsOfOrganism { ..Default::default() },
                 crate::graphical_world::Unassigned,
-                SpriteSheetBundle {
-                    visibility: Visibility::Hidden,
-                    ..default()
+                crate::graphical_world::SpriteSheet {
+                    ..Default::default()
                 },
-
+                SpatialBundle {
+                    ..Default::default()
+                }
             ));
         }
         number_unbound.number_unbound =

@@ -35,6 +35,7 @@ fn main() {
             .add_plugins((EmbeddedAssetPlugin::default(), DefaultPlugins))
             .add_plugins(bevy_framepace::FramepacePlugin)
             .add_systems(Startup, framepace_setup)
+            .add_systems(Startup, graphical_world::texture_loader::texture_loader)
             .add_systems(
                 Startup,
                 (
