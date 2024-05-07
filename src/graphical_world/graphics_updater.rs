@@ -35,14 +35,14 @@ pub fn update_graphical_world(
         } else {
             // This updates the texture (image).
             graphical_entity.2.texture =
-                texture_atlas_handles.texture_atlas_handle_array[
+                texture_atlas_handles.texture_atlas_array[
                     z_and_index_and_texture_number.2
                 ].0.clone();
             // This updates the texture atlas layout.
             graphical_entity.2.atlas.layout =
-                texture_atlas_handles.texture_atlas_handle_array[
+                texture_atlas_handles.texture_atlas_array[
                     z_and_index_and_texture_number.2
-                ].1.clone();
+                ].1.layout.clone();
             // This updates the texture atlas index.
             graphical_entity.2.atlas.index = z_and_index_and_texture_number.1;
             // This updayes the testure number.

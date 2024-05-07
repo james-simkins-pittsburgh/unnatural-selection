@@ -40,14 +40,14 @@ fn main() {
             .init_resource::<graphical_world::OrganismsToUnboundFromGraphicalPartner>()
             .init_resource::<graphical_world::OrganismsThatNeedGraphicalPartner>()
             .init_resource::<graphical_world::NumberOfUnboundOrganisms>()
-            /*  .add_systems(
+            .add_systems(
                 Startup,
                 (
                     scaffold_code::quick_start::create_basic_world,
                     scaffold_code::quick_start::populate_basic_world,
                 ).chain()
-            ) */
-            /* .add_systems(
+            )
+            .add_systems(
                 Update,
                 (
                     graphical_world::graphics_assigner::unassign_graphical_entities,
@@ -55,7 +55,7 @@ fn main() {
                     graphical_world::graphics_assigner::assign_graphical_entities,
                     graphical_world::graphics_updater::update_graphical_world,
                 ).chain()
-            ) */
+            )
 
             .run();
         // Delete following "}" before release.
