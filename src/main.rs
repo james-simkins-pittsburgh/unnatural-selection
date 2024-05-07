@@ -1,5 +1,5 @@
 // This hides the command prompt
-#![windows_subsystem = "windows"]
+// #![windows_subsystem = "windows"]
 
 use bevy::prelude::*;
 use bevy_embedded_assets::EmbeddedAssetPlugin;
@@ -45,6 +45,7 @@ fn main() {
                 (
                     scaffold_code::quick_start::create_basic_world,
                     scaffold_code::quick_start::populate_basic_world,
+                    scaffold_code::quick_start::add_to_graphics,
                 ).chain()
             )
             .add_systems(

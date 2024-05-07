@@ -124,11 +124,12 @@ pub fn populate_basic_world(
 }
 
 pub fn add_to_graphics(
-    mut need_partner_list: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>
+    mut need_partner_list: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>,
 ) {
     need_partner_list.organism_that_need_graphical_partner = Vec::new();
 
     for index in 0..20 {
-        need_partner_list.organism_that_need_graphical_partner.push(index);
+        need_partner_list.organism_that_need_graphical_partner.push(index)
     }
+
 }
