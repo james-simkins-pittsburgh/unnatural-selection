@@ -18,6 +18,7 @@ pub fn update_graphical_world(
     
     // This updates the position of the sprite.
     for mut graphical_entity in assigned_graphical_entities.iter_mut() {
+
         // This calculates the z value and index value in a way that maximizes texture loading efficiency.
         let z_and_index_and_texture_number =
             crate::graphical_world::z_and_index_and_texture_number_calculator::calculate_z_and_index_and_texture_number(
