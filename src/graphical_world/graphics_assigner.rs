@@ -64,13 +64,11 @@ pub fn create_graphical_entities(
         for _n in 0..(need_assignment_struct.organism_that_need_graphical_partner.len() as i32) -
             number_unbound.number_unbound {
             commands.spawn((
-                crate::graphical_world::MainGraphicsOfOrganism { ..Default::default() },
+                crate::graphical_world::MainGraphicsOfOrganism { ..default() },
                 crate::graphical_world::Unassigned,
-                crate::graphical_world::SpriteSheet {
-                    ..Default::default()
-                },
-                SpatialBundle {
-                    ..Default::default()
+                SpriteSheetBundle {
+                    visibility: Visibility::Hidden,
+                    ..default()
                 },
             ));
         }

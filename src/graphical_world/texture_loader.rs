@@ -18,8 +18,8 @@ pub fn texture_loader(
         Vec2::new(80.0, 80.0),
         1,
         1,
-        Some(Vec2::new(2.0, 2.0)),
-        Some(Vec2::new(0.0, 0.0))
+        Some(Vec2::new(4.0, 4.0)),
+        Some(Vec2::new(4.0, 4.0))
     )); 
 
     texture_atlas.texture_atlas_array = [(image, TextureAtlas {index:0, layout:new_texture_atlas})];

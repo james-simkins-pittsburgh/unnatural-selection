@@ -89,10 +89,10 @@ pub fn populate_basic_world(
             }
             18 => {
                 x_location = 5000;
-                y_location = 10000;
+                y_location = 5000;
             }
             19 => {
-                x_location = 10000;
+                x_location = 5000;
                 y_location = 10000;
             }
             _ => {}
