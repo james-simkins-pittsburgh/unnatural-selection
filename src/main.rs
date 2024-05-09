@@ -35,7 +35,7 @@ fn main() {
             .add_plugins((EmbeddedAssetPlugin::default(), DefaultPlugins))
             .add_plugins(bevy_framepace::FramepacePlugin)
             .add_systems(Startup, framepace_setup)
-            .add_systems(Startup, setup_camera)
+            .add_systems(Startup, (user_interface::camera::camera_setup, user_interface::camera::set_initial_camera).chain())
             .init_resource::<graphical_world::texture_loader::TextureAtlasHandles>()
             .add_systems(Startup, graphical_world::texture_loader::texture_loader)
             .init_resource::<graphical_world::OrganismsToUnboundFromGraphicalPartner>()
@@ -52,6 +52,7 @@ fn main() {
             .add_systems(
                 Update,
                 (
+                    user_interface::camera::camera_pan_and_zoom,
                     graphical_world::graphics_assigner::unassign_graphical_entities,
                     graphical_world::graphics_assigner::create_graphical_entities,
                     graphical_world::graphics_assigner::assign_graphical_entities,
@@ -68,13 +69,4 @@ fn main() {
 in order to double the potential size of the simulation since this is a CPU bound appllication. */
 fn framepace_setup(mut settings: ResMut<bevy_framepace::FramepaceSettings>) {
     settings.limiter = bevy_framepace::Limiter::from_framerate(30.0);
-}
-
-
-fn setup_camera(mut commands: Commands) {
-    commands.spawn((
-        Camera2dBundle {
-            ..default()
-        },
-    ));
 }
