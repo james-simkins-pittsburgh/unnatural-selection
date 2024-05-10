@@ -16,6 +16,34 @@ pub struct TrigArrays {
     pub arc_tan_by_tenths: [i32; 201],
     pub arc_tan_by_hundreths: [i32; 201],
 }
+// These are the functions for getting trig results.
+
+pub fn sine_times_1000(angle: i16, sine_array: [i32; 360]) -> i32 {
+    return sine_array [normalize_angle(angle) as usize];
+}
+
+pub fn cosine_times_1000(angle: i16, cosine_array: [i32; 360]) -> i32 {
+    return cosine_array [normalize_angle(angle) as usize];
+}
+
+pub fn tangent_times_1000(angle: i16, tangent_array: [i32; 360]) -> i32 {
+    return tangent_array [normalize_angle(angle) as usize];
+}
+
+fn normalize_angle(argument_angle: i16) -> i16 {
+    let mut normal_angle = argument_angle;
+
+    if normal_angle > 359 {
+        normal_angle = normal_angle % 360;
+    } else if normal_angle < 0 {
+        if normal_angle < -359 {
+            normal_angle = normal_angle % -360;
+        }
+        normal_angle = normal_angle + 360;
+    }
+
+    return normal_angle;
+}
 
 // This sets up the basic trig arrays to allow the function to work.
 pub fn initialize_deterministic_trig(mut trig_arrays: ResMut<TrigArrays>) {
