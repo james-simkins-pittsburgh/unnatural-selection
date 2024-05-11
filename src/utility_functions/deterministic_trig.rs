@@ -10,26 +10,55 @@ pub struct TrigArrays {
     pub sine_array: [i32; 360],
     pub cosine_array: [i32; 360],
     pub tangent_array: [i32; 360],
-    pub arc_sine_array_by_thousandths: [i32; 2001],
-    pub arc_cosine_array_by_thousandths: [i32; 2001],
-    pub arc_tan_by_ones: [i32; 201],
-    pub arc_tan_by_tenths: [i32; 201],
-    pub arc_tan_by_hundreths: [i32; 201],
+    pub arc_sine_array_by_thousandths: [i16; 2001],
+    pub arc_cosine_array_by_thousandths: [i16; 2001],
+    pub arc_tan_by_ones: [i16; 201],
+    pub arc_tan_by_tenths: [i16; 201],
+    pub arc_tan_by_hundreths: [i16; 201],
 }
 // These are the functions for getting trig results.
-
 pub fn sine_times_1000(angle: i16, sine_array: [i32; 360]) -> i32 {
-    return sine_array [normalize_angle(angle) as usize];
+    return sine_array[normalize_angle(angle) as usize];
 }
 
 pub fn cosine_times_1000(angle: i16, cosine_array: [i32; 360]) -> i32 {
-    return cosine_array [normalize_angle(angle) as usize];
+    return cosine_array[normalize_angle(angle) as usize];
 }
 
 pub fn tangent_times_1000(angle: i16, tangent_array: [i32; 360]) -> i32 {
-    return tangent_array [normalize_angle(angle) as usize];
+    return tangent_array[normalize_angle(angle) as usize];
 }
 
+pub fn arc_sine_of_thousandths(proportion_out_of_1000: i32, arcsine_array: [i16; 2001]) {
+    // The first two conditions are error conditions.
+    if proportion_out_of_1000 < -1000 {
+        warn!("Arcsine below allowed domain!");
+        return -90;
+
+    } else if proportion_out_of_1000 > 1000 {
+            warn!("Arcsine above allowed domain!");
+            return 90;
+    } else {
+        // This is the code that is meant to run.
+        return arcsine_array[(proportion_out_of_1000 as usize) + 1000];
+    }
+}
+
+pub fn arc_cosine_of_thousandths(proportion_out_of_1000: i32, arccosine_array: [i16; 2001]) {
+    // The first two conditions are error conditions.
+    if proportion_out_of_1000 > 1000 {
+        warn!("Arccosine above allowed domain!");
+        return 180;
+    } else if proportion_out_of_1000 < -1000 {
+        warn!("Arccosine below allowed domain!");
+        return 0;
+    } else {
+        // This is the code that is meant to run.
+        return arccosine_array[(proportion_out_of_1000 as usize) + 1000];
+    }
+}
+
+// This takes any angle and normalizes it to 0 to 359.
 fn normalize_angle(argument_angle: i16) -> i16 {
     let mut normal_angle = argument_angle;
 
@@ -45,7 +74,9 @@ fn normalize_angle(argument_angle: i16) -> i16 {
     return normal_angle;
 }
 
-// This sets up the basic trig arrays to allow the function to work.
+/* This sets up the basic trig arrays to allow the functions to work.
+These arrays have to be passed to the functions because they are a resource
+in the Bevy app, but the functions are not systems. */
 pub fn initialize_deterministic_trig(mut trig_arrays: ResMut<TrigArrays>) {
     trig_arrays.sine_array = [
         0, 17, 35, 52, 70, 87, 105, 122, 139, 156, 174, 191, 208, 225, 242, 259, 276, 292, 309, 326,
