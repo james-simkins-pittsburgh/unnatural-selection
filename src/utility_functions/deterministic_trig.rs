@@ -29,22 +29,21 @@ pub fn tangent_times_1000(angle: i16, tangent_array: [i32; 360]) -> i32 {
     return tangent_array[normalize_angle(angle) as usize];
 }
 
-pub fn arc_sine_of_thousandths(proportion_out_of_1000: i32, arcsine_array: [i16; 2001]) {
+pub fn arc_sine_of_thousandths(proportion_out_of_1000: i32, arcsine_array: [i16; 2001]) -> i16 {
     // The first two conditions are error conditions.
     if proportion_out_of_1000 < -1000 {
         warn!("Arcsine below allowed domain!");
         return -90;
-
     } else if proportion_out_of_1000 > 1000 {
-            warn!("Arcsine above allowed domain!");
-            return 90;
+        warn!("Arcsine above allowed domain!");
+        return 90;
     } else {
         // This is the code that is meant to run.
         return arcsine_array[(proportion_out_of_1000 as usize) + 1000];
     }
 }
 
-pub fn arc_cosine_of_thousandths(proportion_out_of_1000: i32, arccosine_array: [i16; 2001]) {
+pub fn arc_cosine_of_thousandths(proportion_out_of_1000: i32, arccosine_array: [i16; 2001]) -> i16 {
     // The first two conditions are error conditions.
     if proportion_out_of_1000 > 1000 {
         warn!("Arccosine above allowed domain!");
@@ -58,7 +57,33 @@ pub fn arc_cosine_of_thousandths(proportion_out_of_1000: i32, arccosine_array: [
     }
 }
 
-// This takes any angle and normalizes it to 0 to 359.
+pub fn arc_tangent_of_hundreths(
+    proportion_out_of_100: i32,
+    arc_tan_by_ones: [i16; 201],
+    arc_tan_by_tenths: [i16; 201],
+    arc_tan_by_hundreths: [i16; 201]
+) -> i16 {
+
+    if proportion_out_of_100 < -8935 {
+
+        return -90 }
+        
+        else if proportion_out_of_100 > 8935 {
+
+        return 90
+
+        } else {
+
+            
+
+
+        }
+    }
+
+
+}
+
+// This takes any angle and normalizes it to 0 to 359.: []
 fn normalize_angle(argument_angle: i16) -> i16 {
     let mut normal_angle = argument_angle;
 
