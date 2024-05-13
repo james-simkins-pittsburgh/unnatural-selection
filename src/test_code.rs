@@ -1,5 +1,3 @@
-pub mod test_cheap_random;
+// This module hosts test code that is not part of the actual application.
 
-pub fn run_test_code() {
-    // Insert a function call to the test code here.
-}
+pub mod test_deterministic_trig;

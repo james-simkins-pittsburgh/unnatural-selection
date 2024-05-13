@@ -19,50 +19,45 @@ pub mod test_code;
 pub const MAP_WIDTH: usize = 10000;
 pub const MAP_MAX_HEIGHT: usize = 19000;
 
-/* This is a toggle that allows quick testing of test code.
-Delete the following line before release. */
-const USE_TEST_CODE: bool = false;
-
 fn main() {
-    // Delete starting here to remove test code runner before release.
+    App::new()
+        .add_plugins((EmbeddedAssetPlugin::default(), DefaultPlugins))
+        .add_plugins(bevy_framepace::FramepacePlugin)
+        .add_systems(Startup, framepace_setup)
+        .add_systems(
+            Startup,
+            (
+                user_interface::camera::camera_setup,
+                user_interface::camera::set_initial_camera,
+            ).chain()
+        )
+        .init_resource::<graphical_world::texture_loader::TextureAtlasHandles>()
+        .add_systems(Startup, graphical_world::texture_loader::texture_loader)
+        .init_resource::<utility_functions::deterministic_trig::TrigArrays>()
+        .add_systems(Startup, test_code::test_deterministic_trig::test_trig_arrays)
+        .init_resource::<graphical_world::OrganismsToUnboundFromGraphicalPartner>()
+        .init_resource::<graphical_world::OrganismsThatNeedGraphicalPartner>()
+        .init_resource::<graphical_world::NumberOfUnboundOrganisms>()
+        .add_systems(
+            Startup,
+            (
+                scaffold_code::quick_start::create_basic_world,
+                scaffold_code::quick_start::populate_basic_world,
+                scaffold_code::quick_start::add_to_graphics,
+            ).chain()
+        )
+        .add_systems(
+            Update,
+            (
+                user_interface::camera::camera_pan_and_zoom,
+                graphical_world::graphics_assigner::unassign_graphical_entities,
+                graphical_world::graphics_assigner::create_graphical_entities,
+                graphical_world::graphics_assigner::assign_graphical_entities,
+                graphical_world::graphics_updater::update_graphical_world,
+            ).chain()
+        )
 
-    if USE_TEST_CODE {
-        test_code::run_test_code()
-    } else {
-        // End delete here.
-
-        App::new()
-            .add_plugins((EmbeddedAssetPlugin::default(), DefaultPlugins))
-            .add_plugins(bevy_framepace::FramepacePlugin)
-            .add_systems(Startup, framepace_setup)
-            .add_systems(Startup, (user_interface::camera::camera_setup, user_interface::camera::set_initial_camera).chain())
-            .init_resource::<graphical_world::texture_loader::TextureAtlasHandles>()
-            .add_systems(Startup, graphical_world::texture_loader::texture_loader)
-            .init_resource::<graphical_world::OrganismsToUnboundFromGraphicalPartner>()
-            .init_resource::<graphical_world::OrganismsThatNeedGraphicalPartner>()
-            .init_resource::<graphical_world::NumberOfUnboundOrganisms>()
-            .add_systems(
-                Startup,
-                (
-                    scaffold_code::quick_start::create_basic_world,
-                    scaffold_code::quick_start::populate_basic_world,
-                    scaffold_code::quick_start::add_to_graphics,
-                ).chain()
-            )
-            .add_systems(
-                Update,
-                (
-                    user_interface::camera::camera_pan_and_zoom,
-                    graphical_world::graphics_assigner::unassign_graphical_entities,
-                    graphical_world::graphics_assigner::create_graphical_entities,
-                    graphical_world::graphics_assigner::assign_graphical_entities,
-                    graphical_world::graphics_updater::update_graphical_world,
-                ).chain()
-            )
-
-            .run();
-        // Delete following "}" before release.
-    }
+        .run();
 }
 
 /* This limits the framerate to 30 fps. This is a deliberate decision to deemphasize graphic quality

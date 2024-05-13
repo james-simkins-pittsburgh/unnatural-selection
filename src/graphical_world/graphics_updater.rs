@@ -38,7 +38,6 @@ pub fn update_graphical_world(
             // This updates the index.
             graphical_entity.2.index = z_and_index_and_texture_number.1;
         } else {
-            info!("this code runs.");
 
             // This updates the texture (image).
             *graphical_entity.4 =
