@@ -63,23 +63,23 @@ pub fn arc_tangent_of_hundreths(
     } else if proportion_out_of_100 > 3818 {
         return 89;
     } else if proportion_out_of_100 < -1000 || proportion_out_of_100 > 1000 {
-        return arc_tan_by_ones[(proportion_out_of_100 / 100) as usize];
+        return arc_tan_by_ones[(proportion_out_of_100 / 100 + 100) as usize];
     } else if proportion_out_of_100 < -100 || proportion_out_of_100 > 100 {
         if proportion_out_of_100 % 10 < 5 {
-            return arc_tan_by_tenths[(proportion_out_of_100 / 10) as usize];
+            return arc_tan_by_tenths[(proportion_out_of_100 / 10 + 100) as usize];
         } else {
-            return arc_tan_by_tenths[(proportion_out_of_100 / 10 + 1) as usize];
+            return arc_tan_by_tenths[(proportion_out_of_100 / 10 + 1 + 100) as usize];
         }
     } else {
         if proportion_out_of_100 % 100 < 50 {
-            return arc_tan_by_hundreths[(proportion_out_of_100 / 100) as usize];
+            return arc_tan_by_hundreths[(proportion_out_of_100 + 100) as usize];
         } else {
-            return arc_tan_by_hundreths[(proportion_out_of_100 / 100 + 1) as usize];
+            return arc_tan_by_hundreths[(proportion_out_of_100 + 1 + 100) as usize];
         }
     }
 }
 
-// This takes any angle and normalizes it to 0 to 359.: []
+// This takes any angle and normalizes it to 0 to 359.
 fn normalize_angle(argument_angle: i16) -> i16 {
     let mut normal_angle = argument_angle;
 
@@ -176,7 +176,7 @@ impl Default for TrigArrays {
                 1192, 1235, 1280, 1327, 1376, 1428, 1483, 1540, 1600, 1664, 1732, 1804, 1881, 1963,
                 2050, 2145, 2246, 2356, 2475, 2605, 2747, 2904, 3078, 3271, 3487, 3732, 4011, 4331,
                 4705, 5145, 5671, 6314, 7115, 8144, 9514, 11430, 14301, 19081, 28637, 57292,
-                -1563091456, -57288, -28636, -19081, -14301, -11430, -9514, -8144, -7115, -6314,
+                1000000, -57288, -28636, -19081, -14301, -11430, -9514, -8144, -7115, -6314,
                 -5671, -5145, -4705, -4331, -4011, -3732, -3487, -3271, -3078, -2904, -2747, -2605,
                 -2475, -2356, -2246, -2145, -2050, -1963, -1881, -1804, -1732, -1664, -1600, -1540,
                 -1483, -1428, -1376, -1327, -1280, -1235, -1192, -1150, -1111, -1072, -1036, -1000,
@@ -189,7 +189,7 @@ impl Default for TrigArrays {
                 1111, 1150, 1192, 1235, 1280, 1327, 1376, 1428, 1483, 1540, 1600, 1664, 1732, 1804,
                 1881, 1963, 2050, 2145, 2246, 2356, 2475, 2605, 2747, 2904, 3078, 3271, 3487, 3732,
                 4011, 4332, 4705, 5145, 5671, 6314, 7115, 8144, 9515, 11430, 14301, 19082, 28638, 57297,
-                -521030464, -57284, -28634, -19080, -14300, -11430, -9514, -8144, -7115, -6314,
+                1000000, -57284, -28634, -19080, -14300, -11430, -9514, -8144, -7115, -6314,
                 -5671, -5144, -4705, -4331, -4011, -3732, -3487, -3271, -3078, -2904, -2747, -2605,
                 -2475, -2356, -2246, -2144, -2050, -1963, -1881, -1804, -1732, -1664, -1600, -1540,
                 -1483, -1428, -1376, -1327, -1280, -1235, -1192, -1150, -1111, -1072, -1036, -1000,

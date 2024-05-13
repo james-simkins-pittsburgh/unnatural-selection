@@ -45,4 +45,15 @@ pub fn test_trig_arrays(
     warn!("{}", crate::utility_functions::deterministic_trig::arc_cosine_of_thousandths(-800, trig_arrays.arc_cosine_array_by_thousandths));
     warn!("{}", crate::utility_functions::deterministic_trig::arc_cosine_of_thousandths(-1200, trig_arrays.arc_cosine_array_by_thousandths));
     
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(13000, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(9780, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(2221, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));    
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(221, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(44, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(0, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(-77, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(-531, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(-1711, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(-7672, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));
+    warn!("{}", crate::utility_functions::deterministic_trig::arc_tangent_of_hundreths(-12188, trig_arrays.arc_tan_by_ones, trig_arrays.arc_tan_by_tenths, trig_arrays.arc_tan_by_hundreths));
 }
