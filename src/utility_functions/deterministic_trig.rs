@@ -3,24 +3,40 @@ since any floating point math could break determinism.*/
 
 use bevy::prelude::*;
 
+/* These arrays hold precaulcated results for trig functions. This guaranteeds deterinism
+across different implementations of floating point arithmetic */
+
+pub struct DeterministicTrig {
+    pub sine_array: [i32; 360],
+    pub cosine_array: [i32; 360],
+    pub tangent_array: [i32; 360],
+    pub arc_sine_array_by_thousandths: [i16; 2001],
+    pub arc_cosine_array_by_thousandths: [i16; 2001],
+    pub arc_tan_by_ones: [i16; 201],
+    pub arc_tan_by_tenths: [i16; 201],
+    pub arc_tan_by_hundreths: [i16; 201],
+}
+
+impl DeterministicTrig {
+
 // These are the functions for getting trig results.
-pub fn sine_times_1000(angle: i16, sine_array: [i32; 360]) -> i32 {
-    return sine_array[normalize_angle(angle) as usize];
+pub fn sine_times_1000(&self, angle: i16) -> i32 {
+    return self.sine_array[normalize_angle(angle) as usize];
 }
 
-pub fn cosine_times_1000(angle: i16, cosine_array: [i32; 360]) -> i32 {
-    return cosine_array[normalize_angle(angle) as usize];
+pub fn cosine_times_1000(&self, angle: i16) -> i32 {
+    return self.cosine_array[normalize_angle(angle) as usize];
 }
 
-pub fn tangent_times_1000(angle: i16, tangent_array: [i32; 360]) -> i32 {
+pub fn tangent_times_1000(&self, angle: i16) -> i32 {
     if angle == 90 || angle == 270 {
         warn!("Tangent domain invalid!");
     }
 
-    return tangent_array[normalize_angle(angle) as usize];
+    return self.tangent_array[normalize_angle(angle) as usize];
 }
 
-pub fn arc_sine_of_thousandths(proportion_out_of_1000: i32, arcsine_array: [i16; 2001]) -> i16 {
+pub fn arc_sine_of_thousandths(&self, proportion_out_of_1000: i32) -> i16 {
     // The first two conditions are error conditions.
     if proportion_out_of_1000 < -1000 {
         warn!("Arcsine below allowed domain!");
@@ -30,11 +46,11 @@ pub fn arc_sine_of_thousandths(proportion_out_of_1000: i32, arcsine_array: [i16;
         return 90;
     } else {
         // This is the code that is meant to run.
-        return arcsine_array[(proportion_out_of_1000 + 1000) as usize];
+        return self.arc_cosine_array_by_thousandths[(proportion_out_of_1000 + 1000) as usize];
     }
 }
 
-pub fn arc_cosine_of_thousandths(proportion_out_of_1000: i32, arccosine_array: [i16; 2001]) -> i16 {
+pub fn arc_cosine_of_thousandths(&self, proportion_out_of_1000: i32) -> i16 {
     // The first two conditions are error conditions.
     if proportion_out_of_1000 > 1000 {
         warn!("Arccosine above allowed domain!");
@@ -44,15 +60,12 @@ pub fn arc_cosine_of_thousandths(proportion_out_of_1000: i32, arccosine_array: [
         return 180;
     } else {
         // This is the code that is meant to run.
-        return arccosine_array[(proportion_out_of_1000 + 1000) as usize];
+        return self.arc_cosine_array_by_thousandths[(proportion_out_of_1000 + 1000) as usize];
     }
 }
 
-pub fn arc_tangent_of_hundreths(
-    proportion_out_of_100: i32,
-    arc_tan_by_ones: [i16; 201],
-    arc_tan_by_tenths: [i16; 201],
-    arc_tan_by_hundreths: [i16; 201]
+pub fn arc_tangent_of_hundreths( &self,
+    proportion_out_of_100: i32
 ) -> i16 {
     if proportion_out_of_100 < -11458 {
         return -90;
@@ -63,21 +76,24 @@ pub fn arc_tangent_of_hundreths(
     } else if proportion_out_of_100 > 3818 {
         return 89;
     } else if proportion_out_of_100 < -1000 || proportion_out_of_100 > 1000 {
-        return arc_tan_by_ones[(proportion_out_of_100 / 100 + 100) as usize];
+        return self.arc_tan_by_ones[(proportion_out_of_100 / 100 + 100) as usize];
     } else if proportion_out_of_100 < -100 || proportion_out_of_100 > 100 {
         if proportion_out_of_100 % 10 < 5 {
-            return arc_tan_by_tenths[(proportion_out_of_100 / 10 + 100) as usize];
+            return self.arc_tan_by_tenths[(proportion_out_of_100 / 10 + 100) as usize];
         } else {
-            return arc_tan_by_tenths[(proportion_out_of_100 / 10 + 1 + 100) as usize];
+            return self.arc_tan_by_tenths[(proportion_out_of_100 / 10 + 1 + 100) as usize];
         }
     } else {
         if proportion_out_of_100 % 100 < 50 {
-            return arc_tan_by_hundreths[(proportion_out_of_100 + 100) as usize];
+            return self.arc_tan_by_hundreths[(proportion_out_of_100 + 100) as usize];
         } else {
-            return arc_tan_by_hundreths[(proportion_out_of_100 + 1 + 100) as usize];
+            return self.arc_tan_by_hundreths[(proportion_out_of_100 + 1 + 100) as usize];
         }
     }
 }
+
+}
+
 
 // This takes any angle and normalizes it to 0 to 359.
 fn normalize_angle(argument_angle: i16) -> i16 {
@@ -95,26 +111,12 @@ fn normalize_angle(argument_angle: i16) -> i16 {
     return normal_angle;
 }
 
-/* These arrays hold precaulcated results for trig functions. This guaranteeds deterinism
-across different implementations of floating point arithmetic */
-#[derive(Resource)]
-pub struct TrigArrays {
-    pub sine_array: [i32; 360],
-    pub cosine_array: [i32; 360],
-    pub tangent_array: [i32; 360],
-    pub arc_sine_array_by_thousandths: [i16; 2001],
-    pub arc_cosine_array_by_thousandths: [i16; 2001],
-    pub arc_tan_by_ones: [i16; 201],
-    pub arc_tan_by_tenths: [i16; 201],
-    pub arc_tan_by_hundreths: [i16; 201],
-}
-
 /* This sets up the basic trig arrays to allow the functions to work.
 These arrays have to be passed to the functions because they are a resource
 in the Bevy app, but the functions are not systems. */
-impl Default for TrigArrays {
+impl Default for DeterministicTrig {
     fn default() -> Self {
-        return TrigArrays {
+        return DeterministicTrig {
             sine_array: [
                 0, 17, 35, 52, 70, 87, 105, 122, 139, 156, 174, 191, 208, 225, 242, 259, 276, 292,
                 309, 326, 342, 358, 375, 391, 407, 423, 438, 454, 469, 485, 500, 515, 530, 545,

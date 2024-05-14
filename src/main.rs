@@ -33,7 +33,7 @@ fn main() {
         )
         .init_resource::<graphical_world::texture_loader::TextureAtlasHandles>()
         .add_systems(Startup, graphical_world::texture_loader::texture_loader)
-        .init_resource::<utility_functions::deterministic_trig::TrigArrays>()
+        .init_resource::<utility_functions::DeterministicTrig>()
         .add_systems(Startup, test_code::test_deterministic_trig::test_trig_arrays)
         .init_resource::<graphical_world::OrganismsToUnboundFromGraphicalPartner>()
         .init_resource::<graphical_world::OrganismsThatNeedGraphicalPartner>()
