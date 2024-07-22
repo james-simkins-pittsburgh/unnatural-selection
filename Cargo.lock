@@ -1545,6 +1545,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "deterministic-trigonometry"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "36e46db0ca9dccb7930d4b3ae720d6358fed8a9ded1147f6c282b721d8e48f12"
+
+[[package]]
 name = "dispatch"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3355,6 +3361,7 @@ dependencies = [
  "bevy",
  "bevy_embedded_assets",
  "bevy_framepace",
+ "deterministic-trigonometry",
  "rand",
  "rand_chacha",
 ]
