@@ -11,8 +11,8 @@ pub struct GameSettings {
 impl Default for GameSettings {
     fn default() -> Self {
         GameSettings {
-            map_width: 10000,
-            map_depth: 19000,
+            map_width: 100000,
+            map_depth: 190000,
             current_intensity: 100,
         }
     }

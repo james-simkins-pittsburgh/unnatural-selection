@@ -1,5 +1,8 @@
 use bevy::prelude::*;
 
+pub mod current_simulation;
+pub mod simulation_stepper;
+
 #[derive(Bundle, Default)]
 pub struct GameworldBundle {
     pub all_biosphere_information: AllBiosphereInformation,
@@ -50,6 +53,7 @@ pub enum AnimationType {
     Budding,
 
 }
+
 // This contains all the information about currents.
 #[derive(Component, Default)]
 pub struct AllCurrentInformation {
@@ -71,6 +75,8 @@ pub struct CurrentInformation {
     pub radius: i32,
     // In ticks from start
     pub expiration_time: i32,
+    // Is the current in the background?
+    pub background: bool,
 }
 
 // This contains all the information about the map.
@@ -86,7 +92,7 @@ measured in 10 game unit increments. */
 pub struct AllSpeciesInformation {
     /* Information on all species is stored in this array. The first index is player number and the second
     index is species number */
-    pub species_array: [[SingleSpeciesInformation; 6]; 8],
+    pub species_array: [[SingleSpeciesInformation; 8]; 16],
 }
 
 #[derive(Copy, Clone, PartialEq, Default)]

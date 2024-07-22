@@ -51,13 +51,13 @@ pub fn update_graphical_world(
                 ].1.layout.clone();
             // This updates the texture atlas index.
             graphical_entity.2.index = z_and_index_and_texture_number.1;
-            // This updayes the texture number.
+            // This updates the texture number.
             graphical_entity.0.texture_number = z_and_index_and_texture_number.2;
             // This says that the graphical entity has been initiated.
             graphical_entity.0.entity_initiated = true;
         }
 
-        // This updates the tranform of the entity.
+        // This updates the transform of the entity.
         graphical_entity.1.translation = Vec3 {
             x: (
                 biosphere.organism_information_vec

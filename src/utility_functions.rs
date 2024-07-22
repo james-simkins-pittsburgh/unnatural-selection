@@ -4,6 +4,7 @@ use deterministic_trigonometry::DTrig;
 // This module provides a cheaper alternative to using the random number generator every time.
 pub mod cheap_random;
 
+// This resource holds the struct for deterministic trigonometry.
 #[derive(Resource)]
 pub struct DeterministicTrig {
     pub d_trig: DTrig,

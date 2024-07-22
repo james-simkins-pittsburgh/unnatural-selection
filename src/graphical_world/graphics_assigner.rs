@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 /* This module contains the systems that assign simulation organisms/viruses to graphical 
 entities when they become visible, removes assignments when simulations become invisible, 
-and created more graphical entities when they are invisible.*/
+and creates more graphical entities when needed*/
 
 pub fn unassign_graphical_entities(
     mut need_unassigned_struct: ResMut<crate::graphical_world::OrganismsToUnboundFromGraphicalPartner>,
@@ -20,7 +20,7 @@ pub fn unassign_graphical_entities(
             break;
         }
 
-        /* Checks each item in the unbinding vec to see if it includes the organism corresponsing to 
+        /* Checks each item in the unbinding vec to see if it includes the organism corresponding to 
         this particular graphical entity. */
         for index in 0..need_unassigned_struct.organism_to_unbound_from_graphical_partner.len() {
             // Checks to see if the corresponding organism matches the item in the vec.
@@ -43,7 +43,7 @@ pub fn unassign_graphical_entities(
                 need_unassigned_struct.organism_to_unbound_from_graphical_partner.swap_remove(
                     index
                 );
-                // Breaks out of the for loop since unassignment has already occured.
+                // Breaks out of the for loop since unassignment has already occurred.
                 break;
             }
         }
