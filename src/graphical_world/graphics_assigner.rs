@@ -26,10 +26,10 @@ pub fn unassign_graphical_entities(
             // Checks to see if the corresponding organism matches the item in the vec.
             if
                 need_unassigned_struct.organism_to_unbound_from_graphical_partner[index] ==
-                graphical_entity.0.corresponsing_organism_number
+                graphical_entity.0.corresponding_organism_number
             {
                 // Sets the corresponding organism number to 0.
-                graphical_entity.0.corresponsing_organism_number = 0;
+                graphical_entity.0.corresponding_organism_number = 0;
                 // Sets the unassigned marker component.
                 commands
                     .entity(graphical_entity.1)
@@ -93,7 +93,7 @@ pub fn assign_graphical_entities(
         }
 
         // This assigns the first simulation organism on the need assignment vec to a graphical entity.
-        graphical_entity.0.corresponsing_organism_number =
+        graphical_entity.0.corresponding_organism_number =
             need_assignment_struct.organism_that_need_graphical_partner[0];
         // This removes the unassigned and adds the assigned component
         commands
@@ -102,7 +102,7 @@ pub fn assign_graphical_entities(
             .insert(crate::graphical_world::Assigned);
         // This removes that organism for the vec now that it has been assigned.
         need_assignment_struct.organism_that_need_graphical_partner.swap_remove(0);
-        // This subtracts one from the count of graphical entities that are unbounbd.
+        // This subtracts one from the count of graphical entities that are unbound.
         number_unbound.number_unbound = number_unbound.number_unbound - 1;
     }
 }

@@ -2,9 +2,9 @@ use bevy::prelude::*;
 use deterministic_trigonometry;
 
 pub fn step_simulation(
-    mut deterministic_trig: Res<crate::utility_functions::DeterministicTrig>
-) {
+    deterministic_trig: Res<crate::utility_functions::DeterministicTrig>,
+    mut gameworld: Query<(&mut crate::simulation::AllBiosphereInformation, &mut crate::simulation::AllCurrentInformation, &mut crate::simulation::AllMapInformation, &mut crate::simulation::AllSpeciesInformation)>
 
-    let sine_a = deterministic_trig.d_trig.sine((500,1000));
+) {
 
 }

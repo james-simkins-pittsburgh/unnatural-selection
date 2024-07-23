@@ -23,11 +23,11 @@ pub fn update_graphical_world(
         let z_and_index_and_texture_number =
             crate::graphical_world::z_and_index_and_texture_number_calculator::calculate_z_and_index_and_texture_number(
                 biosphere.organism_information_vec
-                    [graphical_entity.0.corresponsing_organism_number].main_animation_type,
+                    [graphical_entity.0.corresponding_organism_number].main_animation_type,
                 biosphere.organism_information_vec
-                    [graphical_entity.0.corresponsing_organism_number].species_type,
+                    [graphical_entity.0.corresponding_organism_number].species_type,
                 biosphere.organism_information_vec
-                    [graphical_entity.0.corresponsing_organism_number].background
+                    [graphical_entity.0.corresponding_organism_number].background
             );
 
         // This updates the index and the texture / texture layout (if needed).
@@ -61,11 +61,11 @@ pub fn update_graphical_world(
         graphical_entity.1.translation = Vec3 {
             x: (
                 biosphere.organism_information_vec
-                    [graphical_entity.0.corresponsing_organism_number].x_location as f32
+                    [graphical_entity.0.corresponding_organism_number].x_location as f32
             ) / 50.0,
             y: (
                 biosphere.organism_information_vec
-                    [graphical_entity.0.corresponsing_organism_number].y_location as f32
+                    [graphical_entity.0.corresponding_organism_number].y_location as f32
             ) / 50.0,
             z: z_and_index_and_texture_number.0,
         };
