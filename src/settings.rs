@@ -3,9 +3,9 @@ use bevy::prelude::*;
 // This resource holds the game settings.
 #[derive(Resource)]
 pub struct GameSettings {
-    map_width: usize,
-    map_depth: usize,
-    current_intensity: i32,
+    pub map_width: usize,
+    pub map_depth: usize,
+    pub current_intensity: i32,
 }
 
 impl Default for GameSettings {

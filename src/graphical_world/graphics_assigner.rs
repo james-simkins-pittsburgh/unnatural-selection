@@ -66,10 +66,13 @@ pub fn create_graphical_entities(
             commands.spawn((
                 crate::graphical_world::MainGraphicsOfOrganism { ..default() },
                 crate::graphical_world::Unassigned,
-                SpriteSheetBundle {
+                SpriteBundle {
                     visibility: Visibility::Hidden,
                     ..default()
                 },
+                TextureAtlas {
+                    ..default()
+                }
             ));
         }
         number_unbound.number_unbound =

@@ -11,7 +11,7 @@ pub struct OrganismsThatNeedGraphicalPartner {
     pub organism_that_need_graphical_partner: Vec<usize>,
 }
 
-// When an organism that was in the camera area moves out of camera or is destroyes it is added to this vec.
+// When an organism that was in the camera area moves out of camera or is destroyed it is added to this vec.
 #[derive(Resource, Default)]
 pub struct OrganismsToUnboundFromGraphicalPartner {
     pub organism_to_unbound_from_graphical_partner: Vec<usize>,
