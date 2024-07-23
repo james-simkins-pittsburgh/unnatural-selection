@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
-pub mod current_simulation;
 pub mod simulation_stepper;
+pub mod current_simulation;
+pub mod biosphere_simulation;
 
 #[derive(Bundle, Default)]
 pub struct GameworldBundle {

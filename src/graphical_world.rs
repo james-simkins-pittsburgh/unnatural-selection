@@ -35,8 +35,8 @@ pub struct MainGraphicsOfOrganism {
     pub cell_wall: bool,
     pub flagella_1: bool,
     pub flagella_2: bool,
-    pub cillia_1: bool,
-    pub cillia_2: bool,
+    pub cilia_1: bool,
+    pub cilia_2: bool,
 }
 
 // I copied the sprite sheet bundle because I wanted to be able to query it.

@@ -1,9 +1,21 @@
 use bevy::prelude::*;
 
+// This code runs one step of the simulation.
 pub fn step_simulation(
-    _deterministic_trig: Res<crate::utility_functions::DeterministicTrig>,
-    mut _gameworld: Query<(&mut crate::simulation::AllBiosphereInformation, &mut crate::simulation::AllCurrentInformation, &mut crate::simulation::AllMapInformation, &mut crate::simulation::AllSpeciesInformation)>
-
+    deterministic_trig: Res<crate::utility_functions::DeterministicTrig>,
+    mut gameworld: Query<
+        (
+            &mut crate::simulation::AllBiosphereInformation,
+            &mut crate::simulation::AllCurrentInformation,
+            &crate::simulation::AllMapInformation,
+            &crate::simulation::AllSpeciesInformation,
+        )
+    >
 ) {
+    for (mut biosphere, mut current, map_info, species_info) in &mut gameworld {
 
+
+
+        
+    }
 }
