@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 // This code runs one step of the simulation.
 pub fn step_simulation(
-    deterministic_trig: Res<crate::utility_functions::DeterministicTrig>,
+    deterministic_trig: Res<crate::utility_functions::deterministic_trigonometry::DeterministicTrig>,
     mut gameworld: Query<
         (
             &mut crate::simulation::AllBiosphereInformation,

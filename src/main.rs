@@ -28,7 +28,7 @@ fn main() {
         )
         .init_resource::<graphical_world::texture_loader::TextureAtlasHandles>()
         .add_systems(Startup, graphical_world::texture_loader::texture_loader)
-        .init_resource::<utility_functions::DeterministicTrig>()
+        .init_resource::<utility_functions::deterministic_trigonometry::DeterministicTrig>()
         .init_resource::<settings::GameSettings>()
         .init_resource::<graphical_world::OrganismsToUnboundFromGraphicalPartner>()
         .init_resource::<graphical_world::OrganismsThatNeedGraphicalPartner>()

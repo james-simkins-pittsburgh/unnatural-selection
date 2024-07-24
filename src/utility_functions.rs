@@ -1,17 +1,5 @@
-use bevy::prelude::*;
-use deterministic_trigonometry::DTrig;
-
 // This module provides a cheaper alternative to using the random number generator every time.
 pub mod cheap_random;
 
-// This resource holds the struct for deterministic trigonometry.
-#[derive(Resource)]
-pub struct DeterministicTrig {
-    pub d_trig: DTrig,
-}
-
-impl Default for DeterministicTrig {
-    fn default() -> Self {
-        DeterministicTrig { d_trig: DTrig::initialize() }
-    }
-}
+// This module olds the struct for the deterministic trigonometry resource.
+pub mod deterministic_trigonometry;
