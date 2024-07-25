@@ -1,4 +1,7 @@
 use bevy::prelude::*;
+use crate::simulation::current_simulation::simulate_currents;
+
+use super::biosphere_simulation::simulate_biosphere;
 
 // This code runs one step of the simulation.
 pub fn step_simulation(
@@ -7,15 +10,40 @@ pub fn step_simulation(
         (
             &mut crate::simulation::AllBiosphereInformation,
             &mut crate::simulation::AllCurrentInformation,
+            &mut crate::simulation::CheapRandomGameworld,
             &crate::simulation::AllMapInformation,
             &crate::simulation::AllSpeciesInformation,
+            &mut crate::simulation::AdministrativeInformation,
         )
     >
 ) {
-    for (mut biosphere, mut current, map_info, species_info) in &mut gameworld {
-
-
-
-        
+    for (
+        mut biosphere,
+        mut current,
+        mut cheap_random,
+        map_info,
+        species_info,
+        mut admin_info,
+    ) in &mut gameworld {
+        // This simulates all current movements for the step of the simulation.
+        simulate_currents(
+            &mut current,
+            &map_info,
+            &admin_info,
+            &mut cheap_random,
+            &deterministic_trig
+        );
+        // This simulates all biosphere activity for the step of the simulation.
+        simulate_biosphere(
+            &mut biosphere,
+            &species_info,
+            &map_info,
+            &current,
+            &admin_info,
+            &mut cheap_random,
+            &deterministic_trig
+        );
+        // This increases the simulation step by 1.
+        admin_info.step_counter = admin_info.step_counter + 1;
     }
 }

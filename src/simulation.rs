@@ -10,6 +10,8 @@ pub struct GameworldBundle {
     pub all_current_information: AllCurrentInformation,
     pub all_map_information: AllMapInformation,
     pub all_species_information: AllSpeciesInformation,
+    pub cheap_random_gameworld: CheapRandomGameworld,
+    pub administrative_information: AdministrativeInformation,
 }
 
 // This contains all of the information about the simulation biosphere.
@@ -45,14 +47,12 @@ pub struct OrganismInformation {
 
 #[derive(Copy, Clone, PartialEq, Default)]
 pub enum AnimationType {
-
-    #[default] None,    
+    #[default] None,
     Attacking,
     Growing,
     Lysing,
     Fission,
     Budding,
-
 }
 
 // This contains all the information about currents.
@@ -189,4 +189,14 @@ pub struct SpeciesCharacteristics {
     pub attack_range: i32,
     // How much does the organism weigh in picograms?
     pub mass: i32,
+}
+
+#[derive(Component, Default)]
+pub struct CheapRandomGameworld {
+    pub random_0_to_359: crate::utility_functions::cheap_random::Random0to359,
+}
+
+#[derive(Component, Default)]
+pub struct AdministrativeInformation{
+    pub step_counter: i64,
 }

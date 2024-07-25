@@ -5,9 +5,10 @@ pub fn create_basic_world(mut commands: Commands) {
 }
 
 pub fn populate_basic_world(
-    mut biosphere_query: Query<&mut crate::simulation::AllBiosphereInformation>
+    mut gameworld_query: Query<(&mut crate::simulation::AllBiosphereInformation, &mut crate::simulation::CheapRandomGameworld)>
 ) {
-    let mut biosphere = biosphere_query.single_mut();
+    let (mut biosphere, mut cheap_random_gameworld) = gameworld_query.single_mut();
+    cheap_random_gameworld.random_0_to_359 = crate::utility_functions::cheap_random::Random0to359::initialize(412);
     biosphere.organism_information_vec = Vec::new();
 
     let mut x_location = 0;
