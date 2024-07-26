@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use crate::simulation::current_simulation::simulate_currents;
-
 use super::biosphere_simulation::simulate_biosphere;
 
 // This code runs one step of the simulation.
@@ -41,7 +40,8 @@ pub fn step_simulation(
             &current,
             &admin_info,
             &mut cheap_random,
-            &deterministic_trig
+            &deterministic_trig,
+            &game_settings,
         );
         // This increases the simulation tick counter by 1.
         admin_info.tick_counter = admin_info.tick_counter + 1;

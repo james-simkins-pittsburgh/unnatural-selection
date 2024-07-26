@@ -14,7 +14,7 @@ impl Default for GameSettings {
         GameSettings {
             map_length: 2000000,
             map_height: 1000000,
-            current_intensity: 100,
+            current_intensity: 1,
             number_of_currents: 2,
         }
     }

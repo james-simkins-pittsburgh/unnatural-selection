@@ -26,6 +26,8 @@ pub struct OrganismInformation {
     pub in_use: bool,
     pub x_location: i32,
     pub y_location: i32,
+    pub x_velocity:i32,
+    pub y_velocity:i32,
     pub rotation: i32,
     pub health: i32,
     pub energy: i32,

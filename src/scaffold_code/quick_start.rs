@@ -103,6 +103,8 @@ pub fn populate_basic_world(
             in_use: true,
             x_location: x_location,
             y_location: y_location,
+            x_velocity: 0,
+            y_velocity: 0,
             rotation: 0,
             health: 100,
             energy: 100,
