@@ -12,10 +12,10 @@ pub struct GameSettings {
 impl Default for GameSettings {
     fn default() -> Self {
         GameSettings {
-            map_length: 2000000,
-            map_height: 1000000,
-            current_intensity: 1,
-            number_of_currents: 2,
+            map_length: 100000,
+            map_height: 100000,
+            current_intensity: 2,
+            number_of_currents: 4,
         }
     }
 }

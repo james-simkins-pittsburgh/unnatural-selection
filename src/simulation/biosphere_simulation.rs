@@ -15,8 +15,8 @@ pub fn simulate_biosphere(
     all_species_information: &AllSpeciesInformation,
     all_map_information: &AllMapInformation,
     all_current_information: &AllCurrentInformation,
-    admin_information: &AdministrativeInformation,
-    mut cheap_random: &mut CheapRandomGameworld,
+    _admin_information: &AdministrativeInformation,
+    mut _cheap_random: &mut CheapRandomGameworld,
     d_trig: &DeterministicTrig,
     game_settings: &GameSettings
 ) {

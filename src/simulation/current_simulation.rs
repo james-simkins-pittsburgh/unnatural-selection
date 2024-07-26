@@ -48,8 +48,8 @@ pub fn simulate_currents(
                         17,
                         intensity: game_settings.current_intensity *
                         (cheap_random.random_0_to_359.next_random() / 36 + 1),
-                        radius: 250000,
-                        expiration_time: admin_info.tick_counter + 300,
+                        radius: 25000,
+                        expiration_time: admin_info.tick_counter + 30,
                         background: false,
                     }
                 )
@@ -62,7 +62,7 @@ pub fn simulate_currents(
                 (game_settings.map_length / 360),
                 angle_in_radians_times_1000: cheap_random.random_0_to_359.next_random() * 17,
                 intensity: game_settings.current_intensity *
-                (cheap_random.random_0_to_359.next_random() / 36 + 1),
+                (cheap_random.random_0_to_359.next_random() / 180 + 1),
                 radius: 250000,
                 expiration_time: admin_info.tick_counter + 300,
                 background: false,
