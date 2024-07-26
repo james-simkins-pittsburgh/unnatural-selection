@@ -6,6 +6,7 @@ use super::biosphere_simulation::simulate_biosphere;
 // This code runs one step of the simulation.
 pub fn step_simulation(
     deterministic_trig: Res<crate::utility_functions::deterministic_trigonometry::DeterministicTrig>,
+    game_settings: Res<crate::settings::GameSettings>,
     mut gameworld: Query<
         (
             &mut crate::simulation::AllBiosphereInformation,
@@ -28,10 +29,9 @@ pub fn step_simulation(
         // This simulates all current movements for the step of the simulation.
         simulate_currents(
             &mut current,
-            &map_info,
             &admin_info,
             &mut cheap_random,
-            &deterministic_trig
+            &game_settings,
         );
         // This simulates all biosphere activity for the step of the simulation.
         simulate_biosphere(
@@ -43,7 +43,7 @@ pub fn step_simulation(
             &mut cheap_random,
             &deterministic_trig
         );
-        // This increases the simulation step by 1.
-        admin_info.step_counter = admin_info.step_counter + 1;
+        // This increases the simulation tick counter by 1.
+        admin_info.tick_counter = admin_info.tick_counter + 1;
     }
 }

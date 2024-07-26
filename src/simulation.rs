@@ -75,7 +75,7 @@ pub struct CurrentInformation {
     // In game units
     pub radius: i32,
     // In ticks from start
-    pub expiration_time: i32,
+    pub expiration_time: i64,
     // Is the current in the background?
     pub background: bool,
 }
@@ -198,5 +198,5 @@ pub struct CheapRandomGameworld {
 
 #[derive(Component, Default)]
 pub struct AdministrativeInformation{
-    pub step_counter: i64,
+    pub tick_counter: i64,
 }
