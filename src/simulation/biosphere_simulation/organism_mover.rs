@@ -1,5 +1,3 @@
-use bevy::log::warn;
-
 use crate::settings::GameSettings;
 use crate::simulation::AllBiosphereInformation;
 use crate::simulation::AllSpeciesInformation;
@@ -17,6 +15,9 @@ pub fn move_organism(
     game_settings: &GameSettings
 ) {
     if all_biosphere_information.organism_information_vec[organism_number].in_use {
+        
+        // Calculates acceleration from the currents.
+        
         for current_number in 0..all_current_information.current_information_vec.len() {
 
             if
@@ -59,6 +60,7 @@ pub fn move_organism(
             }
         }
 
+        // Moves the organism unless this would put it outside of the world.
         if
             all_biosphere_information.organism_information_vec[organism_number].x_location +
                 all_biosphere_information.organism_information_vec[organism_number].x_velocity <=
