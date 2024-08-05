@@ -125,6 +125,7 @@ pub fn populate_basic_world(
             colony_number: 0,
             colony_attached_entities: Vec::new(),
             attached_to_host: false,
+            part_of_blob: false,
         });
     }
 }

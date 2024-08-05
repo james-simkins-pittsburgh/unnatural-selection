@@ -19,6 +19,9 @@ pub struct GameworldBundle {
 #[derive(Component, Default)]
 pub struct AllBiosphereInformation {
     pub organism_information_vec: Vec<OrganismInformation>,
+    pub collision_detection_grid: Vec<Vec<Vec<OrganismPositionRecord>>>,
+    pub blob_list: Vec<BlobRecord>,
+    pub colony_list: Vec<Vec<usize>>,
 }
 
 // This contains all the data about an individual organism.
@@ -32,6 +35,7 @@ pub struct OrganismInformation {
     pub rotation: i32,
     pub health: i32,
     pub energy: i32,
+    pub part_of_blob: bool,
     pub blob_number: usize,
     pub blob_attached_entities: Vec <usize>,
     pub colony_number: usize,
@@ -60,6 +64,31 @@ pub enum AnimationType {
     Fission,
     Budding,
 }
+
+#[derive(Copy, Clone, PartialEq, Default)] 
+
+pub struct OrganismPositionRecord {
+
+    center_x: i32,
+    center_y: i32,
+    radius: i32,
+    organism_number: usize,
+    blob_number: usize,
+
+}
+
+
+#[derive(Clone, PartialEq, Default)] 
+
+pub struct BlobRecord {
+
+    blob_members: Vec<usize>,
+    blob_x_velocity: i32,
+    blob_y_velocity: i32,
+    blob_mass: i32,
+
+}
+
 
 // This contains all the information about currents.
 #[derive(Component, Default)]
