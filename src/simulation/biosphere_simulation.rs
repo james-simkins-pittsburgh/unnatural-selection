@@ -10,6 +10,9 @@ use crate::utility_functions::deterministic_trigonometry::DeterministicTrig;
 // This module moves the organisms.
 pub mod organism_mover;
 
+// This detects collisions of organisms.
+pub mod collision_detector;
+
 pub fn simulate_biosphere(
     mut all_biosphere_information: &mut AllBiosphereInformation,
     all_species_information: &AllSpeciesInformation,

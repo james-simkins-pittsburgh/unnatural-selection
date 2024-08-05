@@ -23,7 +23,7 @@ pub fn update_graphical_world(
         let z_and_index_and_texture_number =
             crate::graphical_world::z_and_index_and_texture_number_calculator::calculate_z_and_index_and_texture_number(
                 biosphere.organism_information_vec
-                    [graphical_entity.0.corresponding_organism_number].main_animation_type,
+                    [graphical_entity.0.corresponding_organism_number].animation_type,
                 biosphere.organism_information_vec
                     [graphical_entity.0.corresponding_organism_number].species_type,
                 biosphere.organism_information_vec

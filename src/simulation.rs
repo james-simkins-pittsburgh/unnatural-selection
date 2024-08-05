@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+pub mod simulation_starter;
 pub mod simulation_stepper;
 pub mod current_simulation;
 pub mod biosphere_simulation;
@@ -21,7 +22,7 @@ pub struct AllBiosphereInformation {
 }
 
 // This contains all the data about an individual organism.
-#[derive(Copy, Clone, PartialEq, Default)]
+#[derive(Clone, PartialEq, Default)]
 pub struct OrganismInformation {
     pub in_use: bool,
     pub x_location: i32,
@@ -31,19 +32,22 @@ pub struct OrganismInformation {
     pub rotation: i32,
     pub health: i32,
     pub energy: i32,
+    pub blob_number: usize,
+    pub blob_attached_entities: Vec <usize>,
+    pub colony_number: usize,
+    pub colony_attached_entities: Vec <usize>,
     pub player_number: i32,
     pub species_number: i32,
-    pub attached: bool,
     pub background: bool,
-    pub no_collision_time_remaining: i32,
-    pub main_animation_type: AnimationType,
     pub species_type: SpeciesType,
     pub moving_on_its_own: bool,
     pub eating: bool,
-    pub eating_target: [usize; 3],
+    pub eating_target: Vec <usize>,
+    pub attached_to_host: bool,
     pub in_host: bool,
-    pub attachment_host: usize,
+    pub viral_host_organism: usize,
     pub inserting: bool,
+    pub animation_type: AnimationType,
     pub animation_counter: usize,
 }
 

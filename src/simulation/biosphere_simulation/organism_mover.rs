@@ -17,9 +17,9 @@ pub fn move_organism(
     if all_biosphere_information.organism_information_vec[organism_number].in_use {
         
         // Calculates acceleration from the currents.
-        
         for current_number in 0..all_current_information.current_information_vec.len() {
 
+            // Check distance from current centers.
             if
                 (i64::from (all_biosphere_information.organism_information_vec[organism_number].x_location) -
                     i64::from (all_current_information.current_information_vec[current_number].center_x)) *
@@ -36,6 +36,8 @@ pub fn move_organism(
                 i64::from (all_current_information.current_information_vec[current_number].radius) *
                     i64::from (all_current_information.current_information_vec[current_number].radius)
             {
+
+                // Applies acceleration from current.
                 all_biosphere_information.organism_information_vec[organism_number].x_velocity =
                     all_biosphere_information.organism_information_vec[organism_number].x_velocity +
                     (game_settings.current_intensity *
@@ -60,7 +62,7 @@ pub fn move_organism(
             }
         }
 
-        // Moves the organism unless this would put it outside of the world.
+        // Moves the organism unless this would move the organism outside of the bounds
         if
             all_biosphere_information.organism_information_vec[organism_number].x_location +
                 all_biosphere_information.organism_information_vec[organism_number].x_velocity <=
