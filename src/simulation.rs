@@ -9,7 +9,6 @@ pub mod biosphere_simulation;
 pub struct GameworldBundle {
     pub all_biosphere_information: AllBiosphereInformation,
     pub all_current_information: AllCurrentInformation,
-    pub all_map_information: AllMapInformation,
     pub all_species_information: AllSpeciesInformation,
     pub cheap_random_gameworld: CheapRandomGameworld,
     pub administrative_information: AdministrativeInformation,
@@ -87,6 +86,8 @@ pub struct BlobRecord {
     pub blob_x_velocity: i32,
     pub blob_y_velocity: i32,
     pub blob_mass: i32,
+    pub center_x: i32,
+    pub center_y: i32,
 
 }
 
@@ -114,14 +115,6 @@ pub struct CurrentInformation {
     pub expiration_time: i64,
     // Is the current in the background?
     pub background: bool,
-}
-
-// This contains all the information about the map.
-#[derive(Component, Default)]
-pub struct AllMapInformation {
-    /* The depth of the water every 10 game units staring from the right side.
-measured in 10 game unit increments. */
-    pub water_depth_in_10_unit_increments: Vec<i32>,
 }
 
 // This is the resource containing all species information

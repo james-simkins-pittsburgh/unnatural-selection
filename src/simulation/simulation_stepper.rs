@@ -11,7 +11,6 @@ pub fn step_simulation(
             &mut crate::simulation::AllBiosphereInformation,
             &mut crate::simulation::AllCurrentInformation,
             &mut crate::simulation::CheapRandomGameworld,
-            &crate::simulation::AllMapInformation,
             &crate::simulation::AllSpeciesInformation,
             &mut crate::simulation::AdministrativeInformation,
         )
@@ -21,7 +20,6 @@ pub fn step_simulation(
         mut biosphere,
         mut current,
         mut cheap_random,
-        map_info,
         species_info,
         mut admin_info,
     ) in &mut gameworld {
@@ -36,7 +34,6 @@ pub fn step_simulation(
         simulate_biosphere(
             &mut biosphere,
             &species_info,
-            &map_info,
             &current,
             &admin_info,
             &mut cheap_random,

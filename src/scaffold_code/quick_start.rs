@@ -49,6 +49,8 @@ pub fn populate_basic_world(
         blob_x_velocity: 0,
         blob_y_velocity: 0,
         blob_mass: 0,
+        center_x: 0,
+        center_y: 0,
     });
 
     for org_num in 1..21 {
@@ -171,6 +173,8 @@ pub fn populate_basic_world(
             blob_x_velocity: 0,
             blob_y_velocity: 0,
             blob_mass: 1,
+            center_x: x_location,
+            center_y: y_location,
         });
     }
 }
