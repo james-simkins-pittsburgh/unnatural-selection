@@ -14,12 +14,45 @@ pub fn populate_basic_world(
     let mut x_location = 0;
     let mut y_location = 0;
 
-    for org_num in 0..20 {
+    biosphere.organism_information_vec.push(crate::simulation::OrganismInformation {
+        in_use: false,
+        x_location: 0,
+        y_location: 0,
+        x_velocity: 0,
+        y_velocity: 0,
+        rotation: 0,
+        health: 0,
+        energy: 0,
+        player_number: 0,
+        species_number: 0,
+        species_type: crate::simulation::SpeciesType::Empty,
+        background: false,
+        animation_type: crate::simulation::AnimationType::None,
+        moving_on_its_own: false,
+        eating: false,
+        eating_target: Vec::new(),
+        in_host: false,
+        inserting: false,
+        viral_host_organism: 0,
+        animation_counter: 0,
+        blob_number: 0,
+        blob_attached_entities: Vec::new(),
+        colony_number: 0,
+        colony_attached_entities: Vec::new(),
+        attached_to_host: false,
+        part_of_multi_org_blob: false,
+    });
+
+    biosphere.blob_vec.push(crate::simulation::BlobRecord {
+        in_use: false,
+        blob_members: Vec::new(),
+        blob_x_velocity: 0,
+        blob_y_velocity: 0,
+        blob_mass: 0,
+    });
+
+    for org_num in 1..21 {
         match org_num {
-            0 => {
-                x_location = -5000;
-                y_location = -15000;
-            }
             1 => {
                 x_location = -5000;
                 y_location = -10000;
@@ -96,6 +129,10 @@ pub fn populate_basic_world(
                 x_location = 5000;
                 y_location = 10000;
             }
+            20 => {
+                x_location = -5000;
+                y_location = -15000;
+            }
             _ => {}
         }
 
@@ -120,12 +157,20 @@ pub fn populate_basic_world(
             inserting: false,
             viral_host_organism: 0,
             animation_counter: 0,
-            blob_number: 0,
+            blob_number: org_num,
             blob_attached_entities: Vec::new(),
             colony_number: 0,
             colony_attached_entities: Vec::new(),
             attached_to_host: false,
-            part_of_blob: false,
+            part_of_multi_org_blob: false,
+        });
+
+        biosphere.blob_vec.push(crate::simulation::BlobRecord {
+            in_use: true,
+            blob_members: vec![org_num],
+            blob_x_velocity: 0,
+            blob_y_velocity: 0,
+            blob_mass: 1,
         });
     }
 }
@@ -135,7 +180,7 @@ pub fn add_to_graphics(
 ) {
     need_partner_list.organism_that_need_graphical_partner = Vec::new();
 
-    for index in 0..20 {
+    for index in 1..21 {
         need_partner_list.organism_that_need_graphical_partner.push(index)
     }
 

@@ -20,8 +20,8 @@ pub struct GameworldBundle {
 pub struct AllBiosphereInformation {
     pub organism_information_vec: Vec<OrganismInformation>,
     pub collision_detection_grid: Vec<Vec<Vec<OrganismPositionRecord>>>,
-    pub blob_list: Vec<BlobRecord>,
-    pub colony_list: Vec<Vec<usize>>,
+    pub blob_vec: Vec<BlobRecord>,
+    pub colony_vec: Vec<Vec<usize>>,
 }
 
 // This contains all the data about an individual organism.
@@ -35,7 +35,7 @@ pub struct OrganismInformation {
     pub rotation: i32,
     pub health: i32,
     pub energy: i32,
-    pub part_of_blob: bool,
+    pub part_of_multi_org_blob: bool,
     pub blob_number: usize,
     pub blob_attached_entities: Vec <usize>,
     pub colony_number: usize,
@@ -69,11 +69,11 @@ pub enum AnimationType {
 
 pub struct OrganismPositionRecord {
 
-    center_x: i32,
-    center_y: i32,
-    radius: i32,
-    organism_number: usize,
-    blob_number: usize,
+    pub center_x: i32,
+    pub center_y: i32,
+    pub radius: i32,
+    pub organism_number: usize,
+    pub blob_number: usize,
 
 }
 
@@ -82,10 +82,11 @@ pub struct OrganismPositionRecord {
 
 pub struct BlobRecord {
 
-    blob_members: Vec<usize>,
-    blob_x_velocity: i32,
-    blob_y_velocity: i32,
-    blob_mass: i32,
+    pub in_use: bool,
+    pub blob_members: Vec<usize>,
+    pub blob_x_velocity: i32,
+    pub blob_y_velocity: i32,
+    pub blob_mass: i32,
 
 }
 
