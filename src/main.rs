@@ -39,6 +39,7 @@ fn main() {
                 scaffold_code::quick_start::create_basic_world,
                 scaffold_code::quick_start::populate_basic_world,
                 scaffold_code::quick_start::add_to_graphics,
+                simulation::simulation_starter::create_simulation,
             ).chain()
         )
         .add_systems(
