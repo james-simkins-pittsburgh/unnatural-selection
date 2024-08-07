@@ -7,13 +7,13 @@ use crate::simulation::CheapRandomGameworld;
 use crate::utility_functions::deterministic_trigonometry::DeterministicTrig;
 
 // This module detects currents and applies the motion to the blob.
-pub mod current_detector;
+pub mod current_applicator;
 
 // This module moves the blobs.
 pub mod blob_mover;
 
 // This detects collisions of organisms.
-pub mod collision_detector;
+pub mod collision_calculator;
 
 pub fn simulate_biosphere(
     mut all_biosphere_information: &mut AllBiosphereInformation,
@@ -25,13 +25,13 @@ pub fn simulate_biosphere(
     game_settings: &GameSettings
 ) {
 
-    for organism_number in 1..all_biosphere_information.organism_information_vec.len() {
+    for blob_number in 1..all_biosphere_information.blob_vec.len() {
 
-        current_detector::detect_current(
+        current_applicator::apply_current(
             &mut all_biosphere_information,
             d_trig,
             &all_current_information,
-            organism_number,
+            blob_number,
         )
 
     }

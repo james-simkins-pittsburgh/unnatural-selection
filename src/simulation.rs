@@ -18,7 +18,8 @@ pub struct GameworldBundle {
 #[derive(Component, Default)]
 pub struct AllBiosphereInformation {
     pub organism_information_vec: Vec<OrganismInformation>,
-    pub collision_detection_grid: Vec<Vec<Vec<OrganismPositionRecord>>>,
+    pub collision_detection_grid: Vec<Vec<Vec<CirclePositionRecord>>>,
+    pub detritus_detection_grid: Vec<Vec<Vec<DetritusPositionRecord>>>,
     pub blob_vec: Vec<BlobRecord>,
     pub colony_vec: Vec<Vec<usize>>,
 }
@@ -29,19 +30,17 @@ pub struct OrganismInformation {
     pub in_use: bool,
     pub x_location: i32,
     pub y_location: i32,
-    pub x_velocity:i32,
-    pub y_velocity:i32,
+    pub mass: i32,
+    // In thousandths of radians.
     pub rotation: i32,
+    pub background: bool,
     pub health: i32,
     pub energy: i32,
     pub part_of_multi_org_blob: bool,
     pub blob_number: usize,
-    pub blob_attached_entities: Vec <usize>,
     pub colony_number: usize,
-    pub colony_attached_entities: Vec <usize>,
     pub player_number: i32,
     pub species_number: i32,
-    pub background: bool,
     pub species_type: SpeciesType,
     pub moving_on_its_own: bool,
     pub eating: bool,
@@ -66,14 +65,31 @@ pub enum AnimationType {
 
 #[derive(Copy, Clone, PartialEq, Default)] 
 
-pub struct OrganismPositionRecord {
+pub struct CirclePositionRecord {
 
     pub center_x: i32,
     pub center_y: i32,
     pub radius: i32,
-    pub organism_number: usize,
-    pub blob_number: usize,
+    pub background: i32,
+    pub circle_entity_type: CircleEntityType,
+    pub identity_number: usize,
 
+}
+
+pub struct DetritusPositionRecord {
+
+    pub center_x: i32,
+    pub center_y: i32,
+    pub active: bool,
+    pub claimed_by: usize,
+}
+
+
+#[derive(Copy, Clone, PartialEq, Default)]
+
+pub enum CircleEntityType {
+    #[default] Organism,
+    Mineral,
 }
 
 
@@ -86,8 +102,9 @@ pub struct BlobRecord {
     pub blob_x_velocity: i32,
     pub blob_y_velocity: i32,
     pub blob_mass: i32,
-    pub center_x: i32,
-    pub center_y: i32,
+    pub center_of_mass_x: i32,
+    pub center_of_mass_y: i32,
+    pub angular_velocity: i32,
 
 }
 

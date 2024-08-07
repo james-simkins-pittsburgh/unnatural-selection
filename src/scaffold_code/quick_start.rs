@@ -18,15 +18,13 @@ pub fn populate_basic_world(
         in_use: false,
         x_location: 0,
         y_location: 0,
-        x_velocity: 0,
-        y_velocity: 0,
         rotation: 0,
         health: 0,
         energy: 0,
+        mass: 1,
         player_number: 0,
         species_number: 0,
         species_type: crate::simulation::SpeciesType::Empty,
-        background: false,
         animation_type: crate::simulation::AnimationType::None,
         moving_on_its_own: false,
         eating: false,
@@ -36,11 +34,10 @@ pub fn populate_basic_world(
         viral_host_organism: 0,
         animation_counter: 0,
         blob_number: 0,
-        blob_attached_entities: Vec::new(),
         colony_number: 0,
-        colony_attached_entities: Vec::new(),
         attached_to_host: false,
         part_of_multi_org_blob: false,
+        background:false,
     });
 
     biosphere.blob_vec.push(crate::simulation::BlobRecord {
@@ -49,8 +46,9 @@ pub fn populate_basic_world(
         blob_x_velocity: 0,
         blob_y_velocity: 0,
         blob_mass: 0,
-        center_x: 0,
-        center_y: 0,
+        center_of_mass_x: 0,
+        center_of_mass_y: 0,
+        angular_velocity: 0,
     });
 
     for org_num in 1..21 {
@@ -142,15 +140,13 @@ pub fn populate_basic_world(
             in_use: true,
             x_location: x_location,
             y_location: y_location,
-            x_velocity: 0,
-            y_velocity: 0,
             rotation: 0,
             health: 100,
             energy: 100,
             player_number: 1,
             species_number: 1,
+            mass: 1,
             species_type: crate::simulation::SpeciesType::Prochlorococcus,
-            background: false,
             animation_type: crate::simulation::AnimationType::None,
             moving_on_its_own: false,
             eating: false,
@@ -160,11 +156,10 @@ pub fn populate_basic_world(
             viral_host_organism: 0,
             animation_counter: 0,
             blob_number: org_num,
-            blob_attached_entities: Vec::new(),
             colony_number: 0,
-            colony_attached_entities: Vec::new(),
             attached_to_host: false,
             part_of_multi_org_blob: false,
+            background: false,
         });
 
         biosphere.blob_vec.push(crate::simulation::BlobRecord {
@@ -173,8 +168,9 @@ pub fn populate_basic_world(
             blob_x_velocity: 0,
             blob_y_velocity: 0,
             blob_mass: 1,
-            center_x: x_location,
-            center_y: y_location,
+            center_of_mass_x: x_location,
+            center_of_mass_y: y_location,
+            angular_velocity: 0,
         });
     }
 }

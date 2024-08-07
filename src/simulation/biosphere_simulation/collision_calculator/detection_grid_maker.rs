@@ -23,11 +23,13 @@ pub fn make_detection_grid(
 
     for height in 0..grid_height {
 
-        all_biosphere_information.collision_detection_grid.push(Vec::new()); 
+        all_biosphere_information.collision_detection_grid.push(Vec::new());
+        all_biosphere_information.detritus_detection_grid.push(Vec::new());  
 
         for _width in 0..grid_width {
 
-            all_biosphere_information.collision_detection_grid [height].push(Vec::new()); 
+            all_biosphere_information.collision_detection_grid [height].push(Vec::new());
+            all_biosphere_information.detritus_detection_grid [height].push(Vec::new()); 
 
         }
     }
