@@ -10,6 +10,7 @@ pub fn simulate_currents(
     game_settings: &GameSettings
 ) {
     // Removes all expired currents.
+    // TO DO: Update with more efficient code using retain() method.
     for index in 0..all_current_info.current_information_vec.len() {
         if
             all_current_info.current_information_vec.len() > 0 &&

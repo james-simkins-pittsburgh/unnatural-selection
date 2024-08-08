@@ -22,6 +22,7 @@ pub fn simulate_biosphere(
     _admin_information: &AdministrativeInformation,
     mut _cheap_random: &mut CheapRandomGameworld,
     d_trig: &DeterministicTrig,
+    game_settings: &GameSettings
 ) {
 
     for blob_number in 1..all_biosphere_information.blob_vec.len() {
@@ -40,6 +41,7 @@ pub fn simulate_biosphere(
             &mut all_biosphere_information,
             d_trig,
             blob_number,
+            game_settings,
         );
     }
 }
