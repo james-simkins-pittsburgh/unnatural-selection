@@ -104,6 +104,7 @@ pub struct BlobRecord {
     pub blob_mass: i32,
     pub center_of_mass_x: i32,
     pub center_of_mass_y: i32,
+    pub blob_moment_of_inertia: i32, 
     pub angular_velocity: i32,
 
 }
