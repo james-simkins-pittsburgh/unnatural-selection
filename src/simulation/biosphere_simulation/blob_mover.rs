@@ -18,11 +18,11 @@ pub fn move_blob(
 ) {
     let detection_result = detect_collision(all_biosphere_information, blob_number);
 
-    for organism_number in 0..all_biosphere_information.blob_vec[blob_number].blob_members.len() {
+    for member_number in 0..all_biosphere_information.blob_vec[blob_number].blob_members.len() {
         // This is the only place in the code allowed to move organism.
-        all_biosphere_information.organism_information_vec[organism_number].x_location +=
+        all_biosphere_information.organism_information_vec[all_biosphere_information.blob_vec[blob_number].blob_members[member_number]].x_location +=
             detection_result.x_move;
-        all_biosphere_information.organism_information_vec[organism_number].x_location +=
+        all_biosphere_information.organism_information_vec[all_biosphere_information.blob_vec[blob_number].blob_members[member_number]].x_location +=
             detection_result.y_move;
     }
 
