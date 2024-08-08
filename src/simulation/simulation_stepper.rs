@@ -38,7 +38,6 @@ pub fn step_simulation(
             &admin_info,
             &mut cheap_random,
             &deterministic_trig,
-            &game_settings,
         );
         // This increases the simulation tick counter by 1.
         admin_info.tick_counter = admin_info.tick_counter + 1;
