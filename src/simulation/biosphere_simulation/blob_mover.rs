@@ -27,10 +27,30 @@ pub fn move_blob(
     {
         let detection_result = detect_collision(all_biosphere_information, blob_number);
 
-        for member_number in 0..all_biosphere_information.blob_vec[blob_number].blob_members.len() {
-            if detection_result.x_move != 0 || detection_result.y_move != 0 {
+        // Rule out immediate collision before doing expensive calculations.
+        if
+            detection_result.x_move != 0 ||
+            detection_result.y_move != 0 ||
+            detection_result.rotation_in_thousandth_radians != 0
+        {
+            // The blob center of mass needs to be moved.
+            all_biosphere_information.blob_vec[blob_number].center_of_mass_x +=
+                detection_result.x_move;
+            all_biosphere_information.blob_vec[blob_number].center_of_mass_y +=
+                detection_result.y_move;
+
+            // Every organism in the blob needs to be moved.
+            for member_number in 0..all_biosphere_information.blob_vec[
+                blob_number
+            ].blob_members.len() {
+                /*  ========================================================================================
+                                  Start the only place in the code allowed to move organisms.
+                    ========================================================================================
+                */
+
                 let organism_number =
                     all_biosphere_information.blob_vec[blob_number].blob_members[member_number];
+
                 // Store previous position so the old record can be deleted from the collision detector.
                 let previous_x = all_biosphere_information.organism_information_vec
                     [organism_number].x_location;
@@ -41,25 +61,43 @@ pub fn move_blob(
                         organism_number
                     ].other_circle_positions.clone();
 
-                // This is the only place in the code allowed to move organisms.
-                all_biosphere_information.organism_information_vec[organism_number].x_location +=
-                    detection_result.x_move;
-                all_biosphere_information.organism_information_vec[organism_number].y_location +=
-                    detection_result.y_move;
-                // TO DO: ADD ROTATION HERE
-
-                if all_biosphere_information.organism_information_vec[organism_number].oblong {
-                    for circle_num in 0..all_biosphere_information.organism_information_vec[
+                // It is simple to move organisms not attached to anything.
+                if
+                    !all_biosphere_information.organism_information_vec
+                        [organism_number].part_of_multi_org_blob
+                {
+                    // Move the organism itself.
+                    all_biosphere_information.organism_information_vec[
                         organism_number
-                    ].other_circle_positions.len() {
-                        all_biosphere_information.organism_information_vec[
-                            organism_number
-                        ].other_circle_positions[circle_num].x += detection_result.x_move;
-                        all_biosphere_information.organism_information_vec[
-                            organism_number
-                        ].other_circle_positions[circle_num].y += detection_result.y_move;
+                    ].x_location += detection_result.x_move;
+                    all_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].y_location += detection_result.y_move;
+                    all_biosphere_information.organism_information_vec[organism_number].rotation +=
+                        detection_result.rotation_in_thousandth_radians;
+
+                    // Move any extra circles for oblong blobs.
+                    if all_biosphere_information.organism_information_vec[organism_number].oblong {
+                        // This is easy if not rotating
+                        if detection_result.rotation_in_thousandth_radians == 0 {
+                            for circle_num in 0..all_biosphere_information.organism_information_vec[
+                                organism_number
+                            ].other_circle_positions.len() {
+                                all_biosphere_information.organism_information_vec[
+                                    organism_number
+                                ].other_circle_positions[circle_num].x += detection_result.x_move;
+                                all_biosphere_information.organism_information_vec[
+                                    organism_number
+                                ].other_circle_positions[circle_num].y += detection_result.y_move;
+                            }
+                        // This requires some trig if it is rotating.
+                        } else {
+                            // TO DO: ADD ROTATION LOGIC FOR HERE FOR OBLONG BLOBS
+                        }
                     }
-                // TO DO: ADD ROTATION HERE
+                // This is much more complicated more multi-organism blobs.
+                } else {
+                    // TO DO: ADD LOGIC FOR MULTI-ORGANISM BLOBS
                 }
 
                 // This updates the collision detector
@@ -71,6 +109,11 @@ pub fn move_blob(
                     organism_number,
                     &game_settings
                 );
+
+                /*  ========================================================================================
+                                  End the only place in the code allowed to move organisms.
+                    ========================================================================================
+                */
             }
         }
 
