@@ -10,35 +10,19 @@ pub fn simulate_currents(
     game_settings: &GameSettings
 ) {
     // Removes all expired currents.
-    // TO DO: Update with more efficient code using retain() method.
-    for index in 0..all_current_info.current_information_vec.len() {
-        if
-            all_current_info.current_information_vec.len() > 0 &&
-            index < all_current_info.current_information_vec.len()
-        {
-            if
-                all_current_info.current_information_vec[index].expiration_time <=
-                    admin_info.tick_counter &&
-                index < all_current_info.current_information_vec.len()
-            {
-                all_current_info.current_information_vec.swap_remove(index);
-                if
-                    all_current_info.current_information_vec.len() == 0 ||
-                    index >= all_current_info.current_information_vec.len()
-                {
-                    break;
-                }
-            }
-        }
-    }
+    all_current_info.current_information_vec.retain(
+        |&current| current.expiration_time > admin_info.tick_counter
+    );
 
-    // Makes new currents.
+    // Makes new currents if there are less currents that the game setting.
     if all_current_info.current_information_vec.len() < (game_settings.number_of_currents as usize) {
+        // If only one current short, 10% chance of adding new current.
         if
             (game_settings.number_of_currents as usize) -
                 all_current_info.current_information_vec.len() == 1
         {
             if cheap_random.random_0_to_359.next_random() < 36 {
+                // Makes a current with random direction and intensity 1 to 10.
                 all_current_info.current_information_vec.push(
                     crate::simulation::CurrentInformation {
                         center_x: (180 - cheap_random.random_0_to_359.next_random()) *
@@ -50,12 +34,15 @@ pub fn simulate_currents(
                         intensity: game_settings.current_intensity *
                         (cheap_random.random_0_to_359.next_random() / 36 + 1),
                         radius: 25000,
-                        expiration_time: admin_info.tick_counter + 30,
+                        expiration_time: admin_info.tick_counter + 300,
                         background: false,
                     }
                 )
             }
+
+            // If more than one currents short, 100% chance of adding new current.
         } else {
+            // Makes a current with random direction and intensity 1 to 10.
             all_current_info.current_information_vec.push(crate::simulation::CurrentInformation {
                 center_x: (180 - cheap_random.random_0_to_359.next_random()) *
                 (game_settings.map_length / 360),
@@ -63,8 +50,8 @@ pub fn simulate_currents(
                 (game_settings.map_length / 360),
                 angle_in_radians_times_1000: cheap_random.random_0_to_359.next_random() * 17,
                 intensity: game_settings.current_intensity *
-                (cheap_random.random_0_to_359.next_random() / 180 + 1),
-                radius: 250000,
+                (cheap_random.random_0_to_359.next_random() / 36 + 1),
+                radius: 25000,
                 expiration_time: admin_info.tick_counter + 300,
                 background: false,
             })

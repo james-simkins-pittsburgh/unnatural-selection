@@ -54,10 +54,10 @@ pub fn move_blob(
                     ].other_circle_positions.len() {
                         all_biosphere_information.organism_information_vec[
                             organism_number
-                        ].other_circle_positions[circle_num].0 += detection_result.x_move;
+                        ].other_circle_positions[circle_num].x += detection_result.x_move;
                         all_biosphere_information.organism_information_vec[
                             organism_number
-                        ].other_circle_positions[circle_num].1 += detection_result.y_move;
+                        ].other_circle_positions[circle_num].y += detection_result.y_move;
                     }
                 // TO DO: ADD ROTATION HERE
                 }

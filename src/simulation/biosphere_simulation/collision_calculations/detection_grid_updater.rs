@@ -1,13 +1,13 @@
 use crate::{
     settings::GameSettings,
-    simulation::{ AllBiosphereInformation, CircleEntityType, CirclePositionRecord },
+    simulation::{ AllBiosphereInformation, CircleEntityType, CirclePositionRecord, OtherCirclePosition },
 };
 
 pub fn update_for_movement(
     all_biosphere_information: &mut AllBiosphereInformation,
     previous_x: i32,
     previous_y: i32,
-    previous_other_circle: &Vec<(i32, i32)>,
+    previous_other_circle: &Vec<OtherCirclePosition>,
     organism_number: usize,
     game_settings: &GameSettings
 ) {
@@ -21,14 +21,14 @@ pub fn update_for_movement(
         ].other_circle_positions.len() {
             if
                 (all_biosphere_information.organism_information_vec
-                    [organism_number].other_circle_positions[index].0 +
+                    [organism_number].other_circle_positions[index].x +
                     game_settings.map_length / 2) /
                     10000 !=
-                    (previous_other_circle[index].0 + game_settings.map_length / 2) / 10000 ||
+                    (previous_other_circle[index].x + game_settings.map_length / 2) / 10000 ||
                 (all_biosphere_information.organism_information_vec
-                    [organism_number].other_circle_positions[index].1 +
+                    [organism_number].other_circle_positions[index].y +
                     game_settings.map_height / 2) /
-                    10000 != (previous_other_circle[index].1 + game_settings.map_height / 2) / 10000
+                    10000 != (previous_other_circle[index].y + game_settings.map_height / 2) / 10000
             {
                 other_circles_different_grid = true;
             }
@@ -61,14 +61,14 @@ pub fn update_for_movement(
         if all_biosphere_information.organism_information_vec[organism_number].oblong {
             for circle in previous_other_circle.iter() {
                 if
-                    (((circle.0 + game_settings.map_length / 2) / 10000) as usize) !=
+                    (((circle.x + game_settings.map_length / 2) / 10000) as usize) !=
                         previous_grid_index_1 ||
-                    (((circle.1 + game_settings.map_height / 2) / 10000) as usize) !=
+                    (((circle.y + game_settings.map_height / 2) / 10000) as usize) !=
                         previous_grid_index_2
                 {
                     all_biosphere_information.collision_detection_grid[
-                        ((circle.0 + game_settings.map_length / 2) / 10000) as usize
-                    ][((circle.1 + game_settings.map_height / 2) / 10000) as usize].retain(
+                        ((circle.x + game_settings.map_length / 2) / 10000) as usize
+                    ][((circle.y + game_settings.map_height / 2) / 10000) as usize].retain(
                         |&index|
                             index.identity_number != organism_number ||
                             index.circle_entity_type != CircleEntityType::Organism
@@ -102,10 +102,10 @@ pub fn update_for_movement(
                 organism_number
             ].other_circle_positions.iter() {
                 all_biosphere_information.collision_detection_grid[
-                    (circle.0 + game_settings.map_length / 2) as usize
-                ][(circle.1 + game_settings.map_height / 2) as usize].push(CirclePositionRecord {
-                    center_x: circle.0,
-                    center_y: circle.1,
+                    (circle.x + game_settings.map_length / 2) as usize
+                ][(circle.y + game_settings.map_height / 2) as usize].push(CirclePositionRecord {
+                    center_x: circle.x,
+                    center_y: circle.y,
                     radius: all_biosphere_information.organism_information_vec
                         [organism_number].radius,
                     background: all_biosphere_information.organism_information_vec

@@ -53,10 +53,20 @@ pub struct OrganismInformation {
     pub animation_counter: usize,
     pub radius: i32,
     pub oblong: bool,
-    pub other_circle_positions: Vec<(i32, i32)>,
+    pub other_circle_positions: Vec<OtherCirclePosition>,
     pub distance_from_center_of_mass: i32,
     // In thousandths of radians.
     pub angle_to_center_of_mass: i32,
+}
+
+
+#[derive(Copy, Clone, PartialEq, Default)] 
+pub struct OtherCirclePosition {
+
+    pub x: i32,
+    pub y: i32,
+    pub distance_from_org_center: i32,
+    pub angle_from_org_center: i32,
 }
 
 #[derive(Copy, Clone, PartialEq, Default)]
