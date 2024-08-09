@@ -80,24 +80,51 @@ pub fn move_blob(
                     if all_biosphere_information.organism_information_vec[organism_number].oblong {
                         // This is easy if not rotating
                         if detection_result.rotation_in_thousandth_radians == 0 {
-                            for circle_num in 0..all_biosphere_information.organism_information_vec[
+                            for circle in all_biosphere_information.organism_information_vec[
+                                organism_number
+                            ].other_circle_positions.iter_mut() {
+                                circle.x += detection_result.x_move;
+                                circle.y += detection_result.y_move;
+                            }
+                            // This requires some trig if it is rotating.
+                        } else {
+                            for circle_number in 0..all_biosphere_information.organism_information_vec[
                                 organism_number
                             ].other_circle_positions.len() {
                                 all_biosphere_information.organism_information_vec[
                                     organism_number
-                                ].other_circle_positions[circle_num].x += detection_result.x_move;
+                                ].other_circle_positions[circle_number].x =
+                                    all_biosphere_information.organism_information_vec
+                                        [organism_number].x_location +
+                                    all_biosphere_information.organism_information_vec
+                                        [organism_number].other_circle_positions
+                                        [circle_number].distance_from_org_center *
+                                        deterministic_trig.d_trig.cosine((
+                                            all_biosphere_information.organism_information_vec
+                                                [organism_number].other_circle_positions
+                                                [circle_number].angle_from_org_center,
+                                            1000,
+                                        )).0;
                                 all_biosphere_information.organism_information_vec[
                                     organism_number
-                                ].other_circle_positions[circle_num].y += detection_result.y_move;
+                                ].other_circle_positions[circle_number].y =
+                                    all_biosphere_information.organism_information_vec
+                                        [organism_number].y_location +
+                                    all_biosphere_information.organism_information_vec
+                                        [organism_number].other_circle_positions
+                                        [circle_number].distance_from_org_center *
+                                        deterministic_trig.d_trig.sine((
+                                            all_biosphere_information.organism_information_vec
+                                                [organism_number].other_circle_positions
+                                                [circle_number].angle_from_org_center,
+                                            1000,
+                                        )).0;
                             }
-                        // This requires some trig if it is rotating.
-                        } else {
-                            // TO DO: ADD ROTATION LOGIC FOR HERE FOR OBLONG BLOBS
                         }
                     }
-                // This is much more complicated more multi-organism blobs.
                 } else {
-                    // TO DO: ADD LOGIC FOR MULTI-ORGANISM BLOBS
+                    // This is much more complicated more multi-organism blobs.
+
                 }
 
                 // This updates the collision detector
