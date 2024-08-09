@@ -38,6 +38,11 @@ pub fn populate_basic_world(
         attached_to_host: false,
         part_of_multi_org_blob: false,
         background:false,
+        radius: 0,
+        oblong: false,
+        other_circle_positions: Vec::new(),
+        distance_from_center_of_mass: 0,
+        angle_to_center_of_mass: 0,
     });
 
     biosphere.blob_vec.push(crate::simulation::BlobRecord {
@@ -161,6 +166,11 @@ pub fn populate_basic_world(
             attached_to_host: false,
             part_of_multi_org_blob: false,
             background: false,
+            radius: 2000,
+            oblong: false,
+            other_circle_positions: Vec::new(),
+            distance_from_center_of_mass: 0,
+            angle_to_center_of_mass: 0,
         });
 
         biosphere.blob_vec.push(crate::simulation::BlobRecord {

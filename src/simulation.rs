@@ -51,6 +51,12 @@ pub struct OrganismInformation {
     pub inserting: bool,
     pub animation_type: AnimationType,
     pub animation_counter: usize,
+    pub radius: i32,
+    pub oblong: bool,
+    pub other_circle_positions: Vec<(i32, i32)>,
+    pub distance_from_center_of_mass: i32,
+    // In thousandths of radians.
+    pub angle_to_center_of_mass: i32,
 }
 
 #[derive(Copy, Clone, PartialEq, Default)]
@@ -70,7 +76,7 @@ pub struct CirclePositionRecord {
     pub center_x: i32,
     pub center_y: i32,
     pub radius: i32,
-    pub background: i32,
+    pub background: bool,
     pub circle_entity_type: CircleEntityType,
     pub identity_number: usize,
 

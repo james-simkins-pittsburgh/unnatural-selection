@@ -9,6 +9,7 @@ pub struct CollisionCheckResult {
     pub collision: bool,
     pub x_move: i32,
     pub y_move: i32,
+    pub rotation_in_thousandth_radians: i32,
     pub involved_blobs: Vec<usize>,
     pub involved_minerals: Vec<usize>,
 }
@@ -35,26 +36,40 @@ pub fn move_blob(
                     [organism_number].x_location;
                 let previous_y = all_biosphere_information.organism_information_vec
                     [organism_number].y_location;
+                let previous_circle_positions =
+                    all_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].other_circle_positions.clone();
 
-                /*
-                
-                            STILL NEED ANGULAR MOVEMENT HERE!!!!
-                
-                 */
-                
                 // This is the only place in the code allowed to move organisms.
                 all_biosphere_information.organism_information_vec[organism_number].x_location +=
                     detection_result.x_move;
                 all_biosphere_information.organism_information_vec[organism_number].y_location +=
                     detection_result.y_move;
+                // TO DO: ADD ROTATION HERE
+
+                if all_biosphere_information.organism_information_vec[organism_number].oblong {
+                    for circle_num in 0..all_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].other_circle_positions.len() {
+                        all_biosphere_information.organism_information_vec[
+                            organism_number
+                        ].other_circle_positions[circle_num].0 += detection_result.x_move;
+                        all_biosphere_information.organism_information_vec[
+                            organism_number
+                        ].other_circle_positions[circle_num].1 += detection_result.y_move;
+                    }
+                // TO DO: ADD ROTATION HERE
+                }
 
                 // This updates the collision detector
                 detection_grid_updater::update_for_movement(
                     all_biosphere_information,
                     previous_x,
                     previous_y,
+                    &previous_circle_positions,
                     organism_number,
-                    game_settings
+                    &game_settings
                 );
             }
         }
