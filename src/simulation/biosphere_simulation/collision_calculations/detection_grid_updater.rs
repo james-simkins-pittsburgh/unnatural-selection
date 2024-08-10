@@ -12,7 +12,6 @@ pub fn update_for_movement(
     game_settings: &GameSettings
 ) {
     // Checks to see if any of the not main circles of the organism are now in a different grid for oblong organisms.
-
     let mut other_circles_different_grid = false;
 
     if all_biosphere_information.organism_information_vec[organism_number].oblong {
@@ -56,8 +55,7 @@ pub fn update_for_movement(
                 index.identity_number != organism_number ||
                 index.circle_entity_type != CircleEntityType::Organism
         );
-        // If it is oblong, check grid(s) the other circles are in.
-
+        // If it is oblong, check to see if other circles are in different grid(s) and erase those record(s) too.
         if all_biosphere_information.organism_information_vec[organism_number].oblong {
             for circle in previous_other_circle.iter() {
                 if
