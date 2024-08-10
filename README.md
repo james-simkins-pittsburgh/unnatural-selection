@@ -1,5 +1,5 @@
 # Unnatural Selection
-A marine microbiology-themed RTS game.
+A marine microbiology-themed RTS game. Copyright James Simkins.
 
 Please note that I am keeping the copyright on the game and its code despite making this repository public. 
 However, if there is a portion of the code that you would like to use for a game that is different 
