@@ -65,6 +65,7 @@ pub struct OtherCirclePosition {
 
     pub x: i32,
     pub y: i32,
+    pub radius: i32,
     pub distance_from_org_center: i32,
     pub angle_from_org_center: i32,
 }
