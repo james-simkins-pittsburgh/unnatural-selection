@@ -1,53 +1,34 @@
-use crate::simulation::{
-    biosphere_simulation::blob_mover::CollisionCheckResult,
-    AllBiosphereInformation,
+use crate::{
+    settings::GameSettings,
+    simulation::{ biosphere_simulation::blob_mover::CollisionCheckResult, AllBiosphereInformation, CircleEntityType },
 };
 
-struct CircleCheckResult {
+struct CircleCheckResults {
     collision: bool,
-    involved_blobs: Vec<usize>,
-    involved_minerals: Vec<usize>,
+    collision_pairs_vec: Vec<(CircleInfo, CircleInfo)>
 }
+struct CircleInfo {
+    x: i32,
+    y: i32,
+    radius: i32,
+    entity_type: CircleEntityType,
+    id_number: usize,
+}
+
+
 
 pub fn detect_collision(
     all_biosphere_information: &AllBiosphereInformation,
-    blob_number: usize
+    blob_number: usize,
+    game_settings: &GameSettings
 ) -> CollisionCheckResult {
-    let mut involved_blobs: Vec<(usize, i32)> = Vec::new();
-    let mut involved_minerals: Vec<(usize, i32)> = Vec::new();
-    let mut percent_translational_motion_before_collision: i32 = 100;
 
     for organism_number in all_biosphere_information.blob_vec[blob_number].blob_members.iter() {
-        let mut circle_check_result = check_circle(
-            all_biosphere_information.organism_information_vec[*organism_number].x_location,
-            all_biosphere_information.organism_information_vec[*organism_number].y_location,
-            all_biosphere_information.organism_information_vec[*organism_number].radius,
-            blob_number,
-            &all_biosphere_information
-        );
-
-        if circle_check_result.collision {
-            // Need to add logic to find percent motion if there is a collision
-
-        }
-
         if all_biosphere_information.organism_information_vec[*organism_number].oblong {
-            for circle in all_biosphere_information.organism_information_vec
-                [*organism_number].other_circle_positions.iter() {
-                circle_check_result = check_circle(
-                    circle.x,
-                    circle.y,
-                    circle.radius,
-                    blob_number,
-                    &all_biosphere_information
-                );
-
-                if circle_check_result.collision {
-                    // Need to add logic to find percent motion if there is a collision
+          
         
-                }
-            }
-            
+        } else {
+          
         }
     }
 
@@ -63,16 +44,12 @@ pub fn detect_collision(
     };
 }
 
-fn check_circle(
-    x: i32,
-    y: i32,
-    radius: i32,
-    blob_number: usize,
-    all_biosphere_information: &AllBiosphereInformation
+// This helper function consults the detection grid to determine if any collisions will occur with the movement.
+fn check_circles(
+    input_circle_vec: Vec <CircleInfo>,
+    all_biosphere_information: &AllBiosphereInformation,
+    game_settings: &GameSettings
 ) -> CircleCheckResult {
-    return CircleCheckResult {
-        collision: false,
-        involved_blobs: vec![],
-        involved_minerals: vec![],
-    };
+
+
 }
