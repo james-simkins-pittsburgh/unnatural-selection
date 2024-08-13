@@ -71,7 +71,7 @@ fn check_circles(
     let original_y_move = y_move;
 
     let mut involved_blobs = vec![blob_number];
-    let mut involved_minerals = vec![];
+    let mut involved_minerals = false;
 
     // Iterate over every collider circle.
     for collider_circle in collider_circles.iter() {
@@ -105,7 +105,7 @@ fn check_two_circles_translational(
     mut x_move: &mut i32,
     mut y_move: &mut i32,
     mut involved_blobs: &mut Vec<usize>,
-    mut involved_minerals: &mut Vec<usize>,
+    mut involved_minerals: &mut bool,
     blob_number: usize,
     collider_circle: &CircleInfo,
     collidee_circle: &CirclePositionRecord
@@ -132,7 +132,6 @@ fn check_two_circles_translational(
                     (collidee_circle.radius + collider_circle.radius) * 1000) /
                     *y_move
             {
-
                 // Left off here
 
                 if
@@ -140,7 +139,17 @@ fn check_two_circles_translational(
                         collider_circle.x -
                         (collidee_circle.radius + collider_circle.radius) == *x_move
                 {
-                    // Logic Here
+                    if
+                        collidee_circle.circle_entity_type == CircleEntityType::Mineral
+                    {
+                        *involved_minerals = true;
+
+                    } else if
+                        collidee_circle.circle_entity_type == CircleEntityType::Organism &&
+                        !involved_blobs.contains(&collidee_circle.identity_number)
+                    {
+                        involved_blobs.push(collidee_circle.identity_number);
+                    }
                 } else if
                     collidee_circle.center_x -
                         collider_circle.x -
