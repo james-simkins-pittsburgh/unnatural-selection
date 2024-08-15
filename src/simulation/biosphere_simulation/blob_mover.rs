@@ -9,9 +9,9 @@ pub struct CollisionCheckResult {
     pub collision: bool,
     pub x_move: i32,
     pub y_move: i32,
-    pub rotation_in_thousandth_radians: i32,
+    pub r_move: i32,
     pub involved_blobs: Vec<usize>,
-    pub involved_minerals: Vec<usize>,
+    pub involved_minerals: bool,
 }
 
 pub fn move_blob(
@@ -32,7 +32,7 @@ pub fn move_blob(
         if
             detection_result.x_move != 0 ||
             detection_result.y_move != 0 ||
-            detection_result.rotation_in_thousandth_radians != 0
+            detection_result.r_move != 0
         {
             // The blob center of mass needs to be moved.
             all_biosphere_information.blob_vec[blob_number].center_of_mass_x +=
@@ -75,12 +75,12 @@ pub fn move_blob(
                         organism_number
                     ].y_location += detection_result.y_move;
                     all_biosphere_information.organism_information_vec[organism_number].rotation +=
-                        detection_result.rotation_in_thousandth_radians;
+                        detection_result.r_move;
 
                     // Move any extra circles for oblong blobs.
                     if all_biosphere_information.organism_information_vec[organism_number].oblong {
                         // This is easy if it is not rotating
-                        if detection_result.rotation_in_thousandth_radians == 0 {
+                        if detection_result.r_move == 0 {
                             for circle in all_biosphere_information.organism_information_vec[
                                 organism_number
                             ].other_circle_positions.iter_mut() {
@@ -96,7 +96,7 @@ pub fn move_blob(
                                 all_biosphere_information.organism_information_vec[
                                     organism_number
                                 ].other_circle_positions[circle_number].angle_from_org_center +=
-                                    detection_result.rotation_in_thousandth_radians;
+                                    detection_result.r_move;
                                 all_biosphere_information.organism_information_vec[
                                     organism_number
                                 ].other_circle_positions[circle_number].x =
@@ -132,7 +132,7 @@ pub fn move_blob(
                     }
                 } else {
                     // Check for the easy case in which no rotation is happening
-                    if detection_result.rotation_in_thousandth_radians == 0 {
+                    if detection_result.r_move == 0 {
                         // Move the organism itself.
                         all_biosphere_information.organism_information_vec[
                             organism_number
@@ -158,10 +158,10 @@ pub fn move_blob(
                         // Move the organism itself
                         all_biosphere_information.organism_information_vec[
                             organism_number
-                        ].rotation += detection_result.rotation_in_thousandth_radians;
+                        ].rotation += detection_result.r_move;
                         all_biosphere_information.organism_information_vec[
                             organism_number
-                        ].angle_to_center_of_mass += detection_result.rotation_in_thousandth_radians;
+                        ].angle_to_center_of_mass += detection_result.r_move;
                         let distance = all_biosphere_information.organism_information_vec
                             [organism_number].distance_from_center_of_mass;
                         let angle = all_biosphere_information.organism_information_vec
@@ -190,7 +190,7 @@ pub fn move_blob(
                                 all_biosphere_information.organism_information_vec[
                                     organism_number
                                 ].other_circle_positions[circle_number].angle_from_org_center +=
-                                    detection_result.rotation_in_thousandth_radians;
+                                    detection_result.r_move;
                                 all_biosphere_information.organism_information_vec[
                                     organism_number
                                 ].other_circle_positions[circle_number].x =

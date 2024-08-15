@@ -8,14 +8,6 @@ use crate::{
     },
 };
 
-struct CollisionCheckResults {
-    collision: bool,
-    x_move: i32,
-    y_move: i32,
-    rotation_in_thousandth_radians: i32,
-    involved_blobs: Vec<usize>,
-    involved_minerals: Vec<usize>,
-}
 struct CircleInfo {
     x: i32,
     y: i32,
@@ -82,6 +74,8 @@ fn check_circles(
             check_two_circles_translational(
                 &mut x_move,
                 &mut y_move,
+                original_x_move,
+                original_y_move,
                 &mut involved_blobs,
                 &mut involved_minerals,
                 blob_number,
@@ -91,29 +85,41 @@ fn check_circles(
         }
     }
 
+    let collision: bool;
+
+    if involved_blobs.len() > 1 || involved_minerals == true {
+        collision = true;
+    } else {
+        collision = false;
+    }
+
     return CollisionCheckResult {
-        collision: todo!(),
-        x_move: todo!(),
-        y_move: todo!(),
-        rotation_in_thousandth_radians: todo!(),
-        involved_blobs: todo!(),
-        involved_minerals: todo!(),
+        collision,
+        x_move,
+        y_move,
+        r_move,
+        involved_blobs,
+        involved_minerals,
     };
 }
 
 fn check_two_circles_translational(
-    mut x_move: &mut i32,
-    mut y_move: &mut i32,
-    mut involved_blobs: &mut Vec<usize>,
-    mut involved_minerals: &mut bool,
+    x_move: &mut i32,
+    y_move: &mut i32,
+    original_x_move: i32,
+    original_y_move: i32,
+    involved_blobs: &mut Vec<usize>,
+    involved_minerals: &mut bool,
     blob_number: usize,
     collider_circle: &CircleInfo,
     collidee_circle: &CirclePositionRecord
 ) {
+    // If the circles are not part of the same blob.
     if
         collidee_circle.identity_number != blob_number ||
         collidee_circle.circle_entity_type != CircleEntityType::Organism
     {
+        // If they're going to collide with the current x and y moves.
         if
             (collidee_circle.center_x - (collider_circle.x + *x_move)) *
                 (collidee_circle.center_x - (collider_circle.x + *x_move)) +
@@ -122,43 +128,118 @@ fn check_two_circles_translational(
             (collidee_circle.radius + collider_circle.radius) *
                 (collidee_circle.radius + collider_circle.radius)
         {
+            /* If x is moving toward the direction of a collision and it is either closer to 
+                a collision in proportion to the x movement amount than y is in proportion to y movement 
+                or y is moving in the wrong direction for a collision. */
             if
-                (collidee_circle.center_x -
-                    collider_circle.x -
+                (collidee_circle.center_x - collider_circle.x).signum() == x_move.signum() &&
+                (((collidee_circle.center_x - collider_circle.x).abs() -
                     (collidee_circle.radius + collider_circle.radius) * 1000) /
-                    *x_move >
-                (collidee_circle.center_y -
-                    collider_circle.y -
-                    (collidee_circle.radius + collider_circle.radius) * 1000) /
-                    *y_move
+                    x_move.abs() <
+                    ((collidee_circle.center_y - collider_circle.y).abs() -
+                        (collidee_circle.radius + collider_circle.radius) * 1000) /
+                        y_move.abs() || collider_circle.y.signum() != y_move.signum())
             {
-                // Left off here
-
                 if
-                    collidee_circle.center_x -
-                        collider_circle.x -
+                    // If the amount it moves before it hits is exactly the current x move.
+                    (collidee_circle.center_x - collider_circle.x).abs() -
                         (collidee_circle.radius + collider_circle.radius) == *x_move
                 {
-                    if
-                        collidee_circle.circle_entity_type == CircleEntityType::Mineral
-                    {
+                    // If the collidee is a mineral
+                    if collidee_circle.circle_entity_type == CircleEntityType::Mineral {
+                        // Then mark minerals involved as true
                         *involved_minerals = true;
 
+                        // If it is an organism
+                    } else if
+                        collidee_circle.circle_entity_type == CircleEntityType::Organism &&
+                        !involved_blobs.contains(&collidee_circle.identity_number)
+                    {
+                        // Then add that blob to the list.
+                        involved_blobs.push(collidee_circle.identity_number);
+                    }
+                } else if
+                    // If the amount is moved before it hits is less than the current x move.
+                    (collidee_circle.center_x - collider_circle.x).abs() -
+                        (collidee_circle.radius + collider_circle.radius) < *x_move
+                {
+                    // That becomes the new x move.
+                    *x_move =
+                        ((collidee_circle.center_x - collider_circle.x).abs() -
+                            (collidee_circle.radius + collider_circle.radius)) *
+                        original_y_move.signum();
+
+                    // The list of involved blobs and minerals is cleared.
+                    *involved_blobs = vec![blob_number];
+                    *involved_minerals = false;
+
+                    // If it is a mineral
+                    if collidee_circle.circle_entity_type == CircleEntityType::Mineral {
+                        // Then mark involved minerals true.
+                        *involved_minerals = true;
+
+                        // Otherwise, the organism number is added to the vec
                     } else if
                         collidee_circle.circle_entity_type == CircleEntityType::Organism &&
                         !involved_blobs.contains(&collidee_circle.identity_number)
                     {
                         involved_blobs.push(collidee_circle.identity_number);
                     }
-                } else if
-                    collidee_circle.center_x -
-                        collider_circle.x -
-                        (collidee_circle.radius + collider_circle.radius) < *x_move
-                {
-                    // Logic Here
 
+                    // The y move is set to be proportional to the x move based on the original moves.
+                    *y_move = (*x_move * original_y_move) / original_x_move;
                 }
+                // Since we know it hits and it doesn't hit first on x, it must be the y that hits first.
             } else {
+                if
+                    // If the amount it moves before it hits is exactly the current y move.
+                    (collidee_circle.center_y - collider_circle.y).abs() -
+                        (collidee_circle.radius + collider_circle.radius) == *y_move
+                {
+                    // If the collidee is a mineral
+                    if collidee_circle.circle_entity_type == CircleEntityType::Mineral {
+                        // Then mark minerals involved as true
+                        *involved_minerals = true;
+
+                        // If it is an organism
+                    } else if
+                        collidee_circle.circle_entity_type == CircleEntityType::Organism &&
+                        !involved_blobs.contains(&collidee_circle.identity_number)
+                    {
+                        // Then add that blob to the list.
+                        involved_blobs.push(collidee_circle.identity_number);
+                    }
+                } else if
+                    // If the amount is moved before it hits is less than the current y move.
+                    (collidee_circle.center_y - collider_circle.y).abs() -
+                        (collidee_circle.radius + collider_circle.radius) < *y_move
+                {
+                    // That becomes the new y move.
+                    *y_move =
+                        ((collidee_circle.center_y - collider_circle.y).abs() -
+                            (collidee_circle.radius + collider_circle.radius)) *
+                        original_y_move.signum();
+
+                    // The list of involved blobs and minerals is cleared.
+                    *involved_blobs = vec![blob_number];
+                    *involved_minerals = false;
+
+                    // If it is a mineral
+                    if collidee_circle.circle_entity_type == CircleEntityType::Mineral {
+                        // Then mark involved minerals true.
+                        *involved_minerals = true;
+
+                        // Otherwise, the organism number is added to the vec
+                    } else if
+                        collidee_circle.circle_entity_type == CircleEntityType::Organism &&
+                        !involved_blobs.contains(&collidee_circle.identity_number)
+                    {
+                        involved_blobs.push(collidee_circle.identity_number);
+                    }
+
+                    // The y move is set to be proportional to the x move based on the original moves.
+                    *x_move = (*y_move * original_x_move) / original_y_move;
+                }
             }
         }
     }
