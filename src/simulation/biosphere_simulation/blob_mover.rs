@@ -26,7 +26,7 @@ pub fn move_blob(
         all_biosphere_information.blob_vec[blob_number].blob_y_velocity != 0 ||
         all_biosphere_information.blob_vec[blob_number].angular_velocity != 0
     {
-        let detection_result = detect_collision(all_biosphere_information, blob_number, game_settings);
+        let detection_result = detect_collision(all_biosphere_information, blob_number, game_settings, deterministic_trig);
 
         // Rule out immediate collision before doing expensive calculations.
         if
