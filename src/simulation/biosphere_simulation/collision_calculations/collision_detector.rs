@@ -6,7 +6,7 @@ use crate::{
         CircleEntityType,
         CirclePositionRecord,
     },
-    utility_functions::deterministic_trigonometry::DeterministicTrig,
+    utility_functions::{ deterministic_trigonometry::DeterministicTrig, integer_math::square_root },
 };
 
 // This stores the circle information for the colliders and collidees.
@@ -109,7 +109,7 @@ fn check_circles(
     } else {
         collision = false;
     }
-    
+
     return CollisionCheckResult {
         collision,
         x_move,
@@ -154,6 +154,118 @@ fn check_two_circles_translational(
                 *involved_blobs = vec![blob_number];
                 *involved_minerals = true;
             }
+
+            // This monstrosity is an application of the quadratic equation to find the x where the circles collide.
+            x_of_collider_at_collision_one = ((-(
+                2 *
+                    (original_y_move as i64) *
+                    (((-original_y_move as i64) * (collider_circle.x as i64)) /
+                        ((original_x_move as i64) * (original_x_move as i64)) +
+                        (collider_circle.y as i64) -
+                        (collidee_circle.center_y as i64)) -
+                2 * (collidee_circle.center_x as i64)
+            ) +
+                square_root(
+                    (2 *
+                        (original_y_move as i64) *
+                        (((-original_y_move as i64) * (collider_circle.x as i64)) /
+                            ((original_x_move as i64) * (original_x_move as i64)) +
+                            (collider_circle.y as i64) -
+                            (collidee_circle.center_y as i64)) -
+                        2 * (collidee_circle.center_x as i64)) *
+                        (2 *
+                            (original_y_move as i64) *
+                            (((-original_y_move as i64) * (collider_circle.x as i64)) /
+                                ((original_x_move as i64) * (original_x_move as i64)) +
+                                (collider_circle.y as i64) -
+                                (collidee_circle.center_y as i64)) -
+                            2 * (collidee_circle.center_x as i64)) -
+                        4 *
+                            (1 +
+                                ((original_y_move as i64) * (original_y_move as i64)) /
+                                    ((original_x_move as i64) * (original_x_move as i64))) *
+                            ((collidee_circle.center_x as i64) * (collidee_circle.center_x as i64) +
+                                (-(
+                                    ((original_y_move as i64) * (collider_circle.x as i64)) /
+                                    (original_x_move as i64)
+                                ) +
+                                    (collider_circle.y as i64) -
+                                    (collidee_circle.center_y as i64)) *
+                                    (-(
+                                        ((original_y_move as i64) * (collider_circle.x as i64)) /
+                                        (original_x_move as i64)
+                                    ) +
+                                        (collider_circle.y as i64) -
+                                        (collidee_circle.center_y as i64)) -
+                                ((collider_circle.radius as i64) +
+                                    (collidee_circle.radius as i64)) *
+                                    ((collider_circle.radius as i64) +
+                                        (collidee_circle.radius as i64)) *
+                                    (((collider_circle.radius as i64) +
+                                        (collidee_circle.radius as i64)) *
+                                        ((collider_circle.radius as i64) +
+                                            (collidee_circle.radius as i64))))
+                )) /
+                (2 *
+                    (1 +
+                        ((original_y_move as i64) * (original_y_move as i64)) /
+                            ((original_x_move as i64) * (original_x_move as i64))))) as i32;
+
+            // This is the second solution to the quadratic.
+            x_of_collider_at_collision_two = ((-(
+                2 *
+                    (original_y_move as i64) *
+                    (((-original_y_move as i64) * (collider_circle.x as i64)) /
+                        ((original_x_move as i64) * (original_x_move as i64)) +
+                        (collider_circle.y as i64) -
+                        (collidee_circle.center_y as i64)) -
+                2 * (collidee_circle.center_x as i64)
+            ) -
+                square_root(
+                    (2 *
+                        (original_y_move as i64) *
+                        (((-original_y_move as i64) * (collider_circle.x as i64)) /
+                            ((original_x_move as i64) * (original_x_move as i64)) +
+                            (collider_circle.y as i64) -
+                            (collidee_circle.center_y as i64)) -
+                        2 * (collidee_circle.center_x as i64)) *
+                        (2 *
+                            (original_y_move as i64) *
+                            (((-original_y_move as i64) * (collider_circle.x as i64)) /
+                                ((original_x_move as i64) * (original_x_move as i64)) +
+                                (collider_circle.y as i64) -
+                                (collidee_circle.center_y as i64)) -
+                            2 * (collidee_circle.center_x as i64)) -
+                        4 *
+                            (1 +
+                                ((original_y_move as i64) * (original_y_move as i64)) /
+                                    ((original_x_move as i64) * (original_x_move as i64))) *
+                            ((collidee_circle.center_x as i64) * (collidee_circle.center_x as i64) +
+                                (-(
+                                    ((original_y_move as i64) * (collider_circle.x as i64)) /
+                                    (original_x_move as i64)
+                                ) +
+                                    (collider_circle.y as i64) -
+                                    (collidee_circle.center_y as i64)) *
+                                    (-(
+                                        ((original_y_move as i64) * (collider_circle.x as i64)) /
+                                        (original_x_move as i64)
+                                    ) +
+                                        (collider_circle.y as i64) -
+                                        (collidee_circle.center_y as i64)) -
+                                ((collider_circle.radius as i64) +
+                                    (collidee_circle.radius as i64)) *
+                                    ((collider_circle.radius as i64) +
+                                        (collidee_circle.radius as i64)) *
+                                    (((collider_circle.radius as i64) +
+                                        (collidee_circle.radius as i64)) *
+                                        ((collider_circle.radius as i64) +
+                                            (collidee_circle.radius as i64))))
+                )) /
+                (2 *
+                    (1 +
+                        ((original_y_move as i64) * (original_y_move as i64)) /
+                            ((original_x_move as i64) * (original_x_move as i64))))) as i32;
         }
     }
 }
