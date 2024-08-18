@@ -156,7 +156,7 @@ fn check_two_circles_translational(
             }
 
             // This monstrosity is an application of the quadratic equation to find the x where the circles collide.
-            x_of_collider_at_collision_one = ((-(
+            let x_of_collider_at_collision_one = ((-(
                 2 *
                     (original_y_move as i64) *
                     (((-original_y_move as i64) * (collider_circle.x as i64)) /
@@ -212,7 +212,7 @@ fn check_two_circles_translational(
                             ((original_x_move as i64) * (original_x_move as i64))))) as i32;
 
             // This is the second solution to the quadratic.
-            x_of_collider_at_collision_two = ((-(
+            let x_of_collider_at_collision_two = ((-(
                 2 *
                     (original_y_move as i64) *
                     (((-original_y_move as i64) * (collider_circle.x as i64)) /
