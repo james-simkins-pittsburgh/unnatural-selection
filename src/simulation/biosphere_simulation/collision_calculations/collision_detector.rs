@@ -154,7 +154,7 @@ fn check_two_circles_translational(
                 (collidee_circle.radius + collider_circle.radius) *
                     (collidee_circle.radius + collider_circle.radius)
             {
-                // Then previously added collisions will no longer happen.
+                // Then previously added collisions with larger x_moves will no longer happen.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
                     *involved_blobs = vec![blob_number, collidee_circle.identity_number];
                     *involved_minerals = false;
@@ -163,8 +163,22 @@ fn check_two_circles_translational(
                     *involved_minerals = true;
                 }
 
+                // Check for the case in which the circles were already collided because of an error.
+                if
+                    (collidee_circle.center_x - collider_circle.x) *
+                        (collidee_circle.center_x - collider_circle.x) +
+                        (collidee_circle.center_y - collider_circle.y) *
+                            (collidee_circle.center_y - collider_circle.y) <
+                    (collidee_circle.radius + collider_circle.radius) *
+                        (collidee_circle.radius + collider_circle.radius)
+                {
+                    // In that case, set x_move and y_move to 0.
+                    *x_move = 0;
+                    *y_move = 0;
+                }
+
                 if *x_move != 0 {
-                    // This monstrosity is an application of the quadratic equation to find the x where the circles collide.
+                    // This monstrosity of an equation is an application of the quadratic equation to find the x where the circles collide.
                     let x_of_collider_at_collision_one = ((-(
                         2 *
                             (original_y_move as i64) *
@@ -285,24 +299,21 @@ fn check_two_circles_translational(
                     // If is x collision 1 is a closer than x collision 2 then set x move to it. Otherwise, set x move to collision 2.
                     if
                         (x_of_collider_at_collision_one - collider_circle.x).abs() <
-                            (x_of_collider_at_collision_two - collider_circle.x).abs() &&
-                        (x_of_collider_at_collision_one - collider_circle.x).signum() ==
-                            original_x_move.signum()
+                        (x_of_collider_at_collision_two - collider_circle.x).abs()
                     {
                         *x_move = x_of_collider_at_collision_one - collider_circle.x;
                     } else {
                         *x_move = x_of_collider_at_collision_two - collider_circle.x;
                     }
 
-                    // Make sure x_move has not been reduced to 0.
+                    // Make sure x_move is not 0.
                     if *x_move != 0 {
                         // Set y_move based on the fact that movement will be proportional to the full movement before collision.
                         *y_move = (*x_move * original_y_move) / original_x_move;
 
                         // Check to make sure rounding errors didn't move this past the collision point. Fix it if it did.
-
                         while
-                            *x_move.abs() > 0 &&
+                            x_move.abs() > 0 &&
                             (collidee_circle.center_x - (collider_circle.x + *x_move)) *
                                 (collidee_circle.center_x - (collider_circle.x + *x_move)) +
                                 (collidee_circle.center_y - (collider_circle.y + *y_move)) *
@@ -310,34 +321,74 @@ fn check_two_circles_translational(
                                 (collidee_circle.radius + collider_circle.radius) *
                                     (collidee_circle.radius + collider_circle.radius)
                         {
-                            *x_move = x_move - *x_move.signum();
+                            // Back off x_move by 1
+                            *x_move = *x_move - x_move.signum();
 
-                            if *x_move.abs() > 0 {
+                            // Adjust y_move proportionally
+                            if x_move.abs() > 0 {
                                 *y_move = (*x_move * original_y_move) / original_x_move;
                             } else {
                                 *y_move = 0;
                             }
                         }
                     } else {
+                        // In the case where x_move is 0, y_move should be set to 0 too.
                         *y_move = 0;
                     }
-                // In case x__move is 0.
+
+                    // In case x__move is 0 from the beginning.
                 } else {
-
-                    // If that is because x_move was always 0
+                    // If that is because x_move was originally 0.
                     if original_x_move == 0 {
+                        // Then y of the collider at the collision points can be calculated as follows.
+                        let y_of_collider_at_collision_one =
+                            (collidee_circle.center_y as i32) +
+                            (
+                                square_root(
+                                    ((collidee_circle.radius + collider_circle.radius) *
+                                        (collidee_circle.radius + collider_circle.radius) -
+                                        (collidee_circle.center_x - collider_circle.x) *
+                                            (collidee_circle.center_x - collider_circle.x)) as i64
+                                ) as i32
+                            );
 
-                        // LEFT OFF HERE
+                        // This is the other solution to the quadratic.
+                        let y_of_collider_at_collision_two =
+                            (collidee_circle.center_y as i32) -
+                            (
+                                square_root(
+                                    ((collidee_circle.radius + collider_circle.radius) *
+                                        (collidee_circle.radius + collider_circle.radius) -
+                                        (collidee_circle.center_x - collider_circle.x) *
+                                            (collidee_circle.center_x - collider_circle.x)) as i64
+                                ) as i32
+                            );
 
+                        // Set y_move to the closer of the two.
+                        if
+                            y_of_collider_at_collision_one.abs() <
+                            y_of_collider_at_collision_two.abs()
+                        {
+                            *y_move = y_of_collider_at_collision_one;
+                        } else {
+                            *y_move = y_of_collider_at_collision_two;
+                        }
+
+                        // Otherwise y_move should be set to 0 too.
                     } else {
-
-
+                        *y_move = 0;
                     }
-
                 }
+
+                // If it is exactly on the circle, just add the collider. The x_move and y_move can stay the same.
             } else {
 
-
+                // The collidee entity number just needs to be added.
+                if collidee_circle.circle_entity_type == CircleEntityType::Organism {
+                    involved_blobs.push(collidee_circle.identity_number)
+                } else {
+                    *involved_minerals = true;
+                }
             }
         }
     }
