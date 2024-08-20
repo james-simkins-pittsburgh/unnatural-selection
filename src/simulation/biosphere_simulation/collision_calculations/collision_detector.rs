@@ -95,8 +95,7 @@ fn check_circles(
                 &mut involved_minerals,
                 blob_number,
                 collider_circle,
-                collidee_circle,
-                deterministic_trig
+                collidee_circle
             );
         }
     }
@@ -129,15 +128,14 @@ fn check_two_circles_translational(
     involved_minerals: &mut bool,
     blob_number: usize,
     collider_circle: &CircleInfo,
-    collidee_circle: &CirclePositionRecord,
-    deterministic_trig: &DeterministicTrig
+    collidee_circle: &CirclePositionRecord
 ) {
     // If the circles are not part of the same blob.
     if
         collidee_circle.identity_number != blob_number ||
         collidee_circle.circle_entity_type == CircleEntityType::Mineral
     {
-        // If they're going to collide with less than the current x and y moves.
+        // If they're going to collide with less than or equal to the current x and y moves.
         if
             (collidee_circle.center_x - (collider_circle.x + *x_move)) *
                 (collidee_circle.center_x - (collider_circle.x + *x_move)) +
@@ -146,6 +144,7 @@ fn check_two_circles_translational(
             (collidee_circle.radius + collider_circle.radius) *
                 (collidee_circle.radius + collider_circle.radius)
         {
+            // If they're going to collide with less than the current x and y moves.
             if
                 (collidee_circle.center_x - (collider_circle.x + *x_move)) *
                     (collidee_circle.center_x - (collider_circle.x + *x_move)) +
@@ -154,7 +153,7 @@ fn check_two_circles_translational(
                 (collidee_circle.radius + collider_circle.radius) *
                     (collidee_circle.radius + collider_circle.radius)
             {
-                // Then previously added collisions with larger x_moves will no longer happen.
+                // Then reset the collision list because collisions from a greater x_move aren't happening.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
                     *involved_blobs = vec![blob_number, collidee_circle.identity_number];
                     *involved_minerals = false;
@@ -163,7 +162,7 @@ fn check_two_circles_translational(
                     *involved_minerals = true;
                 }
 
-                // Check for the case in which the circles were already collided because of an error.
+                // Check for the case in which the circles were already overlapping because of an error.
                 if
                     (collidee_circle.center_x - collider_circle.x) *
                         (collidee_circle.center_x - collider_circle.x) +
@@ -172,13 +171,15 @@ fn check_two_circles_translational(
                     (collidee_circle.radius + collider_circle.radius) *
                         (collidee_circle.radius + collider_circle.radius)
                 {
-                    // In that case, set x_move and y_move to 0.
+                    // In the case of such an overlap, set x_move and y_move to 0.
                     *x_move = 0;
                     *y_move = 0;
                 }
 
+                // Make sure x move has not been reduced all the way down to 0 already.
                 if *x_move != 0 {
                     // This monstrosity of an equation is an application of the quadratic equation to find the x where the circles collide.
+                    // This is the first solution to the quadratic.
                     let x_of_collider_at_collision_one = ((-(
                         2 *
                             (original_y_move as i64) *
@@ -321,14 +322,28 @@ fn check_two_circles_translational(
                                 (collidee_circle.radius + collider_circle.radius) *
                                     (collidee_circle.radius + collider_circle.radius)
                         {
-                            // Back off x_move by 1
-                            *x_move = *x_move - x_move.signum();
+                            // Slowly back it off if it is rounded to overlap by intervals of 1 on the axis of greater velocity
+                            if x_move.abs() >= y_move.abs() {
+                                // Back off x_move by 1
+                                *x_move = *x_move - x_move.signum();
 
-                            // Adjust y_move proportionally
-                            if x_move.abs() > 0 {
-                                *y_move = (*x_move * original_y_move) / original_x_move;
+                                // Adjust y_move proportionally
+                                if x_move.abs() > 0 {
+                                    *y_move = (*x_move * original_y_move) / original_x_move;
+                                } else {
+                                    *y_move = 0;
+                                }
                             } else {
-                                *y_move = 0;
+                                 // Back off y_move by 1
+                                 *y_move = *y_move - y_move.signum();
+
+                                 // Adjust y_move proportionally
+                                 if y_move.abs() > 0 {
+                                     *x_move = (*y_move * original_x_move) / original_y_move;
+                                 } else {
+                                     *x_move = 0;
+                                 }
+
                             }
                         }
                     } else {
@@ -338,7 +353,8 @@ fn check_two_circles_translational(
 
                     // In case x__move is 0 from the beginning.
                 } else {
-                    // If that is because x_move was originally 0.
+
+                    // If x_move is 0 because x_move was originally 0.
                     if original_x_move == 0 {
                         // Then y of the collider at the collision points can be calculated as follows.
                         let y_of_collider_at_collision_one =
@@ -382,10 +398,10 @@ fn check_two_circles_translational(
 
                 // If it is exactly on the circle, just add the collider. The x_move and y_move can stay the same.
             } else {
-
                 // The collidee entity number just needs to be added.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
                     involved_blobs.push(collidee_circle.identity_number)
+                // Or if it is a mineral then the boolean needs to be marked true.
                 } else {
                     *involved_minerals = true;
                 }
