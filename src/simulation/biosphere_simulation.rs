@@ -24,24 +24,23 @@ pub fn simulate_biosphere(
     d_trig: &DeterministicTrig,
     game_settings: &GameSettings
 ) {
-
     for blob_number in 1..all_biosphere_information.blob_vec.len() {
-
         current_applicator::apply_current(
             &mut all_biosphere_information,
             d_trig,
             &all_current_information,
-            blob_number,
-        )
-
+            blob_number
+        );
     }
 
     for blob_number in 1..all_biosphere_information.blob_vec.len() {
-        blob_mover::move_blob(
-            &mut all_biosphere_information,
-            d_trig,
-            blob_number,
-            game_settings,
-        );
+        if all_biosphere_information.blob_vec[blob_number].in_use {
+            blob_mover::move_blob(
+                &mut all_biosphere_information,
+                d_trig,
+                blob_number,
+                game_settings
+            );
+        }
     }
 }

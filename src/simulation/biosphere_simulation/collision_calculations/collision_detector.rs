@@ -29,7 +29,7 @@ pub fn detect_collision(
         collider_circles.push(CircleInfo {
             x: all_biosphere_information.organism_information_vec[*organism_number].x_location,
             y: all_biosphere_information.organism_information_vec[*organism_number].y_location,
-            radius: all_biosphere_information.organism_information_vec[*organism_number].y_location,
+            radius: all_biosphere_information.organism_information_vec[*organism_number].radius,
         });
 
         if all_biosphere_information.organism_information_vec[*organism_number].oblong {
@@ -62,12 +62,12 @@ fn check_circles(
     all_biosphere_information: &AllBiosphereInformation,
     game_settings: &GameSettings,
     blob_number: usize,
-    deterministic_trig: &DeterministicTrig
+    _deterministic_trig: &DeterministicTrig
 ) -> CollisionCheckResult {
     // These store the maximum movement before a collision (if any) occurs.
     let mut x_move = all_biosphere_information.blob_vec[blob_number].blob_x_velocity;
     let mut y_move = all_biosphere_information.blob_vec[blob_number].blob_y_velocity;
-    let mut r_move = all_biosphere_information.blob_vec[blob_number].angular_velocity;
+    let mut _r_move = all_biosphere_information.blob_vec[blob_number].angular_velocity;
 
     // This stores the original moves so it can be references later.
     let original_x_move = x_move;
@@ -83,8 +83,8 @@ fn check_circles(
     for collider_circle in collider_circles.iter() {
         // Iterates over every collidee circle in the detection grid.
         for collidee_circle in all_biosphere_information.collision_detection_grid[
-            ((collider_circle.x - game_settings.map_length/ 2) / 10000) as usize
-        ][((collider_circle.y - game_settings.map_height / 2) / 10000) as usize].iter() {
+            ((collider_circle.x + game_settings.map_length / 2) / 10000) as usize
+        ][((collider_circle.y + game_settings.map_height / 2) / 10000) as usize].iter() {
             // This function checks if the two circle collide and determined how much x and y movement occurs before that.
             check_two_circles_translational(
                 &mut x_move,
@@ -113,7 +113,7 @@ fn check_circles(
         collision,
         x_move,
         y_move,
-        r_move,
+        r_move: _r_move,
         involved_blobs,
         involved_minerals,
     };
@@ -132,7 +132,7 @@ fn check_two_circles_translational(
 ) {
     // If the circles are not part of the same blob.
     if
-        collidee_circle.identity_number != blob_number ||
+        collidee_circle.blob_number != blob_number ||
         collidee_circle.circle_entity_type == CircleEntityType::Mineral
     {
         // If they're going to collide with less than or equal to the current x and y moves.
@@ -153,7 +153,7 @@ fn check_two_circles_translational(
                 (collidee_circle.radius + collider_circle.radius) *
                     (collidee_circle.radius + collider_circle.radius)
             {
-                // Then reset the collision list because collisions from a greater x_move aren't happening.
+                // Then reset the collision list because collisions with x_move and y_move aren't happening.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
                     *involved_blobs = vec![blob_number, collidee_circle.blob_number];
                     *involved_minerals = false;
@@ -176,7 +176,7 @@ fn check_two_circles_translational(
                     *y_move = 0;
                 }
 
-                // Make sure x move has not been reduced all the way down to 0 already.
+                // Make sure x_move isn't 0.
                 if *x_move != 0 {
                     // This monstrosity of an equation is an application of the quadratic equation to find the x where the circles collide.
                     // This is the first solution to the quadratic.
@@ -322,7 +322,7 @@ fn check_two_circles_translational(
                                 (collidee_circle.radius + collider_circle.radius) *
                                     (collidee_circle.radius + collider_circle.radius)
                         {
-                            // Slowly back it off if it is rounded to overlap by intervals of 1 on the axis of greater velocity
+                            // Slowly back it off if it is overlapping by intervals of 1 on the axis of greater velocity
                             if x_move.abs() >= y_move.abs() {
                                 // Back off x_move by 1
                                 *x_move = *x_move - x_move.signum();
@@ -334,16 +334,15 @@ fn check_two_circles_translational(
                                     *y_move = 0;
                                 }
                             } else {
-                                 // Back off y_move by 1
-                                 *y_move = *y_move - y_move.signum();
+                                // Back off y_move by 1
+                                *y_move = *y_move - y_move.signum();
 
-                                 // Adjust y_move proportionally
-                                 if y_move.abs() > 0 {
-                                     *x_move = (*y_move * original_x_move) / original_y_move;
-                                 } else {
-                                     *x_move = 0;
-                                 }
-
+                                // Adjust y_move proportionally
+                                if y_move.abs() > 0 {
+                                    *x_move = (*y_move * original_x_move) / original_y_move;
+                                } else {
+                                    *x_move = 0;
+                                }
                             }
                         }
                     } else {
@@ -351,10 +350,9 @@ fn check_two_circles_translational(
                         *y_move = 0;
                     }
 
-                    // In case x__move is 0 from the beginning.
+                    // In the case where x__move is 0 from the beginning of the function.
                 } else {
-
-                    // If x_move is 0 because x_move was originally 0.
+                    // If x_move is 0 because x_move was originally 0 for the blob.
                     if original_x_move == 0 {
                         // Then y of the collider at the collision points can be calculated as follows.
                         let y_of_collider_at_collision_one =
@@ -390,7 +388,21 @@ fn check_two_circles_translational(
                             *y_move = y_of_collider_at_collision_two;
                         }
 
-                        // Otherwise y_move should be set to 0 too.
+                        // Check to make sure rounding errors didn't move this past the collision point. Fix it if it did.
+                        while
+                            x_move.abs() > 0 &&
+                            (collidee_circle.center_x - collider_circle.x) *
+                                (collidee_circle.center_x - collider_circle.x) +
+                                (collidee_circle.center_y - (collider_circle.y + *y_move)) *
+                                    (collidee_circle.center_y - (collider_circle.y + *y_move)) <
+                                (collidee_circle.radius + collider_circle.radius) *
+                                    (collidee_circle.radius + collider_circle.radius)
+                        {
+                            // Back off y_move by 1
+                            *y_move = *y_move - y_move.signum();
+                        }
+
+                        // If x_move wasn't originally 0, make sure y_move is 0 too.
                     } else {
                         *y_move = 0;
                     }
@@ -401,7 +413,7 @@ fn check_two_circles_translational(
                 // The collidee entity number just needs to be added.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
                     involved_blobs.push(collidee_circle.blob_number)
-                // Or if it is a mineral then the boolean needs to be marked true.
+                    // Or if it is a mineral then the boolean needs to be marked true.
                 } else {
                     *involved_minerals = true;
                 }

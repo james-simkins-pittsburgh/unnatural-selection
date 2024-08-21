@@ -33,7 +33,7 @@ pub fn apply_current(
                 all_current_information.current_information_vec[current_number].radius
             );
 
-            // If the organism is within circle that represents the current
+            // If the organism is within the circle that represents the current
             if
                 (current_x - organism_x) * (current_x - organism_x) +
                     (current_y - organism_y) * (current_y - organism_y) <= current_r * current_r

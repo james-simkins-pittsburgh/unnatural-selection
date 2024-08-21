@@ -109,8 +109,8 @@ pub fn update_for_movement(
                 organism_number
             ].other_circle_positions.iter() {
                 all_biosphere_information.collision_detection_grid[
-                    (circle.x + game_settings.map_length / 2) as usize
-                ][(circle.y + game_settings.map_height / 2) as usize].push(CirclePositionRecord {
+                    ((circle.x + game_settings.map_length / 2) / 10000) as usize
+                ][((circle.y + game_settings.map_height / 2) / 10000) as usize].push(CirclePositionRecord {
                     center_x: circle.x,
                     center_y: circle.y,
                     radius: all_biosphere_information.organism_information_vec
