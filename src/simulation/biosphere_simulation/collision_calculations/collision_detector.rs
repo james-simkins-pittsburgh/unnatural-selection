@@ -83,8 +83,8 @@ fn check_circles(
     for collider_circle in collider_circles.iter() {
         // Iterates over every collidee circle in the detection grid.
         for collidee_circle in all_biosphere_information.collision_detection_grid[
-            ((collider_circle.x - game_settings.map_length / 2) / 10000) as usize
-        ][((collider_circle.x - game_settings.map_length / 2) / 10000) as usize].iter() {
+            ((collider_circle.x - game_settings.map_length/ 2) / 10000) as usize
+        ][((collider_circle.y - game_settings.map_height / 2) / 10000) as usize].iter() {
             // This function checks if the two circle collide and determined how much x and y movement occurs before that.
             check_two_circles_translational(
                 &mut x_move,
@@ -155,7 +155,7 @@ fn check_two_circles_translational(
             {
                 // Then reset the collision list because collisions from a greater x_move aren't happening.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
-                    *involved_blobs = vec![blob_number, collidee_circle.identity_number];
+                    *involved_blobs = vec![blob_number, collidee_circle.blob_number];
                     *involved_minerals = false;
                 } else {
                     *involved_blobs = vec![blob_number];
@@ -400,7 +400,7 @@ fn check_two_circles_translational(
             } else {
                 // The collidee entity number just needs to be added.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
-                    involved_blobs.push(collidee_circle.identity_number)
+                    involved_blobs.push(collidee_circle.blob_number)
                 // Or if it is a mineral then the boolean needs to be marked true.
                 } else {
                     *involved_minerals = true;

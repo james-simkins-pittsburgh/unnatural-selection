@@ -26,7 +26,12 @@ pub fn move_blob(
         all_biosphere_information.blob_vec[blob_number].blob_y_velocity != 0 ||
         all_biosphere_information.blob_vec[blob_number].angular_velocity != 0
     {
-        let detection_result = detect_collision(all_biosphere_information, blob_number, game_settings, deterministic_trig);
+        let mut detection_result = detect_collision(
+            all_biosphere_information,
+            blob_number,
+            game_settings,
+            deterministic_trig
+        );
 
         // Rule out immediate collision before doing expensive calculations.
         if
@@ -34,6 +39,30 @@ pub fn move_blob(
             detection_result.y_move != 0 ||
             detection_result.r_move != 0
         {
+            /* Temporary code!!! */
+
+            if
+                all_biosphere_information.blob_vec[blob_number].center_of_mass_x +
+                    detection_result.x_move.abs() > game_settings.map_length / 2
+            {
+                detection_result.x_move = 0;
+                detection_result.y_move = 0;
+                all_biosphere_information.blob_vec[blob_number].blob_x_velocity =
+                    all_biosphere_information.blob_vec[blob_number].blob_x_velocity * -1;
+            }
+
+            if
+                all_biosphere_information.blob_vec[blob_number].center_of_mass_y +
+                    detection_result.y_move.abs() > game_settings.map_length / 2
+            {
+                detection_result.x_move = 0;
+                detection_result.y_move = 0;
+                all_biosphere_information.blob_vec[blob_number].blob_y_velocity =
+                    all_biosphere_information.blob_vec[blob_number].blob_y_velocity * -1;
+            }
+
+            /* End Temporary code!!! */
+
             // The blob center of mass needs to be moved.
             all_biosphere_information.blob_vec[blob_number].center_of_mass_x +=
                 detection_result.x_move;
@@ -174,17 +203,17 @@ pub fn move_blob(
                             organism_number
                         ].x_location =
                             center_x +
-                            (distance * deterministic_trig.d_trig.cosine((angle, 1000)).0)/1000;
+                            (distance * deterministic_trig.d_trig.cosine((angle, 1000)).0) / 1000;
                         all_biosphere_information.organism_information_vec[
                             organism_number
                         ].y_location =
                             center_y +
-                            (distance * deterministic_trig.d_trig.sine((angle, 1000)).0)/1000;
+                            (distance * deterministic_trig.d_trig.sine((angle, 1000)).0) / 1000;
                         if
                             all_biosphere_information.organism_information_vec
                                 [organism_number].oblong
                         {
-                            for circle_number in 0.. all_biosphere_information.organism_information_vec[
+                            for circle_number in 0..all_biosphere_information.organism_information_vec[
                                 organism_number
                             ].other_circle_positions.len() {
                                 all_biosphere_information.organism_information_vec[
@@ -244,7 +273,11 @@ pub fn move_blob(
         }
 
         if detection_result.collision {
-            apply_collision(all_biosphere_information, &detection_result.involved_blobs);
+            apply_collision(
+                all_biosphere_information,
+                &detection_result.involved_blobs,
+                detection_result.involved_minerals
+            );
         }
     }
 }

@@ -90,6 +90,7 @@ pub struct CirclePositionRecord {
     pub background: bool,
     pub circle_entity_type: CircleEntityType,
     pub identity_number: usize,
+    pub blob_number: usize,
 
 }
 

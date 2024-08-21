@@ -1,6 +1,11 @@
 use crate::{
     settings::GameSettings,
-    simulation::{ AllBiosphereInformation, CircleEntityType, CirclePositionRecord, OtherCirclePosition },
+    simulation::{
+        AllBiosphereInformation,
+        CircleEntityType,
+        CirclePositionRecord,
+        OtherCirclePosition,
+    },
 };
 
 pub fn update_for_movement(
@@ -78,10 +83,12 @@ pub fn update_for_movement(
         // Write the new record for the main circle.
         all_biosphere_information.collision_detection_grid[
             ((all_biosphere_information.organism_information_vec[organism_number].x_location +
-                game_settings.map_length / 2) /10000) as usize
+                game_settings.map_length / 2) /
+                10000) as usize
         ][
             ((all_biosphere_information.organism_information_vec[organism_number].y_location +
-                game_settings.map_height / 2) /10000) as usize
+                game_settings.map_height / 2) /
+                10000) as usize
         ].push(CirclePositionRecord {
             center_x: all_biosphere_information.organism_information_vec
                 [organism_number].x_location,
@@ -92,6 +99,8 @@ pub fn update_for_movement(
                 [organism_number].background,
             circle_entity_type: CircleEntityType::Organism,
             identity_number: organism_number,
+            blob_number: all_biosphere_information.organism_information_vec
+                [organism_number].blob_number,
         });
 
         // For oblong organisms, then write record for the other circle positions.
@@ -110,6 +119,8 @@ pub fn update_for_movement(
                         [organism_number].background,
                     circle_entity_type: CircleEntityType::Organism,
                     identity_number: organism_number,
+                    blob_number: all_biosphere_information.organism_information_vec
+                        [organism_number].blob_number,
                 });
             }
         }
