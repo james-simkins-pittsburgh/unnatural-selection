@@ -1,4 +1,5 @@
 use crate::{
+    main,
     settings::GameSettings,
     simulation::{
         biosphere_simulation::blob_mover::CollisionCheckResult,
@@ -6,7 +7,11 @@ use crate::{
         CircleEntityType,
         CirclePositionRecord,
     },
-    utility_functions::{ deterministic_trigonometry::DeterministicTrig, integer_math::square_root },
+    utility_functions::{
+        deterministic_trigonometry::DeterministicTrig,
+        integer_math::square_root,
+        quadratic_solver,
+    },
 };
 
 // This stores the circle information for the colliders and collidees.
@@ -144,15 +149,55 @@ fn check_two_circles_translational(
             (collidee_circle.radius + collider_circle.radius) *
                 (collidee_circle.radius + collider_circle.radius)
         {
+            // Write these to memory to simplify code and reduce repetitive calculations
+            let current_x_distance_squared = ((collidee_circle.center_x - collider_circle.x) *
+                (collidee_circle.center_x - collider_circle.x)) as i64;
+
+            let current_y_distance_squared = ((collidee_circle.center_y - collider_circle.y) *
+                (collidee_circle.center_y - collider_circle.y)) as i64;
+
+            let combined_radii_squared = ((collidee_circle.radius + collider_circle.radius) *
+                (collidee_circle.radius + collider_circle.radius)) as i64;
+
+            // Check for the case in which the circles were already overlapping because of an error.
+            if current_x_distance_squared + current_y_distance_squared < combined_radii_squared {
+                // If the x_move and y_move were already 0.
+                if *x_move == 0 && *y_move == 0 {
+                    // The collidee entity number just needs to be added.
+                    if collidee_circle.circle_entity_type == CircleEntityType::Organism {
+                        involved_blobs.push(collidee_circle.blob_number);
+                        // Or if it is a mineral then the boolean needs to be marked true.
+                    } else {
+                        *involved_minerals = true;
+                    }
+
+                    // If they weren't already 0
+                } else {
+                    *x_move = 0;
+                    *y_move = 0;
+                    if collidee_circle.circle_entity_type == CircleEntityType::Organism {
+                        *involved_blobs = vec![blob_number, collidee_circle.blob_number];
+                        *involved_minerals = false;
+                    } else {
+                        *involved_blobs = vec![blob_number];
+                        *involved_minerals = true;
+                    }
+                }
+                return;
+            }
+
+            // Write these to memory to simplify code and reduce repetitive calculations
+
+            let future_x_distance_squared = ((collidee_circle.center_x -
+                (collider_circle.x + *x_move)) *
+                (collidee_circle.center_x - (collider_circle.x + *x_move))) as i64;
+
+            let future_y_distance_squared = ((collidee_circle.center_y -
+                (collider_circle.y + *y_move)) *
+                (collidee_circle.center_y - (collider_circle.y + *y_move))) as i64;
+
             // If they're going to collide with less than the current x and y moves.
-            if
-                (collidee_circle.center_x - (collider_circle.x + *x_move)) *
-                    (collidee_circle.center_x - (collider_circle.x + *x_move)) +
-                    (collidee_circle.center_y - (collider_circle.y + *y_move)) *
-                        (collidee_circle.center_y - (collider_circle.y + *y_move)) <
-                (collidee_circle.radius + collider_circle.radius) *
-                    (collidee_circle.radius + collider_circle.radius)
-            {
+            if future_x_distance_squared + future_y_distance_squared < combined_radii_squared {
                 // Then reset the collision list because collisions with x_move and y_move aren't happening.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
                     *involved_blobs = vec![blob_number, collidee_circle.blob_number];
@@ -162,152 +207,32 @@ fn check_two_circles_translational(
                     *involved_minerals = true;
                 }
 
-                // Check for the case in which the circles were already overlapping because of an error.
-                if
-                    (collidee_circle.center_x - collider_circle.x) *
-                        (collidee_circle.center_x - collider_circle.x) +
-                        (collidee_circle.center_y - collider_circle.y) *
-                            (collidee_circle.center_y - collider_circle.y) <
-                    (collidee_circle.radius + collider_circle.radius) *
-                        (collidee_circle.radius + collider_circle.radius)
-                {
-                    // In the case of such an overlap, set x_move and y_move to 0.
-                    *x_move = 0;
-                    *y_move = 0;
-                }
-
                 // Make sure x_move isn't 0.
                 if *x_move != 0 {
-                    // This monstrosity of an equation is an application of the quadratic equation to find the x where the circles collide.
-                    // This is the first solution to the quadratic.
-                    let x_of_collider_at_collision_one = ((-(
-                        2 *
-                            (original_y_move as i64) *
-                            (((-original_y_move as i64) * (collider_circle.x as i64)) /
-                                ((original_x_move as i64) * (original_x_move as i64)) +
-                                (collider_circle.y as i64) -
-                                (collidee_circle.center_y as i64)) -
-                        2 * (collidee_circle.center_x as i64)
-                    ) +
-                        square_root(
-                            (2 *
-                                (original_y_move as i64) *
-                                (((-original_y_move as i64) * (collider_circle.x as i64)) /
-                                    ((original_x_move as i64) * (original_x_move as i64)) +
-                                    (collider_circle.y as i64) -
-                                    (collidee_circle.center_y as i64)) -
-                                2 * (collidee_circle.center_x as i64)) *
-                                (2 *
-                                    (original_y_move as i64) *
-                                    (((-original_y_move as i64) * (collider_circle.x as i64)) /
-                                        ((original_x_move as i64) * (original_x_move as i64)) +
-                                        (collider_circle.y as i64) -
-                                        (collidee_circle.center_y as i64)) -
-                                    2 * (collidee_circle.center_x as i64)) -
-                                4 *
-                                    (1 +
-                                        ((original_y_move as i64) * (original_y_move as i64)) /
-                                            ((original_x_move as i64) * (original_x_move as i64))) *
-                                    ((collidee_circle.center_x as i64) *
-                                        (collidee_circle.center_x as i64) +
-                                        (-(
-                                            ((original_y_move as i64) *
-                                                (collider_circle.x as i64)) /
-                                            (original_x_move as i64)
-                                        ) +
-                                            (collider_circle.y as i64) -
-                                            (collidee_circle.center_y as i64)) *
-                                            (-(
-                                                ((original_y_move as i64) *
-                                                    (collider_circle.x as i64)) /
-                                                (original_x_move as i64)
-                                            ) +
-                                                (collider_circle.y as i64) -
-                                                (collidee_circle.center_y as i64)) -
-                                        ((collider_circle.radius as i64) +
-                                            (collidee_circle.radius as i64)) *
-                                            ((collider_circle.radius as i64) +
-                                                (collidee_circle.radius as i64)) *
-                                            (((collider_circle.radius as i64) +
-                                                (collidee_circle.radius as i64)) *
-                                                ((collider_circle.radius as i64) +
-                                                    (collidee_circle.radius as i64))))
-                        )) /
-                        (2 *
-                            (1 +
-                                ((original_y_move as i64) * (original_y_move as i64)) /
-                                    ((original_x_move as i64) * (original_x_move as i64))))) as i32;
+                    let slope_x_100 = ((*y_move as i64) * 100) / (*x_move as i64);
+                    let x1 = collider_circle.x as i64;
+                    let y1 = collider_circle.x as i64;
+                    let x2 = collidee_circle.center_x as i64;
+                    let y2 = collidee_circle.center_y as i64;
 
-                    // This is the second solution to the quadratic.
-                    let x_of_collider_at_collision_two = ((-(
-                        2 *
-                            (original_y_move as i64) *
-                            (((-original_y_move as i64) * (collider_circle.x as i64)) /
-                                ((original_x_move as i64) * (original_x_move as i64)) +
-                                (collider_circle.y as i64) -
-                                (collidee_circle.center_y as i64)) -
-                        2 * (collidee_circle.center_x as i64)
-                    ) -
-                        square_root(
-                            (2 *
-                                (original_y_move as i64) *
-                                (((-original_y_move as i64) * (collider_circle.x as i64)) /
-                                    ((original_x_move as i64) * (original_x_move as i64)) +
-                                    (collider_circle.y as i64) -
-                                    (collidee_circle.center_y as i64)) -
-                                2 * (collidee_circle.center_x as i64)) *
-                                (2 *
-                                    (original_y_move as i64) *
-                                    (((-original_y_move as i64) * (collider_circle.x as i64)) /
-                                        ((original_x_move as i64) * (original_x_move as i64)) +
-                                        (collider_circle.y as i64) -
-                                        (collidee_circle.center_y as i64)) -
-                                    2 * (collidee_circle.center_x as i64)) -
-                                4 *
-                                    (1 +
-                                        ((original_y_move as i64) * (original_y_move as i64)) /
-                                            ((original_x_move as i64) * (original_x_move as i64))) *
-                                    ((collidee_circle.center_x as i64) *
-                                        (collidee_circle.center_x as i64) +
-                                        (-(
-                                            ((original_y_move as i64) *
-                                                (collider_circle.x as i64)) /
-                                            (original_x_move as i64)
-                                        ) +
-                                            (collider_circle.y as i64) -
-                                            (collidee_circle.center_y as i64)) *
-                                            (-(
-                                                ((original_y_move as i64) *
-                                                    (collider_circle.x as i64)) /
-                                                (original_x_move as i64)
-                                            ) +
-                                                (collider_circle.y as i64) -
-                                                (collidee_circle.center_y as i64)) -
-                                        ((collider_circle.radius as i64) +
-                                            (collidee_circle.radius as i64)) *
-                                            ((collider_circle.radius as i64) +
-                                                (collidee_circle.radius as i64)) *
-                                            (((collider_circle.radius as i64) +
-                                                (collidee_circle.radius as i64)) *
-                                                ((collider_circle.radius as i64) +
-                                                    (collidee_circle.radius as i64))))
-                        )) /
-                        (2 *
-                            (1 +
-                                ((original_y_move as i64) * (original_y_move as i64)) /
-                                    ((original_x_move as i64) * (original_x_move as i64))))) as i32;
+                    let a = 1 + (slope_x_100 * slope_x_100) / 10000;
+                    let b = (2 * slope_x_100 * (-slope_x_100 * x1 + y1 - y2)) / 10000 - 2 * x2;
+                    let c =
+                        x2 * x2 +
+                        ((-slope_x_100 * x1 + y1 - y2) * (-slope_x_100 * x1 + y1 - y2)) / 10000 -
+                        combined_radii_squared;
+
+                    // This is the first solution to the quadratic.
+                    let quadratic_solutions = quadratic_solver::solve_quadratic(a, b, c);
 
                     // If is x collision 1 is a closer than x collision 2 then set x move to it. Otherwise, set x move to collision 2.
-                    if
-                        (x_of_collider_at_collision_one - collider_circle.x).abs() <
-                        (x_of_collider_at_collision_two - collider_circle.x).abs()
-                    {
-                        *x_move = x_of_collider_at_collision_one - collider_circle.x;
+                    if (quadratic_solutions.0 - x1).abs() < (quadratic_solutions.1 - x1).abs() {
+                        *x_move = (quadratic_solutions.0 - x1) as i32;
                     } else {
-                        *x_move = x_of_collider_at_collision_two - collider_circle.x;
+                        *x_move = (quadratic_solutions.1 - x1) as i32;
                     }
 
-                    // Make sure x_move is not 0.
+                    // Make sure x_move has not become 0.
                     if *x_move != 0 {
                         // Set y_move based on the fact that movement will be proportional to the full movement before collision.
                         *y_move = (*x_move * original_y_move) / original_x_move;
@@ -346,7 +271,7 @@ fn check_two_circles_translational(
                             }
                         }
                     } else {
-                        // In the case where x_move is 0, y_move should be set to 0 too.
+                        // In the case where x_move has become 0, y_move should be set to 0 too.
                         *y_move = 0;
                     }
 
@@ -356,25 +281,19 @@ fn check_two_circles_translational(
                     if original_x_move == 0 {
                         // Then y of the collider at the collision points can be calculated as follows.
                         let y_of_collider_at_collision_one =
-                            (collidee_circle.center_y as i32) +
+                            collidee_circle.center_y +
                             (
                                 square_root(
-                                    ((collidee_circle.radius + collider_circle.radius) *
-                                        (collidee_circle.radius + collider_circle.radius) -
-                                        (collidee_circle.center_x - collider_circle.x) *
-                                            (collidee_circle.center_x - collider_circle.x)) as i64
+                                    combined_radii_squared - current_x_distance_squared
                                 ) as i32
                             );
 
                         // This is the other solution to the quadratic.
                         let y_of_collider_at_collision_two =
-                            (collidee_circle.center_y as i32) -
+                            collidee_circle.center_y -
                             (
                                 square_root(
-                                    ((collidee_circle.radius + collider_circle.radius) *
-                                        (collidee_circle.radius + collider_circle.radius) -
-                                        (collidee_circle.center_x - collider_circle.x) *
-                                            (collidee_circle.center_x - collider_circle.x)) as i64
+                                    combined_radii_squared - current_x_distance_squared
                                 ) as i32
                             );
 
@@ -390,13 +309,13 @@ fn check_two_circles_translational(
 
                         // Check to make sure rounding errors didn't move this past the collision point. Fix it if it did.
                         while
-                            x_move.abs() > 0 &&
-                            (collidee_circle.center_x - collider_circle.x) *
-                                (collidee_circle.center_x - collider_circle.x) +
-                                (collidee_circle.center_y - (collider_circle.y + *y_move)) *
-                                    (collidee_circle.center_y - (collider_circle.y + *y_move)) <
-                                (collidee_circle.radius + collider_circle.radius) *
-                                    (collidee_circle.radius + collider_circle.radius)
+                            y_move.abs() > 0 &&
+                            current_x_distance_squared +
+                                (
+                                    ((collidee_circle.center_y - (collider_circle.y + *y_move)) *
+                                        (collidee_circle.center_y -
+                                            (collider_circle.y + *y_move))) as i64
+                                ) < combined_radii_squared
                         {
                             // Back off y_move by 1
                             *y_move = *y_move - y_move.signum();

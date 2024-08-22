@@ -4,4 +4,8 @@ pub mod cheap_random;
 // This module holds the struct for the deterministic trigonometry resource.
 pub mod deterministic_trigonometry;
 
+// This module has the quadratic formula
+pub mod quadratic_solver;
+
+// This module does math operations with integers to avoid floating point arithmetic
 pub mod integer_math;

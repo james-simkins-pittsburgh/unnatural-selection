@@ -1,10 +1,9 @@
 // This utility function calculates square root for integers.
 
-use bevy::log::error;
-
 pub fn square_root(input: i64) -> i64 {
     if input <= 0 {
-        // Negative input may occur due to rounding errors when the answer should be 0.
+        /* Negative input may occur due to rounding errors when the answer should be 0.
+        Therefore, it makes sense to return 0 in that case */
         return 0;
     }
 
