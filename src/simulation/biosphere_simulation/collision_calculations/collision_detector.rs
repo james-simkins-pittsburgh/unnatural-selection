@@ -214,12 +214,12 @@ fn check_two_circles_translational(
                     let x2 = collidee_circle.center_x as i64;
                     let y2 = collidee_circle.center_y as i64;
 
-                    // Almost positive this is right.
+                    // Double Checked
                     let a = 1 + (slope_x_100 * slope_x_100) / 10000;
-                    // Almost positive this is right.
+                    // Double Checked
                     let b =
                         (2 * slope_x_100 * ((-slope_x_100 * x1) / 100 + y1 - y2)) / 100 - 2 * x2;
-                    // Almost positive this is right.
+                    // Double Checked
                     let c =
                         x2 * x2 +
                         ((-slope_x_100 * x1) / 100 + y1 - y2) *
