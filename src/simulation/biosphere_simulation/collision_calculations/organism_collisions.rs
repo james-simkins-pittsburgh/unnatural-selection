@@ -3,7 +3,7 @@ use crate::simulation::AllBiosphereInformation;
 pub fn apply_collision(
     all_biosphere_information: &mut AllBiosphereInformation,
     combination_list: &Vec<usize>,
-    mineral_involved: bool,
+    _mineral_involved: bool,
 ) {
 
     for blob_number in combination_list.iter() {

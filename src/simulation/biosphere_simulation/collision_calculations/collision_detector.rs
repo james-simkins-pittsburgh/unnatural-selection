@@ -1,5 +1,4 @@
 use crate::{
-    main,
     settings::GameSettings,
     simulation::{
         biosphere_simulation::blob_mover::CollisionCheckResult,
@@ -215,11 +214,16 @@ fn check_two_circles_translational(
                     let x2 = collidee_circle.center_x as i64;
                     let y2 = collidee_circle.center_y as i64;
 
+                    // Almost positive this is right.
                     let a = 1 + (slope_x_100 * slope_x_100) / 10000;
-                    let b = (2 * slope_x_100 * (-slope_x_100 * x1 + y1 - y2)) / 10000 - 2 * x2;
+                    // Almost positive this is right.
+                    let b =
+                        (2 * slope_x_100 * ((-slope_x_100 * x1) / 100 + y1 - y2)) / 100 - 2 * x2;
+                    // Almost positive this is right.
                     let c =
                         x2 * x2 +
-                        ((-slope_x_100 * x1 + y1 - y2) * (-slope_x_100 * x1 + y1 - y2)) / 10000 -
+                        ((-slope_x_100 * x1) / 100 + y1 - y2) *
+                            ((-slope_x_100 * x1) / 100 + y1 - y2) -
                         combined_radii_squared;
 
                     // This is the first solution to the quadratic.
