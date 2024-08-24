@@ -109,7 +109,7 @@ fn check_circles(
             (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) / 10000 !=
                 (collider_circle.x + game_settings.map_length / 2) / 10000 &&
             (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) / 10000 <
-                all_biosphere_information.collision_detection_grid.len() as i32
+                (all_biosphere_information.collision_detection_grid.len() as i32)
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
                 ((collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
@@ -134,7 +134,7 @@ fn check_circles(
 
         if
             (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) / 10000 !=
-            (collider_circle.x + game_settings.map_length / 2) / 10000 &&
+                (collider_circle.x + game_settings.map_length / 2) / 10000 &&
             (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) / 10000 >= 0
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
@@ -160,9 +160,9 @@ fn check_circles(
 
         if
             (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / 10000 !=
-            (collider_circle.y + game_settings.map_height / 2) / 10000 &&
+                (collider_circle.y + game_settings.map_height / 2) / 10000 &&
             (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / 10000 <
-                all_biosphere_information.collision_detection_grid[0].len() as i32
+                (all_biosphere_information.collision_detection_grid[0].len() as i32)
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
                 ((collider_circle.x + game_settings.map_length / 2) / 10000) as usize
@@ -189,8 +189,8 @@ fn check_circles(
             if
                 (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
                     10000 != (collider_circle.x + game_settings.map_length / 2) / 10000 &&
-                    (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) / 10000 <
-                        all_biosphere_information.collision_detection_grid.len() as i32
+                (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
+                    10000 < (all_biosphere_information.collision_detection_grid.len() as i32)
             {
                 for collidee_circle in all_biosphere_information.collision_detection_grid[
                     ((collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
@@ -219,7 +219,8 @@ fn check_circles(
             if
                 (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
                     10000 != (collider_circle.x + game_settings.map_length / 2) / 10000 &&
-                    (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) / 10000 >= 0
+                (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
+                    10000 >= 0
             {
                 for collidee_circle in all_biosphere_information.collision_detection_grid[
                     ((collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
@@ -248,7 +249,7 @@ fn check_circles(
 
         if
             (collider_circle.y - collider_circle.radius + game_settings.map_height / 2) / 10000 !=
-            (collider_circle.y + game_settings.map_height / 2) / 10000 &&
+                (collider_circle.y + game_settings.map_height / 2) / 10000 &&
             (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / 10000 >= 0
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
@@ -276,8 +277,8 @@ fn check_circles(
             if
                 (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
                     10000 != (collider_circle.x + game_settings.map_length / 2) / 10000 &&
-                    (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) / 10000 <
-                        all_biosphere_information.collision_detection_grid.len() as i32
+                (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
+                    10000 < (all_biosphere_information.collision_detection_grid.len() as i32)
             {
                 for collidee_circle in all_biosphere_information.collision_detection_grid[
                     ((collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
@@ -306,7 +307,8 @@ fn check_circles(
             if
                 (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
                     10000 != (collider_circle.x + game_settings.map_length / 2) / 10000 &&
-                    (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) / 10000 >= 0
+                (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
+                    10000 >= 0
             {
                 for collidee_circle in all_biosphere_information.collision_detection_grid[
                     ((collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
@@ -369,22 +371,25 @@ fn check_two_circles_translational(
     {
         // If they're going to collide with less than or equal to the current x and y moves.
         if
-            (collidee_circle.center_x - (collider_circle.x + *x_move)) *
-                (collidee_circle.center_x - (collider_circle.x + *x_move)) +
-                (collidee_circle.center_y - (collider_circle.y + *y_move)) *
-                    (collidee_circle.center_y - (collider_circle.y + *y_move)) <=
-            (collidee_circle.radius + collider_circle.radius) *
-                (collidee_circle.radius + collider_circle.radius)
+            ((collidee_circle.center_x - (collider_circle.x + *x_move)) as i64) *
+                ((collidee_circle.center_x - (collider_circle.x + *x_move)) as i64) +
+                ((collidee_circle.center_y - (collider_circle.y + *y_move)) as i64) *
+                    ((collidee_circle.center_y - (collider_circle.y + *y_move)) as i64) <=
+            ((collidee_circle.radius + collider_circle.radius) as i64) *
+                ((collidee_circle.radius + collider_circle.radius) as i64)
         {
             // Write these to memory to simplify code and reduce repetitive calculations
-            let current_x_distance_squared = ((collidee_circle.center_x - collider_circle.x) *
-                (collidee_circle.center_x - collider_circle.x)) as i64;
+            let current_x_distance_squared =
+                (collidee_circle.center_x - collider_circle.x) as i64 *
+                (collidee_circle.center_x - collider_circle.x) as i64;
 
-            let current_y_distance_squared = ((collidee_circle.center_y - collider_circle.y) *
-                (collidee_circle.center_y - collider_circle.y)) as i64;
+            let current_y_distance_squared =
+                (collidee_circle.center_y - collider_circle.y) as i64 *
+                (collidee_circle.center_y - collider_circle.y) as i64;
 
-            let combined_radii_squared = ((collidee_circle.radius + collider_circle.radius) *
-                (collidee_circle.radius + collider_circle.radius)) as i64;
+            let combined_radii_squared =
+                (collidee_circle.radius + collider_circle.radius) as i64 *
+                (collidee_circle.radius + collider_circle.radius) as i64;
 
             // Check for the case in which the circles were already overlapping because of an error.
             if current_x_distance_squared + current_y_distance_squared < combined_radii_squared {
@@ -415,13 +420,13 @@ fn check_two_circles_translational(
 
             // Write these to memory to simplify code and reduce repetitive calculations
 
-            let future_x_distance_squared = ((collidee_circle.center_x -
-                (collider_circle.x + *x_move)) *
-                (collidee_circle.center_x - (collider_circle.x + *x_move))) as i64;
+            let future_x_distance_squared = (collidee_circle.center_x -
+                (collider_circle.x + *x_move)) as i64 *
+                (collidee_circle.center_x - (collider_circle.x + *x_move)) as i64;
 
-            let future_y_distance_squared = ((collidee_circle.center_y -
-                (collider_circle.y + *y_move)) *
-                (collidee_circle.center_y - (collider_circle.y + *y_move))) as i64;
+            let future_y_distance_squared = (collidee_circle.center_y -
+                (collider_circle.y + *y_move)) as i64 *
+                (collidee_circle.center_y - (collider_circle.y + *y_move)) as i64;
 
             // If they're going to collide with less than the current x and y moves.
             if future_x_distance_squared + future_y_distance_squared < combined_radii_squared {
@@ -436,22 +441,22 @@ fn check_two_circles_translational(
 
                 // Make sure x_move isn't 0.
                 if *x_move != 0 {
-                    let slope_x_100 = ((*y_move as i64) * 100) / (*x_move as i64);
+                    let slope_x_1000 = ((*y_move as i64) * 100) / (*x_move as i64);
                     let x1 = collider_circle.x as i64;
-                    let y1 = collider_circle.x as i64;
+                    let y1 = collider_circle.y as i64;
                     let x2 = collidee_circle.center_x as i64;
                     let y2 = collidee_circle.center_y as i64;
 
                     // Double Checked
-                    let a = 1 + (slope_x_100 * slope_x_100) / 10000;
+                    let a = 1 + (slope_x_1000 * slope_x_1000) / 1000000;
                     // Double Checked
                     let b =
-                        (2 * slope_x_100 * ((-slope_x_100 * x1) / 100 + y1 - y2)) / 100 - 2 * x2;
+                        (2 * slope_x_1000 * ((-slope_x_1000 * x1) / 1000 + y1 - y2)) / 1000 - 2 * x2;
                     // Double Checked
                     let c =
                         x2 * x2 +
-                        ((-slope_x_100 * x1) / 100 + y1 - y2) *
-                            ((-slope_x_100 * x1) / 100 + y1 - y2) -
+                        ((-slope_x_1000 * x1) / 1000 + y1 - y2) *
+                            ((-slope_x_1000 * x1) / 1000 + y1 - y2) -
                         combined_radii_squared;
 
                     // This is the first solution to the quadratic.
@@ -472,12 +477,15 @@ fn check_two_circles_translational(
                         // Check to make sure rounding errors didn't move this past the collision point. Fix it if it did.
                         while
                             x_move.abs() > 0 &&
-                            (collidee_circle.center_x - (collider_circle.x + *x_move)) *
-                                (collidee_circle.center_x - (collider_circle.x + *x_move)) +
-                                (collidee_circle.center_y - (collider_circle.y + *y_move)) *
-                                    (collidee_circle.center_y - (collider_circle.y + *y_move)) <
-                                (collidee_circle.radius + collider_circle.radius) *
-                                    (collidee_circle.radius + collider_circle.radius)
+                            ((collidee_circle.center_x as i64) -
+                                ((collider_circle.x as i64) + (*x_move as i64))) *
+                                ((collidee_circle.center_x as i64) -
+                                    ((collider_circle.x as i64) + (*x_move as i64))) +
+                                ((collidee_circle.center_y as i64) -
+                                    ((collider_circle.y as i64) + (*y_move as i64))) *
+                                    ((collidee_circle.center_y as i64) -
+                                        ((collider_circle.y as i64) + (*y_move as i64))) <
+                                combined_radii_squared
                         {
                             // Slowly back it off if it is overlapping by intervals of 1 on the axis of greater velocity
                             if x_move.abs() >= y_move.abs() {
@@ -507,7 +515,7 @@ fn check_two_circles_translational(
                         *y_move = 0;
                     }
 
-                    // In the case where x__move is 0 from the beginning of the function.
+                    // In the case where x_move is 0 from the beginning of the function.
                 } else {
                     // If x_move is 0 because x_move was originally 0 for the blob.
                     if original_x_move == 0 {
