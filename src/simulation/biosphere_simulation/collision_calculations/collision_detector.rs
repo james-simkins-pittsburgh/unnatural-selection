@@ -405,8 +405,12 @@ fn check_two_circles_translational(
 
                     // If they weren't already 0
                 } else {
+                    
+                    // Zero out the movement.
                     *x_move = 0;
                     *y_move = 0;
+
+                    // Clear the collision list except for those blobs.
                     if collidee_circle.circle_entity_type == CircleEntityType::Organism {
                         *involved_blobs = vec![blob_number, collidee_circle.blob_number];
                         *involved_minerals = false;
@@ -415,6 +419,7 @@ fn check_two_circles_translational(
                         *involved_minerals = true;
                     }
                 }
+                // Since the moves are 0, the function can be over.
                 return;
             }
 
@@ -441,7 +446,7 @@ fn check_two_circles_translational(
 
                 // Make sure x_move isn't 0.
                 if *x_move != 0 {
-                    let slope_x_1000 = ((*y_move as i64) * 100) / (*x_move as i64);
+                    let slope_x_1000 = ((*y_move as i64) * 1000) / (*x_move as i64);
                     let x1 = collider_circle.x as i64;
                     let y1 = collider_circle.y as i64;
                     let x2 = collidee_circle.center_x as i64;
@@ -451,12 +456,12 @@ fn check_two_circles_translational(
                     let a = 1 + (slope_x_1000 * slope_x_1000) / 1000000;
                     // Double Checked
                     let b =
-                        (2 * slope_x_1000 * ((-slope_x_1000 * x1) / 1000 + y1 - y2)) / 1000 - 2 * x2;
+                        (2 * slope_x_1000 * ((-slope_x_1000 * x1) + y1 * 1000 - y2 * 1000)) / 1000000 - 2 * x2;
                     // Double Checked
                     let c =
                         x2 * x2 +
-                        ((-slope_x_1000 * x1) / 1000 + y1 - y2) *
-                            ((-slope_x_1000 * x1) / 1000 + y1 - y2) -
+                        ((-slope_x_1000 * x1) + y1 * 1000 - y2 * 1000) *
+                            ((-slope_x_1000 * x1) + y1 * 1000 - y2 * 1000) / 1000000 -
                         combined_radii_squared;
 
                     // This is the first solution to the quadratic.
