@@ -122,6 +122,7 @@ fn check_circles(
                     original_x_move,
                     original_y_move,
                     &mut involved_blobs,
+                    &mut involved_minerals,
                     blob_number,
                     collider_circle,
                     collidee_circle
