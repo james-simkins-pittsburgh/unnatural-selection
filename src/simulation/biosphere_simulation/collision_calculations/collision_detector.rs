@@ -456,7 +456,7 @@ fn check_two_circles_translational(
                     let a = 1 + (slope_x_1000 * slope_x_1000) / 1000000;
                     // Double Checked
                     let b =
-                        (2 * slope_x_1000 * ((-slope_x_1000 * x1) + y1 * 1000 - y2 * 1000)) / 1000000 - 2 * x2;
+                        (2 * slope_x_1000 * (-slope_x_1000 * x1 + y1 * 1000 - y2 * 1000)) / 1000000 - 2 * x2;
                     // Double Checked
                     let c =
                         x2 * x2 +
@@ -464,7 +464,8 @@ fn check_two_circles_translational(
                             ((-slope_x_1000 * x1) + y1 * 1000 - y2 * 1000) / 1000000 -
                         combined_radii_squared;
 
-                    // This is the first solution to the quadratic.
+                    // This tuple holds the solutions to the quadratic
+
                     let quadratic_solutions = quadratic_solver::solve_quadratic(a, b, c);
 
                     // If is x collision 1 is a closer than x collision 2 then set x move to it. Otherwise, set x move to collision 2.
@@ -584,4 +585,48 @@ fn check_two_circles_translational(
             }
         }
     }
+}
+
+
+
+#[test]
+fn test_translational_circle_check () {
+
+let mut x_move = 20;
+let mut y_move = 40;
+let original_x_move = 20;
+let original_y_move = 40;
+let mut involved_blobs = vec![1 as usize];
+let mut involved_minerals = false;
+let blob_number = 1;
+let collider_circle = CircleInfo {
+    x: 500,
+    y: 600,
+    radius: 2000,
+};
+let collidee_circle = CirclePositionRecord {
+    center_x: 505,
+    center_y: 4605,
+    radius: 2000,
+    background: false,
+    circle_entity_type: CircleEntityType::Organism,
+    identity_number: 2,
+    blob_number: 2,
+};
+
+check_two_circles_translational(
+    &mut x_move,
+    &mut y_move,
+    original_x_move,
+    original_y_move,
+    &mut involved_blobs,
+    &mut involved_minerals,
+    blob_number,
+    &collider_circle,
+    &collidee_circle
+);
+
+assert_eq!(x_move, 2);
+assert_eq!(y_move, 4);
+
 }
