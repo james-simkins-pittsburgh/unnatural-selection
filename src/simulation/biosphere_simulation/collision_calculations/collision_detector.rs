@@ -380,16 +380,16 @@ fn check_two_circles_translational(
         {
             // Write these to memory to simplify code and reduce repetitive calculations
             let current_x_distance_squared =
-                (collidee_circle.center_x - collider_circle.x) as i64 *
-                (collidee_circle.center_x - collider_circle.x) as i64;
+                ((collidee_circle.center_x - collider_circle.x) as i64) *
+                ((collidee_circle.center_x - collider_circle.x) as i64);
 
             let current_y_distance_squared =
-                (collidee_circle.center_y - collider_circle.y) as i64 *
-                (collidee_circle.center_y - collider_circle.y) as i64;
+                ((collidee_circle.center_y - collider_circle.y) as i64) *
+                ((collidee_circle.center_y - collider_circle.y) as i64);
 
             let combined_radii_squared =
-                (collidee_circle.radius + collider_circle.radius) as i64 *
-                (collidee_circle.radius + collider_circle.radius) as i64;
+                ((collidee_circle.radius + collider_circle.radius) as i64) *
+                ((collidee_circle.radius + collider_circle.radius) as i64);
 
             // Check for the case in which the circles were already overlapping because of an error.
             if current_x_distance_squared + current_y_distance_squared < combined_radii_squared {
@@ -405,7 +405,6 @@ fn check_two_circles_translational(
 
                     // If they weren't already 0
                 } else {
-                    
                     // Zero out the movement.
                     *x_move = 0;
                     *y_move = 0;
@@ -425,13 +424,13 @@ fn check_two_circles_translational(
 
             // Write these to memory to simplify code and reduce repetitive calculations
 
-            let future_x_distance_squared = (collidee_circle.center_x -
-                (collider_circle.x + *x_move)) as i64 *
-                (collidee_circle.center_x - (collider_circle.x + *x_move)) as i64;
+            let future_x_distance_squared =
+                ((collidee_circle.center_x - (collider_circle.x + *x_move)) as i64) *
+                ((collidee_circle.center_x - (collider_circle.x + *x_move)) as i64);
 
-            let future_y_distance_squared = (collidee_circle.center_y -
-                (collider_circle.y + *y_move)) as i64 *
-                (collidee_circle.center_y - (collider_circle.y + *y_move)) as i64;
+            let future_y_distance_squared =
+                ((collidee_circle.center_y - (collider_circle.y + *y_move)) as i64) *
+                ((collidee_circle.center_y - (collider_circle.y + *y_move)) as i64);
 
             // If they're going to collide with less than the current x and y moves.
             if future_x_distance_squared + future_y_distance_squared < combined_radii_squared {
@@ -456,12 +455,15 @@ fn check_two_circles_translational(
                     let a = 1 + (slope_x_1000 * slope_x_1000) / 1000000;
                     // Double Checked
                     let b =
-                        (2 * slope_x_1000 * (-slope_x_1000 * x1 + y1 * 1000 - y2 * 1000)) / 1000000 - 2 * x2;
+                        (2 * slope_x_1000 * (-slope_x_1000 * x1 + y1 * 1000 - y2 * 1000)) /
+                            1000000 -
+                        2 * x2;
                     // Double Checked
                     let c =
                         x2 * x2 +
-                        ((-slope_x_1000 * x1) + y1 * 1000 - y2 * 1000) *
-                            ((-slope_x_1000 * x1) + y1 * 1000 - y2 * 1000) / 1000000 -
+                        ((-slope_x_1000 * x1 + y1 * 1000 - y2 * 1000) *
+                            (-slope_x_1000 * x1 + y1 * 1000 - y2 * 1000)) /
+                            1000000 -
                         combined_radii_squared;
 
                     // This tuple holds the solutions to the quadratic
@@ -480,17 +482,12 @@ fn check_two_circles_translational(
                         // Set y_move based on the fact that movement will be proportional to the full movement before collision.
                         *y_move = (*x_move * original_y_move) / original_x_move;
 
+                        /* 
                         // Check to make sure rounding errors didn't move this past the collision point. Fix it if it did.
                         while
                             x_move.abs() > 0 &&
-                            ((collidee_circle.center_x as i64) -
-                                ((collider_circle.x as i64) + (*x_move as i64))) *
-                                ((collidee_circle.center_x as i64) -
-                                    ((collider_circle.x as i64) + (*x_move as i64))) +
-                                ((collidee_circle.center_y as i64) -
-                                    ((collider_circle.y as i64) + (*y_move as i64))) *
-                                    ((collidee_circle.center_y as i64) -
-                                        ((collider_circle.y as i64) + (*y_move as i64))) <
+                            (x2 - (x1 + (*x_move as i64))) * (x2 - (x1 + (*x_move as i64))) +
+                                (y2 - (y1 + (*y_move as i64))) * (y2 - (y1 + (*y_move as i64))) <
                                 combined_radii_squared
                         {
                             // Slowly back it off if it is overlapping by intervals of 1 on the axis of greater velocity
@@ -516,6 +513,8 @@ fn check_two_circles_translational(
                                 }
                             }
                         }
+
+                        */
                     } else {
                         // In the case where x_move has become 0, y_move should be set to 0 too.
                         *y_move = 0;
@@ -587,46 +586,42 @@ fn check_two_circles_translational(
     }
 }
 
-
-
 #[test]
-fn test_translational_circle_check () {
+fn test_translational_circle_check() {
+    let mut x_move = 20;
+    let mut y_move = 40;
+    let original_x_move = 20;
+    let original_y_move = 40;
+    let mut involved_blobs = vec![1 as usize];
+    let mut involved_minerals = false;
+    let blob_number = 1;
+    let collider_circle = CircleInfo {
+        x: 500,
+        y: 600,
+        radius: 2000,
+    };
+    let collidee_circle = CirclePositionRecord {
+        center_x: 505,
+        center_y: 4605,
+        radius: 2000,
+        background: false,
+        circle_entity_type: CircleEntityType::Organism,
+        identity_number: 2,
+        blob_number: 2,
+    };
 
-let mut x_move = 20;
-let mut y_move = 40;
-let original_x_move = 20;
-let original_y_move = 40;
-let mut involved_blobs = vec![1 as usize];
-let mut involved_minerals = false;
-let blob_number = 1;
-let collider_circle = CircleInfo {
-    x: 500,
-    y: 600,
-    radius: 2000,
-};
-let collidee_circle = CirclePositionRecord {
-    center_x: 505,
-    center_y: 4605,
-    radius: 2000,
-    background: false,
-    circle_entity_type: CircleEntityType::Organism,
-    identity_number: 2,
-    blob_number: 2,
-};
+    check_two_circles_translational(
+        &mut x_move,
+        &mut y_move,
+        original_x_move,
+        original_y_move,
+        &mut involved_blobs,
+        &mut involved_minerals,
+        blob_number,
+        &collider_circle,
+        &collidee_circle
+    );
 
-check_two_circles_translational(
-    &mut x_move,
-    &mut y_move,
-    original_x_move,
-    original_y_move,
-    &mut involved_blobs,
-    &mut involved_minerals,
-    blob_number,
-    &collider_circle,
-    &collidee_circle
-);
-
-assert_eq!(x_move, 2);
-assert_eq!(y_move, 4);
-
+    assert_eq!(x_move, 2);
+    assert_eq!(y_move, 4);
 }
