@@ -455,20 +455,14 @@ fn check_two_circles_translational(
                     let x2 = collidee_circle.center_x as i64;
                     let y2 = collidee_circle.center_y as i64;
 
+                    let e = (1000 * y1 - slope_x_1000 * x1) / 1000;
+
                     // Double Checked
                     let a = 1 + (slope_x_1000 * slope_x_1000) / 1000000;
 
-                    let b =
-                        (2 * slope_x_1000 * (-slope_x_1000 * x1 + y1 * 1000 - y2 * 1000)) /
-                            1000000 -
-                        2 * x2;
+                    let b = (2 * (slope_x_1000 * e - slope_x_1000 * y2 - 1000 * x2))/1000;
 
-                    let c =
-                        x2 * x2 +
-                        ((-slope_x_1000 * x1 + y1 * 1000 - y2 * 1000) *
-                            (-slope_x_1000 * x1 + y1 * 1000 - y2 * 1000)) /
-                            1000000 -
-                        combined_radii_squared;
+                    let c = y2 * y2 - combined_radii_squared + x2 * x2 - 2 * e * y2 + e * e;
 
                     // This tuple holds the solutions to the quadratic
 
