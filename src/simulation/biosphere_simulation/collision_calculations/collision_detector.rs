@@ -455,24 +455,25 @@ fn check_two_circles_translational(
                     let x2 = collidee_circle.center_x as i64;
                     let y2 = collidee_circle.center_y as i64;
 
-                    let e = (1000 * y1 - slope_x_1000 * x1) / 1000;
+                    let e_x_1000 = 1000 * y1 - slope_x_1000 * x1;
 
-                    // Double Checked
-                    let a = 1 + (slope_x_1000 * slope_x_1000) / 1000000;
+                    let a_x_1000 = 1000 + (slope_x_1000 * slope_x_1000) / 1000;
 
-                    let b = (2 * (slope_x_1000 * e - slope_x_1000 * y2 - 1000 * x2))/1000;
+                    let b_x_1000 = (2 * (slope_x_1000 * e_x_1000 - slope_x_1000 * y2 * 1000 - 1000000 * x2))/1000;
 
-                    let c = y2 * y2 - combined_radii_squared + x2 * x2 - 2 * e * y2 + e * e;
+                    let c_x_1000 = (y2 * y2 * 1000000 - combined_radii_squared * 1000000 + 1000000 * x2 * x2 - 1000* 2 * e_x_1000 * y2 + e_x_1000 * e_x_1000)/1000;
 
                     // This tuple holds the solutions to the quadratic
 
-                    let quadratic_solutions = quadratic_solver::solve_quadratic(a, b, c);
+                    let quadratic_solutions = quadratic_solver::solve_quadratic(a_x_1000, b_x_1000, c_x_1000);
 
                     /* temporary code start */
 
                     if blob_number == 6 {
+                        println!("Combined Radii Squared: {}", combined_radii_squared);
+                        println!("E: {}", e_x_1000);
                         println!("slope: {}", slope_x_1000);
-                        println!("a: {}, b: {}, c:{}", a, b, c);
+                        println!("a: {}, b: {}, c:{}", a_x_1000, b_x_1000, c_x_1000);
                         println!(
                             "solution 1: {} solution 2: {}",
                             quadratic_solutions.0,

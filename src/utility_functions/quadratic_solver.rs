@@ -2,10 +2,11 @@
 
 use super::integer_math::square_root;
 
-pub fn solve_quadratic (a: i64, b:i64, c:i64) -> (i64, i64) {
+pub fn solve_quadratic (a_x_1000: i64, b_x_1000:i64, c_x_1000:i64) -> (i64, i64) {
 
-    return ((-b + square_root(b * b - 4 * a * c )) / (2 * a), (-b - square_root(b * b - 4 * a * c )) / (2 * a))
+    return ((-b_x_1000 + square_root(b_x_1000 * b_x_1000 - 4 * a_x_1000 * c_x_1000 )) / (2 * a_x_1000 ) , (-b_x_1000 - square_root(b_x_1000 * b_x_1000 - 4 * a_x_1000 * c_x_1000 )) / (2 * a_x_1000 ))
 
+    
 }
 
 #[test]
