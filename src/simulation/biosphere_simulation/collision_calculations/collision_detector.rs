@@ -108,10 +108,10 @@ fn check_circles(
         // This checks to see if the grid to the right needs to be checked.
 
         if
-            (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) / GRID_SIZE !=
-                (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
-            (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) / GRID_SIZE <
-                (all_biosphere_information.collision_detection_grid.len() as i32)
+            (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
+                GRID_SIZE != (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
+            (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
+                GRID_SIZE < (all_biosphere_information.collision_detection_grid.len() as i32)
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
                 ((collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
@@ -135,9 +135,10 @@ fn check_circles(
         // This checks to see if the grid to the left to be checked.
 
         if
-            (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) / GRID_SIZE !=
-                (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
-            (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) / GRID_SIZE >= 0
+            (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
+                GRID_SIZE != (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
+            (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
+                GRID_SIZE >= 0
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
                 ((collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
@@ -161,10 +162,10 @@ fn check_circles(
         // This checks to see if the grid above needs to be checked.
 
         if
-            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / GRID_SIZE !=
-                (collider_circle.y + game_settings.map_height / 2) / GRID_SIZE &&
-            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / GRID_SIZE <
-                (all_biosphere_information.collision_detection_grid[0].len() as i32)
+            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) /
+                GRID_SIZE != (collider_circle.y + game_settings.map_height / 2) / GRID_SIZE &&
+            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) /
+                GRID_SIZE < (all_biosphere_information.collision_detection_grid[0].len() as i32)
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
                 ((collider_circle.x + game_settings.map_length / 2) / GRID_SIZE) as usize
@@ -250,9 +251,10 @@ fn check_circles(
         // This checks to see if the grid below needs to be checked.
 
         if
-            (collider_circle.y - collider_circle.radius + game_settings.map_height / 2) / GRID_SIZE !=
-                (collider_circle.y + game_settings.map_height / 2) / GRID_SIZE &&
-            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / GRID_SIZE >= 0
+            (collider_circle.y - collider_circle.radius + game_settings.map_height / 2) /
+                GRID_SIZE != (collider_circle.y + game_settings.map_height / 2) / GRID_SIZE &&
+            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) /
+                GRID_SIZE >= 0
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
                 ((collider_circle.x + game_settings.map_length / 2) / GRID_SIZE) as usize
@@ -447,7 +449,7 @@ fn check_two_circles_translational(
 
                 // Make sure x_move isn't 0.
                 if *x_move != 0 {
-                    let slope_x_1000 = ((*y_move as i64) * 1000) / (*x_move as i64);
+                    let slope_x_1000 = ((original_y_move as i64) * 1000) / (original_x_move as i64);
                     let x1 = collider_circle.x as i64;
                     let y1 = collider_circle.y as i64;
                     let x2 = collidee_circle.center_x as i64;
@@ -455,12 +457,12 @@ fn check_two_circles_translational(
 
                     // Double Checked
                     let a = 1 + (slope_x_1000 * slope_x_1000) / 1000000;
-                    // Double Checked
+
                     let b =
                         (2 * slope_x_1000 * (-slope_x_1000 * x1 + y1 * 1000 - y2 * 1000)) /
                             1000000 -
                         2 * x2;
-                    // Double Checked
+
                     let c =
                         x2 * x2 +
                         ((-slope_x_1000 * x1 + y1 * 1000 - y2 * 1000) *
@@ -471,6 +473,20 @@ fn check_two_circles_translational(
                     // This tuple holds the solutions to the quadratic
 
                     let quadratic_solutions = quadratic_solver::solve_quadratic(a, b, c);
+
+                    /* temporary code start */
+
+                    if blob_number == 6 {
+                        println!("slope: {}", slope_x_1000);
+                        println!("a: {}, b: {}, c:{}", a, b, c);
+                        println!(
+                            "solution 1: {} solution 2: {}",
+                            quadratic_solutions.0,
+                            quadratic_solutions.1
+                        );
+                    }
+
+                    /* temporary code end */
 
                     // If is x collision 1 is a closer than x collision 2 then set x move to it. Otherwise, set x move to collision 2.
                     if (quadratic_solutions.0 - x1).abs() < (quadratic_solutions.1 - x1).abs() {
@@ -518,6 +534,20 @@ fn check_two_circles_translational(
                         // In the case where x_move has become 0, y_move should be set to 0 too.
                         *y_move = 0;
                     }
+
+                    /* temporary code start */
+                    if blob_number == 6 {
+                        println!("x1: {}  y1: {}", x1, y1);
+                        println!("x2 {}  y2: {}", x2, y2);
+                        println!(
+                            "original x move: {}  original y move: {}",
+                            original_x_move,
+                            original_y_move
+                        );
+                        println!("x move: {}  y move: {}", x_move, y_move);
+                    }
+
+                    /* temporary code end */
 
                     // In the case where x_move is 0 from the beginning of the function.
                 } else {

@@ -9,7 +9,6 @@ pub fn solve_quadratic (a: i64, b:i64, c:i64) -> (i64, i64) {
 }
 
 #[test]
-
 fn test_quadratic_solver() {
 
     assert_eq!(solve_quadratic(2, -2, -40), (5, -4));
