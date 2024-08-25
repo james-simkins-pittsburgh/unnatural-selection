@@ -13,6 +13,8 @@ use crate::{
     },
 };
 
+use super::GRID_SIZE;
+
 // This stores the circle information for the colliders and collidees.
 struct CircleInfo {
     x: i32,
@@ -87,8 +89,8 @@ fn check_circles(
     for collider_circle in collider_circles.iter() {
         // Iterates over every collidee circle in the detection grid.
         for collidee_circle in all_biosphere_information.collision_detection_grid[
-            ((collider_circle.x + game_settings.map_length / 2) / 10000) as usize
-        ][((collider_circle.y + game_settings.map_height / 2) / 10000) as usize].iter() {
+            ((collider_circle.x + game_settings.map_length / 2) / GRID_SIZE) as usize
+        ][((collider_circle.y + game_settings.map_height / 2) / GRID_SIZE) as usize].iter() {
             // This function checks if the two circle collide and determined how much x and y movement occurs before that.
             check_two_circles_translational(
                 &mut x_move,
@@ -106,15 +108,15 @@ fn check_circles(
         // This checks to see if the grid to the right needs to be checked.
 
         if
-            (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) / 10000 !=
-                (collider_circle.x + game_settings.map_length / 2) / 10000 &&
-            (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) / 10000 <
+            (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) / GRID_SIZE !=
+                (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
+            (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) / GRID_SIZE <
                 (all_biosphere_information.collision_detection_grid.len() as i32)
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
                 ((collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
-                    10000) as usize
-            ][((collider_circle.y + game_settings.map_height / 2) / 10000) as usize].iter() {
+                    GRID_SIZE) as usize
+            ][((collider_circle.y + game_settings.map_height / 2) / GRID_SIZE) as usize].iter() {
                 // This function checks if the two circle collide and determined how much x and y movement occurs before that.
                 check_two_circles_translational(
                     &mut x_move,
@@ -133,14 +135,14 @@ fn check_circles(
         // This checks to see if the grid to the left to be checked.
 
         if
-            (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) / 10000 !=
-                (collider_circle.x + game_settings.map_length / 2) / 10000 &&
-            (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) / 10000 >= 0
+            (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) / GRID_SIZE !=
+                (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
+            (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) / GRID_SIZE >= 0
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
                 ((collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
-                    10000) as usize
-            ][((collider_circle.y + game_settings.map_height / 2) / 10000) as usize].iter() {
+                    GRID_SIZE) as usize
+            ][((collider_circle.y + game_settings.map_height / 2) / GRID_SIZE) as usize].iter() {
                 // This function checks if the two circle collide and determined how much x and y movement occurs before that.
                 check_two_circles_translational(
                     &mut x_move,
@@ -159,16 +161,16 @@ fn check_circles(
         // This checks to see if the grid above needs to be checked.
 
         if
-            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / 10000 !=
-                (collider_circle.y + game_settings.map_height / 2) / 10000 &&
-            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / 10000 <
+            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / GRID_SIZE !=
+                (collider_circle.y + game_settings.map_height / 2) / GRID_SIZE &&
+            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / GRID_SIZE <
                 (all_biosphere_information.collision_detection_grid[0].len() as i32)
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
-                ((collider_circle.x + game_settings.map_length / 2) / 10000) as usize
+                ((collider_circle.x + game_settings.map_length / 2) / GRID_SIZE) as usize
             ][
                 ((collider_circle.y + collider_circle.radius + game_settings.map_height / 2) /
-                    10000) as usize
+                    GRID_SIZE) as usize
             ].iter() {
                 // This function checks if the two circle collide and determined how much x and y movement occurs before that.
                 check_two_circles_translational(
@@ -188,16 +190,16 @@ fn check_circles(
 
             if
                 (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
-                    10000 != (collider_circle.x + game_settings.map_length / 2) / 10000 &&
+                    GRID_SIZE != (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
                 (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
-                    10000 < (all_biosphere_information.collision_detection_grid.len() as i32)
+                    GRID_SIZE < (all_biosphere_information.collision_detection_grid.len() as i32)
             {
                 for collidee_circle in all_biosphere_information.collision_detection_grid[
                     ((collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
-                        10000) as usize
+                        GRID_SIZE) as usize
                 ][
                     ((collider_circle.y + collider_circle.radius + game_settings.map_height / 2) /
-                        10000) as usize
+                        GRID_SIZE) as usize
                 ].iter() {
                     // This function checks if the two circle collide and determined how much x and y movement occurs before that.
                     check_two_circles_translational(
@@ -218,16 +220,16 @@ fn check_circles(
 
             if
                 (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
-                    10000 != (collider_circle.x + game_settings.map_length / 2) / 10000 &&
+                    GRID_SIZE != (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
                 (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
-                    10000 >= 0
+                    GRID_SIZE >= 0
             {
                 for collidee_circle in all_biosphere_information.collision_detection_grid[
                     ((collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
-                        10000) as usize
+                        GRID_SIZE) as usize
                 ][
                     ((collider_circle.y + collider_circle.radius + game_settings.map_height / 2) /
-                        10000) as usize
+                        GRID_SIZE) as usize
                 ].iter() {
                     // This function checks if the two circle collide and determined how much x and y movement occurs before that.
                     check_two_circles_translational(
@@ -248,15 +250,15 @@ fn check_circles(
         // This checks to see if the grid below needs to be checked.
 
         if
-            (collider_circle.y - collider_circle.radius + game_settings.map_height / 2) / 10000 !=
-                (collider_circle.y + game_settings.map_height / 2) / 10000 &&
-            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / 10000 >= 0
+            (collider_circle.y - collider_circle.radius + game_settings.map_height / 2) / GRID_SIZE !=
+                (collider_circle.y + game_settings.map_height / 2) / GRID_SIZE &&
+            (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) / GRID_SIZE >= 0
         {
             for collidee_circle in all_biosphere_information.collision_detection_grid[
-                ((collider_circle.x + game_settings.map_length / 2) / 10000) as usize
+                ((collider_circle.x + game_settings.map_length / 2) / GRID_SIZE) as usize
             ][
                 ((collider_circle.y - collider_circle.radius + game_settings.map_height / 2) /
-                    10000) as usize
+                    GRID_SIZE) as usize
             ].iter() {
                 // This function checks if the two circle collide and determined how much x and y movement occurs before that.
                 check_two_circles_translational(
@@ -276,16 +278,16 @@ fn check_circles(
 
             if
                 (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
-                    10000 != (collider_circle.x + game_settings.map_length / 2) / 10000 &&
+                    GRID_SIZE != (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
                 (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
-                    10000 < (all_biosphere_information.collision_detection_grid.len() as i32)
+                    GRID_SIZE < (all_biosphere_information.collision_detection_grid.len() as i32)
             {
                 for collidee_circle in all_biosphere_information.collision_detection_grid[
                     ((collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
-                        10000) as usize
+                        GRID_SIZE) as usize
                 ][
                     ((collider_circle.y - collider_circle.radius + game_settings.map_height / 2) /
-                        10000) as usize
+                        GRID_SIZE) as usize
                 ].iter() {
                     // This function checks if the two circle collide and determined how much x and y movement occurs before that.
                     check_two_circles_translational(
@@ -306,16 +308,16 @@ fn check_circles(
 
             if
                 (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
-                    10000 != (collider_circle.x + game_settings.map_length / 2) / 10000 &&
+                    GRID_SIZE != (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
                 (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
-                    10000 >= 0
+                    GRID_SIZE >= 0
             {
                 for collidee_circle in all_biosphere_information.collision_detection_grid[
                     ((collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
-                        10000) as usize
+                        GRID_SIZE) as usize
                 ][
                     ((collider_circle.y - collider_circle.radius + game_settings.map_height / 2) /
-                        10000) as usize
+                        GRID_SIZE) as usize
                 ].iter() {
                     // This function checks if the two circle collide and determined how much x and y movement occurs before that.
                     check_two_circles_translational(
@@ -482,7 +484,6 @@ fn check_two_circles_translational(
                         // Set y_move based on the fact that movement will be proportional to the full movement before collision.
                         *y_move = (*x_move * original_y_move) / original_x_move;
 
-                        /* 
                         // Check to make sure rounding errors didn't move this past the collision point. Fix it if it did.
                         while
                             x_move.abs() > 0 &&
@@ -513,8 +514,6 @@ fn check_two_circles_translational(
                                 }
                             }
                         }
-
-                        */
                     } else {
                         // In the case where x_move has become 0, y_move should be set to 0 too.
                         *y_move = 0;
@@ -523,7 +522,7 @@ fn check_two_circles_translational(
                     // In the case where x_move is 0 from the beginning of the function.
                 } else {
                     // If x_move is 0 because x_move was originally 0 for the blob.
-                    if original_x_move == 0 {
+                    if original_x_move == 0 && original_y_move != 0 {
                         // Then y of the collider at the collision points can be calculated as follows.
                         let y_of_collider_at_collision_one =
                             collidee_circle.center_y +
@@ -573,7 +572,7 @@ fn check_two_circles_translational(
                 }
 
                 // If it is exactly on the circle, just add the collider. The x_move and y_move can stay the same.
-            } else {
+            } else if x_move.abs() < original_x_move.abs() || y_move.abs() < original_y_move.abs() {
                 // The collidee entity number just needs to be added.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
                     involved_blobs.push(collidee_circle.blob_number)
@@ -588,21 +587,21 @@ fn check_two_circles_translational(
 
 #[test]
 fn test_translational_circle_check() {
-    let mut x_move = 20;
-    let mut y_move = 40;
-    let original_x_move = 20;
-    let original_y_move = 40;
+    let mut x_move = -20;
+    let mut y_move = -40;
+    let original_x_move = -20;
+    let original_y_move = -40;
     let mut involved_blobs = vec![1 as usize];
     let mut involved_minerals = false;
     let blob_number = 1;
     let collider_circle = CircleInfo {
-        x: 500,
-        y: 600,
+        x: 455,
+        y: 4499,
         radius: 2000,
     };
     let collidee_circle = CirclePositionRecord {
-        center_x: 505,
-        center_y: 4605,
+        center_x: 500,
+        center_y: 500,
         radius: 2000,
         background: false,
         circle_entity_type: CircleEntityType::Organism,
@@ -622,6 +621,6 @@ fn test_translational_circle_check() {
         &collidee_circle
     );
 
-    assert_eq!(x_move, 2);
-    assert_eq!(y_move, 4);
+    assert_eq!(x_move, 0);
+    assert_eq!(y_move, 0);
 }

@@ -1,6 +1,8 @@
 use crate::settings::GameSettings;
 use crate::simulation::AllBiosphereInformation;
 
+use super::GRID_SIZE;
+
 pub fn make_detection_grid(
     all_biosphere_information: &mut AllBiosphereInformation,
     game_settings: &GameSettings
@@ -9,16 +11,16 @@ pub fn make_detection_grid(
     let grid_height: usize;
     let grid_width: usize;
     
-    if game_settings.map_height % 10000 == 0 {
-        grid_height = (game_settings.map_height / 10000) as usize;
+    if game_settings.map_height % GRID_SIZE == 0 {
+        grid_height = (game_settings.map_height / GRID_SIZE) as usize;
     } else {
-        grid_height = (game_settings.map_height / 10000 + 1) as usize;
+        grid_height = (game_settings.map_height / GRID_SIZE + 1) as usize;
     }
 
-    if game_settings.map_height % 10000 == 0 {
-        grid_width = (game_settings.map_length / 10000) as usize;
+    if game_settings.map_height % GRID_SIZE == 0 {
+        grid_width = (game_settings.map_length / GRID_SIZE) as usize;
     } else {
-        grid_width = (game_settings.map_length / 10000 + 1) as usize;
+        grid_width = (game_settings.map_length / GRID_SIZE + 1) as usize;
     }
 
     for height in 0..grid_height {
