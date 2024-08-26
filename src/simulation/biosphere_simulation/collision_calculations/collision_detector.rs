@@ -449,11 +449,11 @@ fn check_two_circles_translational(
 
                 // Make sure x_move isn't 0.
                 if *x_move != 0 {
-                    let slope_x_1000 = ((original_y_move as i64) * 1000) / (original_x_move as i64);
-                    let x1 = collider_circle.x as i64;
-                    let y1 = collider_circle.y as i64;
-                    let x2 = collidee_circle.center_x as i64;
-                    let y2 = collidee_circle.center_y as i64;
+                    let slope_x_1000 = ((original_y_move as i128) * 1000) / (original_x_move as i128);
+                    let x1 = collider_circle.x as i128;
+                    let y1 = collider_circle.y as i128;
+                    let x2 = collidee_circle.center_x as i128;
+                    let y2 = collidee_circle.center_y as i128;
 
                     let e_x_1000 = 1000 * y1 - slope_x_1000 * x1;
 
@@ -461,7 +461,7 @@ fn check_two_circles_translational(
 
                     let b_x_1000 = (2 * (slope_x_1000 * e_x_1000 - slope_x_1000 * y2 * 1000 - 1000000 * x2))/1000;
 
-                    let c_x_1000 = (y2 * y2 * 1000000 - combined_radii_squared * 1000000 + 1000000 * x2 * x2 - 1000* 2 * e_x_1000 * y2 + e_x_1000 * e_x_1000)/1000;
+                    let c_x_1000 = (y2 * y2 * 1000000 - combined_radii_squared as i128 * 1000000 + 1000000 * x2 * x2 - 1000 * 2 * e_x_1000 * y2 + e_x_1000 * e_x_1000) / 1000;
 
                     // This tuple holds the solutions to the quadratic
 
@@ -469,7 +469,7 @@ fn check_two_circles_translational(
 
                     /* temporary code start */
 
-                    if blob_number == 6 {
+                    if blob_number == 3 {
                         println!("Combined Radii Squared: {}", combined_radii_squared);
                         println!("E: {}", e_x_1000);
                         println!("slope: {}", slope_x_1000);
@@ -531,7 +531,7 @@ fn check_two_circles_translational(
                     }
 
                     /* temporary code start */
-                    if blob_number == 6 {
+                    if blob_number == 3 {
                         println!("x1: {}  y1: {}", x1, y1);
                         println!("x2 {}  y2: {}", x2, y2);
                         println!(

@@ -42,6 +42,12 @@ pub fn move_blob(
         {
             /* Temporary code!!! */
 
+            if blob_number == 3 {
+
+                println!("Blob x velocity: {} Blob y velocity: {}", all_biosphere_information.blob_vec[blob_number].blob_x_velocity, all_biosphere_information.blob_vec[blob_number].blob_y_velocity);
+                println!("x_move: {} y_move: {}", detection_result.x_move, detection_result.y_move);
+            }
+
             if
                 (all_biosphere_information.blob_vec[blob_number].center_of_mass_x +
                     detection_result.x_move).abs() >= game_settings.map_length / 2
