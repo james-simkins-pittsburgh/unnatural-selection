@@ -484,10 +484,10 @@ fn check_two_circles_translational(
                     /* temporary code end */
 
                     // If is x collision 1 is a closer than x collision 2 then set x move to it. Otherwise, set x move to collision 2.
-                    if (quadratic_solutions.0 - x1).abs() < (quadratic_solutions.1 - x1).abs() {
-                        *x_move = (quadratic_solutions.0 - x1) as i32;
+                    if (quadratic_solutions.0 - x1 as i64).abs() < (quadratic_solutions.1 - x1 as i64).abs() {
+                        *x_move = (quadratic_solutions.0 - x1 as i64) as i32;
                     } else {
-                        *x_move = (quadratic_solutions.1 - x1) as i32;
+                        *x_move = (quadratic_solutions.1 - x1 as i64) as i32;
                     }
 
                     // Make sure x_move has not become 0.
@@ -498,9 +498,9 @@ fn check_two_circles_translational(
                         // Check to make sure rounding errors didn't move this past the collision point. Fix it if it did.
                         while
                             x_move.abs() > 0 &&
-                            (x2 - (x1 + (*x_move as i64))) * (x2 - (x1 + (*x_move as i64))) +
-                                (y2 - (y1 + (*y_move as i64))) * (y2 - (y1 + (*y_move as i64))) <
-                                combined_radii_squared
+                            (x2 - (x1 + (*x_move as i128))) * (x2 - (x1 + (*x_move as i128))) +
+                                (y2 - (y1 + (*y_move as i128))) * (y2 - (y1 + (*y_move as i128))) <
+                                combined_radii_squared as i128
                         {
                             // Slowly back it off if it is overlapping by intervals of 1 on the axis of greater velocity
                             if x_move.abs() >= y_move.abs() {
