@@ -7,9 +7,7 @@ use crate::{
         CirclePositionRecord,
     },
     utility_functions::{
-        deterministic_trigonometry::DeterministicTrig,
-        integer_math::square_root,
-        quadratic_solver,
+        deterministic_trigonometry::DeterministicTrig, integer_math::square_root_64, quadratic_solver
     },
 };
 
@@ -467,22 +465,6 @@ fn check_two_circles_translational(
 
                     let quadratic_solutions = quadratic_solver::solve_quadratic(a_x_1000, b_x_1000, c_x_1000);
 
-                    /* temporary code start */
-
-                    if blob_number == 3 {
-                        println!("Combined Radii Squared: {}", combined_radii_squared);
-                        println!("E: {}", e_x_1000);
-                        println!("slope: {}", slope_x_1000);
-                        println!("a: {}, b: {}, c:{}", a_x_1000, b_x_1000, c_x_1000);
-                        println!(
-                            "solution 1: {} solution 2: {}",
-                            quadratic_solutions.0,
-                            quadratic_solutions.1
-                        );
-                    }
-
-                    /* temporary code end */
-
                     // If is x collision 1 is a closer than x collision 2 then set x move to it. Otherwise, set x move to collision 2.
                     if (quadratic_solutions.0 - x1 as i64).abs() < (quadratic_solutions.1 - x1 as i64).abs() {
                         *x_move = (quadratic_solutions.0 - x1 as i64) as i32;
@@ -530,20 +512,6 @@ fn check_two_circles_translational(
                         *y_move = 0;
                     }
 
-                    /* temporary code start */
-                    if blob_number == 3 {
-                        println!("x1: {}  y1: {}", x1, y1);
-                        println!("x2 {}  y2: {}", x2, y2);
-                        println!(
-                            "original x move: {}  original y move: {}",
-                            original_x_move,
-                            original_y_move
-                        );
-                        println!("x move: {}  y move: {}", x_move, y_move);
-                    }
-
-                    /* temporary code end */
-
                     // In the case where x_move is 0 from the beginning of the function.
                 } else {
                     // If x_move is 0 because x_move was originally 0 for the blob.
@@ -552,7 +520,7 @@ fn check_two_circles_translational(
                         let y_of_collider_at_collision_one =
                             collidee_circle.center_y +
                             (
-                                square_root(
+                                square_root_64(
                                     combined_radii_squared - current_x_distance_squared
                                 ) as i32
                             );
@@ -561,7 +529,7 @@ fn check_two_circles_translational(
                         let y_of_collider_at_collision_two =
                             collidee_circle.center_y -
                             (
-                                square_root(
+                                square_root_64(
                                     combined_radii_squared - current_x_distance_squared
                                 ) as i32
                             );

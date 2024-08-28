@@ -1,6 +1,6 @@
 use crate::simulation::AllBiosphereInformation;
 use crate::simulation::AllCurrentInformation;
-use crate::utility_functions::integer_math::square_root;
+use crate::utility_functions::integer_math::square_root_64;
 use crate::utility_functions::deterministic_trigonometry::DeterministicTrig;
 
 pub fn apply_current(
@@ -99,7 +99,7 @@ pub fn apply_current(
                                 1000,
                             )).0) *
                             // Times the distance from the organism to the center of mass
-                            square_root(
+                            square_root_64(
                                 (blob_x - organism_x) * (blob_x - organism_x) +
                                     (blob_y - organism_y) * (blob_y - organism_y)
                             )) /
