@@ -708,7 +708,7 @@ fn check_two_circles_angular(
                 ((collidee_circle.center_y as i64) - collider_y) *
                     ((collidee_circle.center_y as i64) - collider_y)
         {
-            combined_radius_squared =
+            let combined_radius_squared =
                 ((collider_circle.radius + collidee_circle.radius) as i64) *
                 ((collider_circle.radius + collidee_circle.radius) as i64);
 

@@ -9,3 +9,6 @@ pub mod quadratic_solver;
 
 // This module does math operations with integers to avoid floating point arithmetic
 pub mod integer_math;
+
+// This module calculates the intersection points of two circles.
+pub mod two_circles_intersection_solver;
