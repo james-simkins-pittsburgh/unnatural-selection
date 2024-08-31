@@ -386,11 +386,13 @@ fn check_circles(
             // Store the new collider x and y after full rotation.
             let full_collider_x =
                 all_biosphere_information.blob_vec[blob_number].center_of_mass_x +
+                x_move +
                 (collider_circle.distance_to_center_of_mass *
                     deterministic_trig.d_trig.cosine((r_move, 1000)).0) /
                     1000;
             let full_collider_y =
                 all_biosphere_information.blob_vec[blob_number].center_of_mass_y +
+                y_move +
                 (collider_circle.distance_to_center_of_mass *
                     deterministic_trig.d_trig.sine((r_move, 1000)).0) /
                     1000;
@@ -750,7 +752,40 @@ fn check_two_circles_angular(
                     *r_move = final_angle_2;
                 }
 
-                /* MISSING CODE TO CHECK FOR OVER ROUNDING */
+                // addresses the possibility a rounding error made it so that there is now overlap.
+                let mut partial_collider_x =
+                center_of_mass_x_after_xymove +
+                    (collider_distance_center_of_mass *
+                        deterministic_trig.d_trig.cosine((*r_move, 1000)).0) /
+                        1000;
+                let mut partial_collider_y =
+                center_of_mass_y_after_xymove +
+                    (collider_distance_center_of_mass *
+                        deterministic_trig.d_trig.sine((*r_move, 1000)).0) /
+                        1000;
+
+                while
+                    (collider_circle_radius + collidee_circle.radius) *
+                        (collider_circle_radius + collidee_circle.radius) <
+                        (collidee_circle.center_x - partial_collider_x) *
+                            (collidee_circle.center_x - partial_collider_x) +
+                            (collidee_circle.center_y - partial_collider_y) *
+                                (collidee_circle.center_y - partial_collider_y) &&
+                    *r_move > 0
+                {
+                    *r_move = *r_move - r_move.signum();
+
+                    partial_collider_x =
+                    center_of_mass_x_after_xymove +
+                        (collider_distance_center_of_mass *
+                            deterministic_trig.d_trig.cosine((*r_move, 1000)).0) /
+                            1000;
+                    partial_collider_y =
+                    center_of_mass_y_after_xymove +
+                        (collider_distance_center_of_mass *
+                            deterministic_trig.d_trig.sine((*r_move, 1000)).0) /
+                            1000;
+                }
 
                 // This covers the case in which another collision occurs exactly at the r_move
             } else {
