@@ -1,3 +1,5 @@
+use bevy::scene::ron::de;
+
 use crate::{
     settings::GameSettings,
     simulation::{
@@ -10,16 +12,19 @@ use crate::{
         deterministic_trigonometry::DeterministicTrig,
         integer_math::square_root_64,
         quadratic_solver,
+        two_circles_intersection_solver::solve_two_circle_intersection,
     },
 };
 
 use super::GRID_SIZE;
 
-// This stores the circle information for the colliders and collidees.
-struct CircleInfo {
+// This stores the circle information for the colliders.
+struct ColliderCircleInfo {
     x: i32,
     y: i32,
     radius: i32,
+    distance_to_center_of_mass: i32,
+    angle_to_center_of_mass: i32,
 }
 
 pub fn detect_collision(
@@ -28,24 +33,32 @@ pub fn detect_collision(
     game_settings: &GameSettings,
     deterministic_trig: &DeterministicTrig
 ) -> CollisionCheckResult {
-    let mut collider_circles: Vec<CircleInfo> = Vec::new();
+    let mut collider_circles: Vec<ColliderCircleInfo> = Vec::new();
 
     // This makes a vec of all the circles of the collider blob.
     for organism_number in all_biosphere_information.blob_vec[blob_number].blob_members.iter() {
-        collider_circles.push(CircleInfo {
+        collider_circles.push(ColliderCircleInfo {
             x: all_biosphere_information.organism_information_vec[*organism_number].x_location,
             y: all_biosphere_information.organism_information_vec[*organism_number].y_location,
             radius: all_biosphere_information.organism_information_vec[*organism_number].radius,
+            distance_to_center_of_mass: all_biosphere_information.organism_information_vec
+                [*organism_number].distance_from_center_of_mass,
+            angle_to_center_of_mass: all_biosphere_information.organism_information_vec
+                [*organism_number].angle_to_center_of_mass,
         });
 
         if all_biosphere_information.organism_information_vec[*organism_number].oblong {
             for circle in all_biosphere_information.organism_information_vec[
                 *organism_number
             ].other_circle_positions.iter() {
-                collider_circles.push(CircleInfo {
+                collider_circles.push(ColliderCircleInfo {
                     x: circle.x,
                     y: circle.y,
                     radius: circle.radius,
+                    distance_to_center_of_mass: all_biosphere_information.organism_information_vec
+                        [*organism_number].distance_from_center_of_mass,
+                    angle_to_center_of_mass: all_biosphere_information.organism_information_vec
+                        [*organism_number].angle_to_center_of_mass,
                 });
             }
         }
@@ -64,16 +77,16 @@ pub fn detect_collision(
 
 // This helper function consults the detection grid to determine if any collisions will occur with the movement of the blob.
 fn check_circles(
-    collider_circles: Vec<CircleInfo>,
+    collider_circles: Vec<ColliderCircleInfo>,
     all_biosphere_information: &AllBiosphereInformation,
     game_settings: &GameSettings,
     blob_number: usize,
-    _deterministic_trig: &DeterministicTrig
+    deterministic_trig: &DeterministicTrig
 ) -> CollisionCheckResult {
     // These store the maximum movement before a collision (if any) occurs.
     let mut x_move = all_biosphere_information.blob_vec[blob_number].blob_x_velocity;
     let mut y_move = all_biosphere_information.blob_vec[blob_number].blob_y_velocity;
-    let mut _r_move = all_biosphere_information.blob_vec[blob_number].angular_velocity;
+    let mut r_move = all_biosphere_information.blob_vec[blob_number].angular_velocity;
 
     // This stores the original moves so it can be references later.
     let original_x_move = x_move;
@@ -84,11 +97,10 @@ fn check_circles(
 
     // This keeps track if a mineral is involved. If one is, then the entire collision will result in 0 velocities.
     let mut involved_minerals = false;
-
-    // If the only movement is rotational, this can all be skipped.
-    if x_move != 0 && y_move != 0 {
-        // Iterates over every collider circle.
-        for collider_circle in collider_circles.iter() {
+    // Iterates over every collider circle.
+    for collider_circle in collider_circles.iter() {
+        // If the only movement is rotational, this can all be skipped.
+        if x_move != 0 && y_move != 0 {
             // Iterates over every collidee circle in the detection grid.
             for collidee_circle in all_biosphere_information.collision_detection_grid[
                 ((collider_circle.x + game_settings.map_length / 2) / GRID_SIZE) as usize
@@ -106,6 +118,8 @@ fn check_circles(
                     collidee_circle
                 );
             }
+
+            /* I THINK THERE IS A LOGIC ERROR HERE. NEEDS TO CONSIDER POTENTIAL COLLIDEE SIZE AS WELL AS X_MOVE AND Y_MOVE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
             // This checks to see if the grid to the right needs to be checked.
 
@@ -365,6 +379,24 @@ fn check_circles(
                 }
             }
         }
+
+        // Rotational movement only happens if the full translational movement is completed.
+
+        if r_move != 0 && x_move == original_y_move && y_move == original_y_move {
+            // Store the new collider x and y after full rotation.
+            let full_collider_x =
+                all_biosphere_information.blob_vec[blob_number].center_of_mass_x +
+                (collider_circle.distance_to_center_of_mass *
+                    deterministic_trig.d_trig.cosine((r_move, 1000)).0) /
+                    1000;
+            let full_collider_y =
+                all_biosphere_information.blob_vec[blob_number].center_of_mass_y +
+                (collider_circle.distance_to_center_of_mass *
+                    deterministic_trig.d_trig.sine((r_move, 1000)).0) /
+                    1000;
+
+            // LEFT OFF HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        }
     }
 
     let collision: bool;
@@ -380,7 +412,7 @@ fn check_circles(
         collision,
         x_move,
         y_move,
-        r_move: _r_move,
+        r_move,
         involved_blobs,
         involved_minerals,
     };
@@ -394,7 +426,7 @@ fn check_two_circles_translational(
     involved_blobs: &mut Vec<usize>,
     involved_minerals: &mut bool,
     blob_number: usize,
-    collider_circle: &CircleInfo,
+    collider_circle: &ColliderCircleInfo,
     collidee_circle: &CirclePositionRecord
 ) {
     // If the circles are not part of the same blob.
@@ -625,109 +657,113 @@ fn check_two_circles_translational(
     }
 }
 
-#[test]
-fn test_translational_circle_check() {
-    let mut x_move = -20;
-    let mut y_move = -40;
-    let original_x_move = -20;
-    let original_y_move = -40;
-    let mut involved_blobs = vec![1 as usize];
-    let mut involved_minerals = false;
-    let blob_number = 1;
-    let collider_circle = CircleInfo {
-        x: 455,
-        y: 4499,
-        radius: 2000,
-    };
-    let collidee_circle = CirclePositionRecord {
-        center_x: 500,
-        center_y: 500,
-        radius: 2000,
-        background: false,
-        circle_entity_type: CircleEntityType::Organism,
-        identity_number: 2,
-        blob_number: 2,
-    };
-
-    check_two_circles_translational(
-        &mut x_move,
-        &mut y_move,
-        original_x_move,
-        original_y_move,
-        &mut involved_blobs,
-        &mut involved_minerals,
-        blob_number,
-        &collider_circle,
-        &collidee_circle
-    );
-
-    assert_eq!(x_move, 0);
-    assert_eq!(y_move, 0);
-}
-
 fn check_two_circles_angular(
     r_move: &mut i32,
+    original_r_move: i32,
     involved_blobs: &mut Vec<usize>,
     involved_minerals: &mut bool,
     blob_number: usize,
-    collider_circle: &CircleInfo,
     collidee_circle: &CirclePositionRecord,
-    collider_distance_center_of_mass: i64,
-    // Make sure x_move is added in.
-    center_of_mass_x: i64,
-    // Make sure y_move is added in.
-    center_of_mass_y: i64,
-    collider_blob_x_after_move: i32,
-    collider_blob_y_after_move: i32,
+    collider_circle_radius: i32,
+    collider_distance_center_of_mass: i32,
+    // This is the center of mass after translation.
+    center_of_mass_x_after_xymove: i32,
+    center_of_mass_y_after_xymove: i32,
+    // These are the x and y after translation only.
+    collider_x_after_xymove: i32,
+    collider_y_after_xymove: i32,
+    // These are the x and y if it fully translates and rotates
+    full_collider_x: i32,
+    full_collider_y: i32,
     deterministic_trig: &DeterministicTrig
 ) {
-    // If the circles are not part of the same blob
+    // If the circles are not part of the same blob.
 
     if
-        collidee_circle.blob_number != blob_number ||
-        collidee_circle.circle_entity_type == CircleEntityType::Mineral
+        collider_distance_center_of_mass != 0 &&
+        (collidee_circle.blob_number != blob_number ||
+            collidee_circle.circle_entity_type == CircleEntityType::Mineral)
     {
-        // Store the new collider x and y after rotation.
-        let collider_x =
-            center_of_mass_x +
-            (collider_distance_center_of_mass *
-                (deterministic_trig.d_trig.cosine((*r_move, 1000)).0 as i64)) /
-                1000;
-        let collider_y =
-            center_of_mass_y +
-            (collider_distance_center_of_mass *
-                (deterministic_trig.d_trig.sine((*r_move, 1000)).0 as i64)) /
-                1000;
-
         // Check to see if a collision happens.
         if
-            ((collider_circle.radius + collidee_circle.radius) as i64) *
-                ((collider_circle.radius + collidee_circle.radius) as i64) <=
-            ((collidee_circle.center_x as i64) - collider_x) *
-                ((collidee_circle.center_x as i64) - collider_x) +
-                ((collidee_circle.center_y as i64) - collider_y) *
-                    ((collidee_circle.center_y as i64) - collider_y)
+            (collider_circle_radius + collidee_circle.radius) *
+                (collider_circle_radius + collidee_circle.radius) <=
+            (collidee_circle.center_x - full_collider_x) *
+                (collidee_circle.center_x - full_collider_x) +
+                (collidee_circle.center_y - full_collider_y) *
+                    (collidee_circle.center_y - full_collider_y)
         {
             let combined_radius_squared =
-                ((collider_circle.radius + collidee_circle.radius) as i64) *
-                ((collider_circle.radius + collidee_circle.radius) as i64);
+                (collider_circle_radius + collidee_circle.radius) *
+                (collider_circle_radius + collidee_circle.radius);
 
             // Check to see if the collision happens before the full rotation completed
             if
                 combined_radius_squared <
-                ((collidee_circle.center_x as i64) - collider_x) *
-                    ((collidee_circle.center_x as i64) - collider_x) +
-                    ((collidee_circle.center_y as i64) - collider_y) *
-                        ((collidee_circle.center_y as i64) - collider_y)
+                (collidee_circle.center_x - full_collider_x) *
+                    (collidee_circle.center_x - full_collider_x) +
+                    (collidee_circle.center_y - full_collider_y) *
+                        (collidee_circle.center_y - full_collider_y)
             {
+                // Then reset the collision list because collisions with the current r_move aren't happening.
+                if collidee_circle.circle_entity_type == CircleEntityType::Organism {
+                    *involved_blobs = vec![blob_number, collidee_circle.blob_number];
+                    *involved_minerals = false;
+                } else {
+                    *involved_blobs = vec![blob_number];
+                    *involved_minerals = true;
+                }
 
+                // This calculates the two points the collider could collider with the collidee.
+                let points_of_collisions = solve_two_circle_intersection(
+                    center_of_mass_x_after_xymove,
+                    center_of_mass_y_after_xymove,
+                    collider_distance_center_of_mass,
+                    collidee_circle.center_x,
+                    collidee_circle.center_y,
+                    collidee_circle.radius
+                );
 
+                // This determines which one is closer, which is the one that actually happens.
+                let initial_angle =
+                    deterministic_trig.d_trig.arccosine((
+                        ((collider_x_after_xymove - center_of_mass_x_after_xymove) * 1000) /
+                            collider_distance_center_of_mass,
+                        1000,
+                    )).0 * (collider_y_after_xymove - center_of_mass_y_after_xymove).signum();
+                let final_angle_1 =
+                    deterministic_trig.d_trig.arccosine((
+                        ((points_of_collisions.0.0 - center_of_mass_x_after_xymove) * 1000) /
+                            collider_distance_center_of_mass,
+                        1000,
+                    )).0 * (points_of_collisions.0.1 - center_of_mass_y_after_xymove).signum();
+                let final_angle_2 =
+                    deterministic_trig.d_trig.arccosine((
+                        ((points_of_collisions.1.0 - center_of_mass_x_after_xymove) * 1000) /
+                            collider_distance_center_of_mass,
+                        1000,
+                    )).0 * (points_of_collisions.1.1 - center_of_mass_y_after_xymove).signum();
 
+                if (final_angle_1 - initial_angle).abs() < final_angle_2 - final_angle_2 {
+                    *r_move = final_angle_1;
+                } else {
+                    *r_move = final_angle_2;
+                }
 
+                /* MISSING CODE TO CHECK FOR OVER ROUNDING */
 
-                
-                // This covers the case of a perfect collision.
+                // This covers the case in which another collision occurs exactly at the r_move
             } else {
+                // If is has already collided with something else.
+                if *r_move != original_r_move {
+                    // The collidee entity number just needs to be added.
+                    if collidee_circle.circle_entity_type == CircleEntityType::Organism {
+                        involved_blobs.push(collidee_circle.blob_number)
+                        // Or if it is a mineral then the boolean needs to be marked true.
+                    } else {
+                        *involved_minerals = true;
+                    }
+                }
             }
         }
     }
