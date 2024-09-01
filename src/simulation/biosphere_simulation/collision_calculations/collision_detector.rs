@@ -4,7 +4,7 @@ use crate::{
     settings::GameSettings,
     simulation::{
         biosphere_simulation::blob_mover::CollisionCheckResult,
-        AllBiosphereInformation,
+        AllSpatialBiosphereInformation,
         CircleEntityType,
         CirclePositionRecord,
     },
@@ -28,7 +28,7 @@ struct ColliderCircleInfo {
 }
 
 pub fn detect_collision(
-    all_biosphere_information: &AllBiosphereInformation,
+    all_spatial_biosphere_information: &AllSpatialBiosphereInformation,
     blob_number: usize,
     game_settings: &GameSettings,
     deterministic_trig: &DeterministicTrig
@@ -36,28 +36,28 @@ pub fn detect_collision(
     let mut collider_circles: Vec<ColliderCircleInfo> = Vec::new();
 
     // This makes a vec of all the circles of the collider blob.
-    for organism_number in all_biosphere_information.blob_vec[blob_number].blob_members.iter() {
+    for organism_number in all_spatial_biosphere_information.blob_vec[blob_number].blob_members.iter() {
         collider_circles.push(ColliderCircleInfo {
-            x: all_biosphere_information.organism_information_vec[*organism_number].x_location,
-            y: all_biosphere_information.organism_information_vec[*organism_number].y_location,
-            radius: all_biosphere_information.organism_information_vec[*organism_number].radius,
-            distance_to_center_of_mass: all_biosphere_information.organism_information_vec
+            x: all_spatial_biosphere_information.organism_information_vec[*organism_number].x_location,
+            y: all_spatial_biosphere_information.organism_information_vec[*organism_number].y_location,
+            radius: all_spatial_biosphere_information.organism_information_vec[*organism_number].radius,
+            distance_to_center_of_mass: all_spatial_biosphere_information.organism_information_vec
                 [*organism_number].distance_from_center_of_mass,
-            angle_to_center_of_mass: all_biosphere_information.organism_information_vec
+            angle_to_center_of_mass: all_spatial_biosphere_information.organism_information_vec
                 [*organism_number].angle_to_center_of_mass,
         });
 
-        if all_biosphere_information.organism_information_vec[*organism_number].oblong {
-            for circle in all_biosphere_information.organism_information_vec[
+        if all_spatial_biosphere_information.organism_information_vec[*organism_number].oblong {
+            for circle in all_spatial_biosphere_information.organism_information_vec[
                 *organism_number
             ].other_circle_positions.iter() {
                 collider_circles.push(ColliderCircleInfo {
                     x: circle.x,
                     y: circle.y,
                     radius: circle.radius,
-                    distance_to_center_of_mass: all_biosphere_information.organism_information_vec
+                    distance_to_center_of_mass: all_spatial_biosphere_information.organism_information_vec
                         [*organism_number].distance_from_center_of_mass,
-                    angle_to_center_of_mass: all_biosphere_information.organism_information_vec
+                    angle_to_center_of_mass: all_spatial_biosphere_information.organism_information_vec
                         [*organism_number].angle_to_center_of_mass,
                 });
             }
@@ -68,7 +68,7 @@ pub fn detect_collision(
     // Then send the results back to the blob mover.
     return check_circles(
         collider_circles,
-        &all_biosphere_information,
+        &all_spatial_biosphere_information,
         &game_settings,
         blob_number,
         deterministic_trig
@@ -78,15 +78,15 @@ pub fn detect_collision(
 // This helper function consults the detection grid to determine if any collisions will occur with the movement of the blob.
 fn check_circles(
     collider_circles: Vec<ColliderCircleInfo>,
-    all_biosphere_information: &AllBiosphereInformation,
+    all_spatial_biosphere_information: &AllSpatialBiosphereInformation,
     game_settings: &GameSettings,
     blob_number: usize,
     deterministic_trig: &DeterministicTrig
 ) -> CollisionCheckResult {
     // These store the maximum movement before a collision (if any) occurs.
-    let mut x_move = all_biosphere_information.blob_vec[blob_number].blob_x_velocity;
-    let mut y_move = all_biosphere_information.blob_vec[blob_number].blob_y_velocity;
-    let mut r_move = all_biosphere_information.blob_vec[blob_number].angular_velocity;
+    let mut x_move = all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity;
+    let mut y_move = all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity;
+    let mut r_move = all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity;
 
     // This stores the original moves so it can be references later.
     let original_x_move = x_move;
@@ -102,7 +102,7 @@ fn check_circles(
         // If the only movement is rotational, this can all be skipped.
         if x_move != 0 && y_move != 0 {
             // Iterates over every collidee circle in the detection grid.
-            for collidee_circle in all_biosphere_information.collision_detection_grid[
+            for collidee_circle in all_spatial_biosphere_information.collision_detection_grid[
                 ((collider_circle.x + game_settings.map_length / 2) / GRID_SIZE) as usize
             ][((collider_circle.y + game_settings.map_height / 2) / GRID_SIZE) as usize].iter() {
                 // This function checks if the two circle collide and determined how much x and y movement occurs before that.
@@ -127,9 +127,9 @@ fn check_circles(
                 (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
                     GRID_SIZE != (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
                 (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
-                    GRID_SIZE < (all_biosphere_information.collision_detection_grid.len() as i32)
+                    GRID_SIZE < (all_spatial_biosphere_information.collision_detection_grid.len() as i32)
             {
-                for collidee_circle in all_biosphere_information.collision_detection_grid[
+                for collidee_circle in all_spatial_biosphere_information.collision_detection_grid[
                     ((collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
                         GRID_SIZE) as usize
                 ][
@@ -158,7 +158,7 @@ fn check_circles(
                 (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
                     GRID_SIZE >= 0
             {
-                for collidee_circle in all_biosphere_information.collision_detection_grid[
+                for collidee_circle in all_spatial_biosphere_information.collision_detection_grid[
                     ((collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
                         GRID_SIZE) as usize
                 ][
@@ -185,9 +185,9 @@ fn check_circles(
                 (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) /
                     GRID_SIZE != (collider_circle.y + game_settings.map_height / 2) / GRID_SIZE &&
                 (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) /
-                    GRID_SIZE < (all_biosphere_information.collision_detection_grid[0].len() as i32)
+                    GRID_SIZE < (all_spatial_biosphere_information.collision_detection_grid[0].len() as i32)
             {
-                for collidee_circle in all_biosphere_information.collision_detection_grid[
+                for collidee_circle in all_spatial_biosphere_information.collision_detection_grid[
                     ((collider_circle.x + game_settings.map_length / 2) / GRID_SIZE) as usize
                 ][
                     ((collider_circle.y + collider_circle.radius + game_settings.map_height / 2) /
@@ -215,9 +215,9 @@ fn check_circles(
                         (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
                     (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
                         GRID_SIZE <
-                        (all_biosphere_information.collision_detection_grid.len() as i32)
+                        (all_spatial_biosphere_information.collision_detection_grid.len() as i32)
                 {
-                    for collidee_circle in all_biosphere_information.collision_detection_grid[
+                    for collidee_circle in all_spatial_biosphere_information.collision_detection_grid[
                         ((collider_circle.x +
                             collider_circle.radius +
                             game_settings.map_length / 2) /
@@ -252,7 +252,7 @@ fn check_circles(
                     (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
                         GRID_SIZE >= 0
                 {
-                    for collidee_circle in all_biosphere_information.collision_detection_grid[
+                    for collidee_circle in all_spatial_biosphere_information.collision_detection_grid[
                         ((collider_circle.x -
                             collider_circle.radius +
                             game_settings.map_length / 2) /
@@ -287,7 +287,7 @@ fn check_circles(
                 (collider_circle.y + collider_circle.radius + game_settings.map_height / 2) /
                     GRID_SIZE >= 0
             {
-                for collidee_circle in all_biosphere_information.collision_detection_grid[
+                for collidee_circle in all_spatial_biosphere_information.collision_detection_grid[
                     ((collider_circle.x + game_settings.map_length / 2) / GRID_SIZE) as usize
                 ][
                     ((collider_circle.y - collider_circle.radius + game_settings.map_height / 2) /
@@ -315,9 +315,9 @@ fn check_circles(
                         (collider_circle.x + game_settings.map_length / 2) / GRID_SIZE &&
                     (collider_circle.x + collider_circle.radius + game_settings.map_length / 2) /
                         GRID_SIZE <
-                        (all_biosphere_information.collision_detection_grid.len() as i32)
+                        (all_spatial_biosphere_information.collision_detection_grid.len() as i32)
                 {
-                    for collidee_circle in all_biosphere_information.collision_detection_grid[
+                    for collidee_circle in all_spatial_biosphere_information.collision_detection_grid[
                         ((collider_circle.x +
                             collider_circle.radius +
                             game_settings.map_length / 2) /
@@ -352,7 +352,7 @@ fn check_circles(
                     (collider_circle.x - collider_circle.radius + game_settings.map_length / 2) /
                         GRID_SIZE >= 0
                 {
-                    for collidee_circle in all_biosphere_information.collision_detection_grid[
+                    for collidee_circle in all_spatial_biosphere_information.collision_detection_grid[
                         ((collider_circle.x -
                             collider_circle.radius +
                             game_settings.map_length / 2) /
@@ -385,13 +385,13 @@ fn check_circles(
         if r_move != 0 && x_move == original_y_move && y_move == original_y_move {
             // Store the new collider x and y after full rotation.
             let full_collider_x =
-                all_biosphere_information.blob_vec[blob_number].center_of_mass_x +
+                all_spatial_biosphere_information.blob_vec[blob_number].center_of_mass_x +
                 x_move +
                 (collider_circle.distance_to_center_of_mass *
                     deterministic_trig.d_trig.cosine((r_move, 1000)).0) /
                     1000;
             let full_collider_y =
-                all_biosphere_information.blob_vec[blob_number].center_of_mass_y +
+                all_spatial_biosphere_information.blob_vec[blob_number].center_of_mass_y +
                 y_move +
                 (collider_circle.distance_to_center_of_mass *
                     deterministic_trig.d_trig.sine((r_move, 1000)).0) /

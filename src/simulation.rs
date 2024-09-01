@@ -7,7 +7,7 @@ pub mod biosphere_simulation;
 
 #[derive(Bundle, Default)]
 pub struct GameworldBundle {
-    pub all_biosphere_information: AllBiosphereInformation,
+    pub all_spatial_biosphere_information: AllSpatialBiosphereInformation,
     pub all_current_information: AllCurrentInformation,
     pub all_species_information: AllSpeciesInformation,
     pub cheap_random_gameworld: CheapRandomGameworld,
@@ -16,7 +16,7 @@ pub struct GameworldBundle {
 
 // This contains all of the information about the simulation biosphere.
 #[derive(Component, Default)]
-pub struct AllBiosphereInformation {
+pub struct AllSpatialBiosphereInformation {
     pub organism_information_vec: Vec<OrganismInformation>,
     pub collision_detection_grid: Vec<Vec<Vec<CirclePositionRecord>>>,
     pub detritus_detection_grid: Vec<Vec<Vec<DetritusPositionRecord>>>,

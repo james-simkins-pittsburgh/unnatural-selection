@@ -1,24 +1,24 @@
-use crate::simulation::AllBiosphereInformation;
+use crate::simulation::AllSpatialBiosphereInformation;
 use crate::simulation::AllCurrentInformation;
 use crate::utility_functions::integer_math::square_root_64;
 use crate::utility_functions::deterministic_trigonometry::DeterministicTrig;
 
 pub fn apply_current(
-    all_biosphere_information: &mut AllBiosphereInformation,
+    all_spatial_biosphere_information: &mut AllSpatialBiosphereInformation,
     deterministic_trig: &DeterministicTrig,
     all_current_information: &AllCurrentInformation,
     blob_number: usize
 ) {
-    let blob_x = i64::from(all_biosphere_information.blob_vec[blob_number].center_of_mass_x);
-    let blob_y = i64::from(all_biosphere_information.blob_vec[blob_number].center_of_mass_y);
-    let blob_mass = i64::from(all_biosphere_information.blob_vec[blob_number].blob_mass);
+    let blob_x = i64::from(all_spatial_biosphere_information.blob_vec[blob_number].center_of_mass_x);
+    let blob_y = i64::from(all_spatial_biosphere_information.blob_vec[blob_number].center_of_mass_y);
+    let blob_mass = i64::from(all_spatial_biosphere_information.blob_vec[blob_number].blob_mass);
 
     // For every organism in the blob
-    for index in 0..all_biosphere_information.blob_vec[blob_number].blob_members.len() as usize {
-        let organism_num = all_biosphere_information.blob_vec[blob_number].blob_members[index];
-        let organism_x = i64::from(all_biosphere_information.organism_information_vec
+    for index in 0..all_spatial_biosphere_information.blob_vec[blob_number].blob_members.len() as usize {
+        let organism_num = all_spatial_biosphere_information.blob_vec[blob_number].blob_members[index];
+        let organism_x = i64::from(all_spatial_biosphere_information.organism_information_vec
             [organism_num].x_location);
-        let organism_y = i64::from(all_biosphere_information.organism_information_vec
+        let organism_y = i64::from(all_spatial_biosphere_information.organism_information_vec
             [organism_num].y_location);
 
         // For every current
@@ -48,12 +48,12 @@ pub fn apply_current(
                 );
 
                 if
-                    all_biosphere_information.organism_information_vec
+                    all_spatial_biosphere_information.organism_information_vec
                         [organism_num].part_of_multi_org_blob
                 {
                     // In the case of multi-organism blobs, mass and angle to blob center impact rotational dynamics.
                     let org_mass = i64::from(
-                        all_biosphere_information.organism_information_vec[organism_num].mass
+                        all_spatial_biosphere_information.organism_information_vec[organism_num].mass
                     );
                     let angle_to_blob_center = 
                         deterministic_trig.d_trig.arctangent((
@@ -75,13 +75,13 @@ pub fn apply_current(
                             org_mass) /
                         1000;
                     // This is the amount of acceleration that force produces in the x direction
-                    all_biosphere_information.blob_vec[blob_number].blob_x_velocity +=
+                    all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity +=
                         ((i64::from(deterministic_trig.d_trig.cosine((angle_to_blob_center, 1000)).0) *
                             translational_velocity_force) /
                         blob_mass) as i32;
                     1000;
                     // This is the amount of acceleration that force produces in the y direction
-                    all_biosphere_information.blob_vec[blob_number].blob_y_velocity +=
+                    all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity +=
                         ((i64::from(deterministic_trig.d_trig.sine((angle_to_blob_center, 1000)).0) *
                             translational_velocity_force) /
                         blob_mass) as i32;
@@ -89,7 +89,7 @@ pub fn apply_current(
 
                     // This changes the angular velocity for the blob based on the current.
                     // Change in angular velocity (angular acceleration) equals
-                    all_biosphere_information.blob_vec[blob_number].angular_velocity +=
+                    all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity +=
                         // The force of acceleration on the organism
                         ((org_mass *
                             current_i *
@@ -104,14 +104,14 @@ pub fn apply_current(
                                     (blob_y - organism_y) * (blob_y - organism_y)
                             )) /
                         // Divided the moment of inertia
-                        (i64::from(all_biosphere_information.blob_vec[blob_number].blob_moment_of_inertia) *
+                        (i64::from(all_spatial_biosphere_information.blob_vec[blob_number].blob_moment_of_inertia) *
                             // times 1000 to cancel out the d_trig function provided angle times 1000
                             1000)) as i32;
                 } else {
                     // The acceleration can be added directly if the blob is a single organism.
-                    all_biosphere_information.blob_vec[blob_number].blob_x_velocity +=
+                    all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity +=
                         ((i64::from(deterministic_trig.d_trig.cosine((current_a, 1000)).0) * current_i) / 1000) as i32;
-                    all_biosphere_information.blob_vec[blob_number].blob_y_velocity +=
+                    all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity +=
                         ((i64::from(deterministic_trig.d_trig.sine((current_a, 1000)).0) * current_i) / 1000) as i32;
                 }
             }

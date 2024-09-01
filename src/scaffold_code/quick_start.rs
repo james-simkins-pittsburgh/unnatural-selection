@@ -5,16 +5,16 @@ pub fn create_basic_world(mut commands: Commands) {
 }
 
 pub fn populate_basic_world(
-    mut gameworld_query: Query<(&mut crate::simulation::AllBiosphereInformation, &mut crate::simulation::CheapRandomGameworld)>
+    mut gameworld_query: Query<(&mut crate::simulation::AllSpatialBiosphereInformation, &mut crate::simulation::CheapRandomGameworld)>
 ) {
-    let (mut biosphere, mut cheap_random_gameworld) = gameworld_query.single_mut();
+    let (mut spatial_biosphere, mut cheap_random_gameworld) = gameworld_query.single_mut();
     cheap_random_gameworld.random_0_to_359 = crate::utility_functions::cheap_random::Random0to359::initialize(412);
-    biosphere.organism_information_vec = Vec::new();
+    spatial_biosphere.organism_information_vec = Vec::new();
 
     let mut x_location = 0;
     let mut y_location = 0;
 
-    biosphere.organism_information_vec.push(crate::simulation::OrganismInformation {
+    spatial_biosphere.organism_information_vec.push(crate::simulation::OrganismInformation {
         in_use: false,
         x_location: 0,
         y_location: 0,
@@ -45,7 +45,7 @@ pub fn populate_basic_world(
         angle_to_center_of_mass: 0,
     });
 
-    biosphere.blob_vec.push(crate::simulation::BlobRecord {
+    spatial_biosphere.blob_vec.push(crate::simulation::BlobRecord {
         in_use: false,
         blob_members: Vec::new(),
         blob_x_velocity: 0,
@@ -142,7 +142,7 @@ pub fn populate_basic_world(
             _ => {}
         }
 
-        biosphere.organism_information_vec.push(crate::simulation::OrganismInformation {
+        spatial_biosphere.organism_information_vec.push(crate::simulation::OrganismInformation {
             in_use: true,
             x_location: x_location,
             y_location: y_location,
@@ -173,7 +173,7 @@ pub fn populate_basic_world(
             angle_to_center_of_mass: 0,
         });
 
-        biosphere.blob_vec.push(crate::simulation::BlobRecord {
+        spatial_biosphere.blob_vec.push(crate::simulation::BlobRecord {
             in_use: true,
             blob_members: vec![org_num],
             blob_x_velocity: 0,

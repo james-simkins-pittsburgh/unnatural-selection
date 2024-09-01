@@ -1,5 +1,5 @@
 use crate::settings::GameSettings;
-use crate::simulation::AllBiosphereInformation;
+use crate::simulation::AllSpatialBiosphereInformation;
 use crate::simulation::AllSpeciesInformation;
 use crate::simulation::AllCurrentInformation;
 use crate::simulation::AdministrativeInformation;
@@ -15,8 +15,8 @@ pub mod blob_mover;
 // This detects collisions of organisms.
 pub mod collision_calculations;
 
-pub fn simulate_biosphere(
-    mut all_biosphere_information: &mut AllBiosphereInformation,
+pub fn simulate_spatial_biosphere(
+    mut all_spatial_biosphere_information: &mut AllSpatialBiosphereInformation,
     _all_species_information: &AllSpeciesInformation,
     all_current_information: &AllCurrentInformation,
     _admin_information: &AdministrativeInformation,
@@ -24,19 +24,19 @@ pub fn simulate_biosphere(
     d_trig: &DeterministicTrig,
     game_settings: &GameSettings
 ) {
-    for blob_number in 1..all_biosphere_information.blob_vec.len() {
+    for blob_number in 1..all_spatial_biosphere_information.blob_vec.len() {
         current_applicator::apply_current(
-            &mut all_biosphere_information,
+            &mut all_spatial_biosphere_information,
             d_trig,
             &all_current_information,
             blob_number
         );
     }
 
-    for blob_number in 1..all_biosphere_information.blob_vec.len() {
-        if all_biosphere_information.blob_vec[blob_number].in_use {
+    for blob_number in 1..all_spatial_biosphere_information.blob_vec.len() {
+        if all_spatial_biosphere_information.blob_vec[blob_number].in_use {
             blob_mover::move_blob(
-                &mut all_biosphere_information,
+                &mut all_spatial_biosphere_information,
                 d_trig,
                 blob_number,
                 game_settings

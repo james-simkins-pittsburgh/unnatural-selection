@@ -1,10 +1,10 @@
 use crate::settings::GameSettings;
-use crate::simulation::AllBiosphereInformation;
+use crate::simulation::AllSpatialBiosphereInformation;
 
 use super::GRID_SIZE;
 
 pub fn make_detection_grid(
-    all_biosphere_information: &mut AllBiosphereInformation,
+    all_spatial_biosphere_information: &mut AllSpatialBiosphereInformation,
     game_settings: &GameSettings
 ) {
     
@@ -25,13 +25,13 @@ pub fn make_detection_grid(
 
     for height in 0..grid_height {
 
-        all_biosphere_information.collision_detection_grid.push(Vec::new());
-        all_biosphere_information.detritus_detection_grid.push(Vec::new());  
+        all_spatial_biosphere_information.collision_detection_grid.push(Vec::new());
+        all_spatial_biosphere_information.detritus_detection_grid.push(Vec::new());  
 
         for _width in 0..grid_width {
 
-            all_biosphere_information.collision_detection_grid [height].push(Vec::new());
-            all_biosphere_information.detritus_detection_grid [height].push(Vec::new()); 
+            all_spatial_biosphere_information.collision_detection_grid [height].push(Vec::new());
+            all_spatial_biosphere_information.detritus_detection_grid [height].push(Vec::new()); 
 
         }
     }
