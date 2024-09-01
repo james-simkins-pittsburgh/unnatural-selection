@@ -2,8 +2,8 @@ use bevy::prelude::*;
 use crate::simulation::current_simulation::simulate_currents;
 use super::biosphere_simulation::simulate_spatial_biosphere;
 
-// This code runs one step of the simulation.
-pub fn step_simulation(
+// This code runs one step of the simulation for the spatial simulation
+pub fn step_spatial_simulation(
     deterministic_trig: Res<crate::utility_functions::deterministic_trigonometry::DeterministicTrig>,
     game_settings: Res<crate::settings::GameSettings>,
     mut gameworld: Query<

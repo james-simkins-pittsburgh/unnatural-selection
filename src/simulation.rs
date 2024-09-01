@@ -8,6 +8,7 @@ pub mod biosphere_simulation;
 #[derive(Bundle, Default)]
 pub struct GameworldBundle {
     pub all_spatial_biosphere_information: AllSpatialBiosphereInformation,
+    pub all_biological_biosphere_information: AllBiologicalBiosphereInformation,
     pub all_current_information: AllCurrentInformation,
     pub all_species_information: AllSpeciesInformation,
     pub cheap_random_gameworld: CheapRandomGameworld,
@@ -24,7 +25,7 @@ pub struct AllSpatialBiosphereInformation {
     pub colony_vec: Vec<Vec<usize>>,
 }
 
-// This contains all the data about an individual organism.
+// This contains all the spatial data about an individual organism.
 #[derive(Clone, PartialEq, Default)]
 pub struct OrganismInformation {
     pub in_use: bool,
@@ -34,23 +35,9 @@ pub struct OrganismInformation {
     // In thousandths of radians.
     pub rotation: i32,
     pub background: bool,
-    pub health: i32,
-    pub energy: i32,
     pub part_of_multi_org_blob: bool,
     pub blob_number: usize,
     pub colony_number: usize,
-    pub player_number: i32,
-    pub species_number: i32,
-    pub species_type: SpeciesType,
-    pub moving_on_its_own: bool,
-    pub eating: bool,
-    pub eating_target: Vec <usize>,
-    pub attached_to_host: bool,
-    pub in_host: bool,
-    pub viral_host_organism: usize,
-    pub inserting: bool,
-    pub animation_type: AnimationType,
-    pub animation_counter: usize,
     pub radius: i32,
     pub oblong: bool,
     pub other_circle_positions: Vec<OtherCirclePosition>,
@@ -126,6 +113,37 @@ pub struct BlobRecord {
     pub angular_velocity: i32,
 
 }
+
+#[derive(Component, Default)]
+pub struct AllBiologicalBiosphereInformation {
+    pub organism_bio_information_vec: Vec<OrganismBioInformation>,
+}
+
+// This contains all the spatial data about an individual organism.
+#[derive(Clone, PartialEq, Default)]
+pub struct OrganismBioInformation {
+    pub in_use: bool,
+    pub health: i32,
+    pub energy: i32,
+    pub colony_number: usize,
+    pub player_number: i32,
+    pub species_number: i32,
+    pub species_type: SpeciesType,
+    pub moving_on_its_own: bool,
+    pub eating: bool,
+    pub eating_target: Vec <usize>,
+    pub attached_to_host: bool,
+    pub in_host: bool,
+    pub viral_host_organism: usize,
+    pub inserting: bool,
+    pub animation_type: AnimationType,
+    pub animation_counter: usize,
+}
+
+
+
+
+
 
 
 // This contains all the information about currents.

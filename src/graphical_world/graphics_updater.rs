@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 // This module will hold the code that updates each graphical entity based on its corresponding simulation organism.
 pub fn update_graphical_world(
-    spatial_biosphere: Query<&crate::simulation::AllSpatialBiosphereInformation>,
+    gameworld: Query<(&crate::simulation::AllSpatialBiosphereInformation, &crate::simulation::AllBiologicalBiosphereInformation)>,
     mut assigned_graphical_entities: Query<
         (
             &mut crate::graphical_world::MainGraphicsOfOrganism,
@@ -15,16 +15,16 @@ pub fn update_graphical_world(
     >,
     texture_atlas_handles: Res<crate::graphical_world::texture_loader::TextureAtlasHandles>
 ) {
-    let spatial_biosphere = spatial_biosphere.single();
+    let (spatial_biosphere, biological_biosphere) = gameworld.single();
 
     // This updates the position of the sprite.
     for mut graphical_entity in assigned_graphical_entities.iter_mut() {
         // This calculates the z value and index value in a way that maximizes texture loading efficiency.
         let z_and_index_and_texture_number =
             crate::graphical_world::z_and_index_and_texture_number_calculator::calculate_z_and_index_and_texture_number(
-                spatial_biosphere.organism_information_vec
+                biological_biosphere.organism_bio_information_vec
                     [graphical_entity.0.corresponding_organism_number].animation_type,
-                spatial_biosphere.organism_information_vec
+                biological_biosphere.organism_bio_information_vec
                     [graphical_entity.0.corresponding_organism_number].species_type,
                 spatial_biosphere.organism_information_vec
                     [graphical_entity.0.corresponding_organism_number].background

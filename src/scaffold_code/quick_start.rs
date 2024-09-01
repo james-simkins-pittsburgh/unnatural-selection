@@ -5,10 +5,18 @@ pub fn create_basic_world(mut commands: Commands) {
 }
 
 pub fn populate_basic_world(
-    mut gameworld_query: Query<(&mut crate::simulation::AllSpatialBiosphereInformation, &mut crate::simulation::CheapRandomGameworld)>
+    mut gameworld_query: Query<
+        (
+            &mut crate::simulation::AllSpatialBiosphereInformation,
+            &mut crate::simulation::AllBiologicalBiosphereInformation,
+            &mut crate::simulation::CheapRandomGameworld,
+        )
+    >
 ) {
-    let (mut spatial_biosphere, mut cheap_random_gameworld) = gameworld_query.single_mut();
-    cheap_random_gameworld.random_0_to_359 = crate::utility_functions::cheap_random::Random0to359::initialize(412);
+    let (mut spatial_biosphere, mut biological_biosphere, mut cheap_random_gameworld) =
+        gameworld_query.single_mut();
+    cheap_random_gameworld.random_0_to_359 =
+        crate::utility_functions::cheap_random::Random0to359::initialize(412);
     spatial_biosphere.organism_information_vec = Vec::new();
 
     let mut x_location = 0;
@@ -19,31 +27,38 @@ pub fn populate_basic_world(
         x_location: 0,
         y_location: 0,
         rotation: 0,
-        health: 0,
-        energy: 0,
         mass: 1,
-        player_number: 0,
-        species_number: 0,
-        species_type: crate::simulation::SpeciesType::Empty,
-        animation_type: crate::simulation::AnimationType::None,
-        moving_on_its_own: false,
-        eating: false,
-        eating_target: Vec::new(),
-        in_host: false,
-        inserting: false,
-        viral_host_organism: 0,
-        animation_counter: 0,
         blob_number: 0,
         colony_number: 0,
-        attached_to_host: false,
         part_of_multi_org_blob: false,
-        background:false,
+        background: false,
         radius: 0,
         oblong: false,
         other_circle_positions: Vec::new(),
         distance_from_center_of_mass: 0,
         angle_to_center_of_mass: 0,
     });
+
+    biological_biosphere.organism_bio_information_vec.push(
+        crate::simulation::OrganismBioInformation {
+            in_use: false,
+            health: 0,
+            energy: 0,
+            player_number: 0,
+            species_number: 0,
+            species_type: crate::simulation::SpeciesType::Empty,
+            animation_type: crate::simulation::AnimationType::None,
+            moving_on_its_own: false,
+            eating: false,
+            eating_target: Vec::new(),
+            in_host: false,
+            inserting: false,
+            viral_host_organism: 0,
+            animation_counter: 0,
+            attached_to_host: false,
+            colony_number: 0,
+        }
+    );
 
     spatial_biosphere.blob_vec.push(crate::simulation::BlobRecord {
         in_use: false,
@@ -147,23 +162,9 @@ pub fn populate_basic_world(
             x_location: x_location,
             y_location: y_location,
             rotation: 0,
-            health: 100,
-            energy: 100,
-            player_number: 1,
-            species_number: 1,
             mass: 1,
-            species_type: crate::simulation::SpeciesType::Prochlorococcus,
-            animation_type: crate::simulation::AnimationType::None,
-            moving_on_its_own: false,
-            eating: false,
-            eating_target: Vec::new(),
-            in_host: false,
-            inserting: false,
-            viral_host_organism: 0,
-            animation_counter: 0,
             blob_number: org_num,
             colony_number: 0,
-            attached_to_host: false,
             part_of_multi_org_blob: false,
             background: false,
             radius: 2000,
@@ -172,6 +173,27 @@ pub fn populate_basic_world(
             distance_from_center_of_mass: 0,
             angle_to_center_of_mass: 0,
         });
+
+        biological_biosphere.organism_bio_information_vec.push(
+            crate::simulation::OrganismBioInformation {
+                in_use: false,
+                health: 100,
+                energy: 100,
+                player_number: 1,
+                species_number: 1,
+                species_type: crate::simulation::SpeciesType::Prochlorococcus,
+                animation_type: crate::simulation::AnimationType::None,
+                moving_on_its_own: false,
+                eating: false,
+                eating_target: Vec::new(),
+                in_host: false,
+                inserting: false,
+                viral_host_organism: 0,
+                animation_counter: 0,
+                attached_to_host: false,
+                colony_number: 0,
+            }
+        );
 
         spatial_biosphere.blob_vec.push(crate::simulation::BlobRecord {
             in_use: true,
@@ -188,12 +210,11 @@ pub fn populate_basic_world(
 }
 
 pub fn add_to_graphics(
-    mut need_partner_list: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>,
+    mut need_partner_list: ResMut<crate::graphical_world::OrganismsThatNeedGraphicalPartner>
 ) {
     need_partner_list.organism_that_need_graphical_partner = Vec::new();
 
     for index in 1..21 {
-        need_partner_list.organism_that_need_graphical_partner.push(index)
+        need_partner_list.organism_that_need_graphical_partner.push(index);
     }
-
 }

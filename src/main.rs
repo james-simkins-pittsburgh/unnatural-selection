@@ -45,7 +45,7 @@ fn main() {
         .add_systems(
             Update,
             (
-                simulation::simulation_stepper::step_simulation,
+                simulation::simulation_stepper::step_spatial_simulation,
                 user_interface::camera::camera_pan_and_zoom,
                 graphical_world::graphics_assigner::unassign_graphical_entities,
                 graphical_world::graphics_assigner::create_graphical_entities,
