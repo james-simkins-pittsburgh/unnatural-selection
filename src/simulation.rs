@@ -71,8 +71,8 @@ pub enum AnimationType {
 
 pub struct CirclePositionRecord {
 
-    pub center_x: i32,
-    pub center_y: i32,
+    pub x: i32,
+    pub y: i32,
     pub radius: i32,
     pub background: bool,
     pub circle_entity_type: CircleEntityType,

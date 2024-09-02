@@ -37,8 +37,8 @@ pub fn update_for_movement(
             game_settings.map_height / 2) /
             GRID_SIZE) as usize
     ].push(CirclePositionRecord {
-        center_x: all_spatial_biosphere_information.organism_information_vec[organism_number].x_location,
-        center_y: all_spatial_biosphere_information.organism_information_vec[organism_number].y_location,
+        x: all_spatial_biosphere_information.organism_information_vec[organism_number].x_location,
+        y: all_spatial_biosphere_information.organism_information_vec[organism_number].y_location,
         radius: all_spatial_biosphere_information.organism_information_vec[organism_number].radius,
         background: all_spatial_biosphere_information.organism_information_vec[organism_number].background,
         circle_entity_type: CircleEntityType::Organism,
@@ -79,8 +79,8 @@ pub fn update_for_movement(
                 ((circle.x + game_settings.map_length / 2) / GRID_SIZE) as usize
             ][((circle.y + game_settings.map_height / 2) / GRID_SIZE) as usize].push(
                 CirclePositionRecord {
-                    center_x: circle.x,
-                    center_y: circle.y,
+                    x: circle.x,
+                    y: circle.y,
                     radius: all_spatial_biosphere_information.organism_information_vec
                         [organism_number].radius,
                     background: all_spatial_biosphere_information.organism_information_vec
