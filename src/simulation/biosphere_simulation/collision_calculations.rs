@@ -12,4 +12,8 @@ pub mod organism_collisions;
 // This module updates the detection grid;
 pub mod detection_grid_updater;
 
-pub const GRID_SIZE: i32 = 10000;
+pub const SMALL_GRID_SIZE: i32 = 6000;
+pub const LARGE_GRID_SIZE: i32 = 12000;
+pub const SMALL_GRID_CIRCLE_MAX_RADIUS: i32 = 2500;
+pub const LARGE_GRID_CIRCLE_MAX_RADIUS: i32 = 5500;
+pub const SPEED_LIMIT: i32 = 900;

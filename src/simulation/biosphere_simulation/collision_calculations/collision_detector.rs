@@ -19,9 +19,6 @@ use crate::{
 // This module makes a list of collider circles.
 pub mod collider_circle_list_maker;
 
-// This module remakes the collision detection grids to remove organisms from the blob.
-pub mod detection_grid_shaver;
-
 // This stores the circle information for the colliders.
 pub struct ColliderCircleInfo {
     x: i32,
@@ -37,9 +34,6 @@ pub fn detect_collision(
     game_settings: &GameSettings,
     deterministic_trig: &DeterministicTrig
 ) -> CollisionCheckResult {
-
-    // This makes a vec of all the circles of the collider blob.
-    let mut collider_circles: Vec<ColliderCircleInfo> = make_collider_circle_list(all_spatial_biosphere_information, blob_number);
 
     // These store the maximum movement before a collision (if any) occurs.
     let mut x_move = all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity;
@@ -57,24 +51,22 @@ pub fn detect_collision(
     // This keeps track if a mineral is involved. If one is, then the entire collision will result in zero velocities.
     let mut mineral_involved = false;
 
-    // Different algorithms are optimal depending on whether a large or small blob is being tested for collisions.
-    if all_spatial_biosphere_information.blob_vec[blob_number].blob_members.len() > 4 {
+    // This keeps track of whether or not a collision occurred.
+    let mut collision = false;
 
-        
+    // This makes a vec of all the circles of the collider blob.
+    let mut collider_circles: Vec<ColliderCircleInfo> = make_collider_circle_list(all_spatial_biosphere_information, blob_number);
 
-    } else {
 
-        
-    }
-    
+   
 // This is just placeholder code.
 return CollisionCheckResult {
-    collision: false,
+    collision,
     x_move,
     y_move,
     r_move,
     involved_blobs,
-    involved_minerals: false,
+    mineral_involved,
 }
 
 }

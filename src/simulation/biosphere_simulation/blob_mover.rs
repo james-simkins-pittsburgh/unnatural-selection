@@ -11,7 +11,7 @@ pub struct CollisionCheckResult {
     pub y_move: i32,
     pub r_move: i32,
     pub involved_blobs: Vec<usize>,
-    pub involved_minerals: bool,
+    pub mineral_involved: bool,
 }
 
 pub fn move_blob(
@@ -275,7 +275,7 @@ pub fn move_blob(
             apply_collision(
                 all_spatial_biosphere_information,
                 &detection_result.involved_blobs,
-                detection_result.involved_minerals
+                detection_result.mineral_involved
             );
         }
     }

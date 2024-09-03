@@ -19,7 +19,8 @@ pub struct GameworldBundle {
 #[derive(Component, Default)]
 pub struct AllSpatialBiosphereInformation {
     pub organism_information_vec: Vec<OrganismInformation>,
-    pub collision_detection_grid: Vec<Vec<Vec<CirclePositionRecord>>>,
+    pub collision_detection_grid_small: Vec<Vec<Vec<CirclePositionRecord>>>,
+    pub collision_detection_grid_large: Vec<Vec<Vec<CirclePositionRecord>>>,
     pub detritus_detection_grid: Vec<Vec<Vec<DetritusPositionRecord>>>,
     pub blob_vec: Vec<BlobRecord>,
     pub colony_vec: Vec<Vec<usize>>,
@@ -46,10 +47,8 @@ pub struct OrganismInformation {
     pub angle_to_center_of_mass: i32,
 }
 
-
-#[derive(Copy, Clone, PartialEq, Default)] 
+#[derive(Copy, Clone, PartialEq, Default)]
 pub struct OtherCirclePosition {
-
     pub x: i32,
     pub y: i32,
     pub radius: i32,
@@ -67,10 +66,8 @@ pub enum AnimationType {
     Budding,
 }
 
-#[derive(Copy, Clone, PartialEq, Default)] 
-
+#[derive(Copy, Clone, PartialEq, Default)]
 pub struct CirclePositionRecord {
-
     pub x: i32,
     pub y: i32,
     pub radius: i32,
@@ -78,30 +75,22 @@ pub struct CirclePositionRecord {
     pub circle_entity_type: CircleEntityType,
     pub identity_number: usize,
     pub blob_number: usize,
-
 }
 
 pub struct DetritusPositionRecord {
-
-    pub center_x: i32,
-    pub center_y: i32,
-    pub active: bool,
-    pub claimed_by: usize,
+    pub x: i32,
+    pub y: i32,
+    pub identity_number: usize,
 }
 
-
 #[derive(Copy, Clone, PartialEq, Default)]
-
 pub enum CircleEntityType {
     #[default] Organism,
     Mineral,
 }
 
-
-#[derive(Clone, PartialEq, Default)] 
-
+#[derive(Clone, PartialEq, Default)]
 pub struct BlobRecord {
-
     pub in_use: bool,
     pub blob_members: Vec<usize>,
     pub blob_x_velocity: i32,
@@ -109,9 +98,8 @@ pub struct BlobRecord {
     pub blob_mass: i32,
     pub center_of_mass_x: i32,
     pub center_of_mass_y: i32,
-    pub blob_moment_of_inertia: i32, 
+    pub blob_moment_of_inertia: i32,
     pub angular_velocity: i32,
-
 }
 
 #[derive(Component, Default)]
@@ -131,7 +119,7 @@ pub struct OrganismBioInformation {
     pub species_type: SpeciesType,
     pub moving_on_its_own: bool,
     pub eating: bool,
-    pub eating_target: Vec <usize>,
+    pub eating_target: Vec<usize>,
     pub attached_to_host: bool,
     pub in_host: bool,
     pub viral_host_organism: usize,
@@ -139,12 +127,6 @@ pub struct OrganismBioInformation {
     pub animation_type: AnimationType,
     pub animation_counter: usize,
 }
-
-
-
-
-
-
 
 // This contains all the information about currents.
 #[derive(Component, Default)]
@@ -280,6 +262,6 @@ pub struct CheapRandomGameworld {
 }
 
 #[derive(Component, Default)]
-pub struct AdministrativeInformation{
+pub struct AdministrativeInformation {
     pub tick_counter: i64,
 }
