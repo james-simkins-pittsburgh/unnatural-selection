@@ -8,7 +8,7 @@ use crate::{
     },
 };
 
-use super::{SMALL_GRID_SIZE, SMALL_GRID_CIRCLE_MAX_RADIUS};
+use super::{ SMALL_GRID_SIZE, SMALL_GRID_CIRCLE_MAX_RADIUS, LARGE_GRID_SIZE };
 
 pub fn update_for_movement(
     all_spatial_biosphere_information: &mut AllSpatialBiosphereInformation,
@@ -18,63 +18,165 @@ pub fn update_for_movement(
     organism_number: usize,
     game_settings: &GameSettings
 ) {
-    if
-        all_spatial_biosphere_information.organism_information_vec[organism_number].radius <=
-        SMALL_GRID_CIRCLE_MAX_RADIUS
-    {
-        // Erase the old record for the main circle
-        all_spatial_biosphere_information.collision_detection_grid_small[
-            ((previous_x + game_settings.map_length / 2) / SMALL_GRID_SIZE) as usize
-        ][((previous_y + game_settings.map_height / 2) / SMALL_GRID_SIZE) as usize].retain(
-            |&index|
-                index.identity_number != organism_number ||
-                index.circle_entity_type != CircleEntityType::Organism
-        );
+    // If it is not an oblong organism.
+    if !all_spatial_biosphere_information.organism_information_vec[organism_number].oblong {
+        // If its radius is smaller than the maximum for the small grid.
+        if
+            all_spatial_biosphere_information.organism_information_vec[organism_number].radius <=
+            SMALL_GRID_CIRCLE_MAX_RADIUS
+        {
+            // If it changed spots on the grid.
+            if
+                (previous_x + game_settings.map_length / 2) / SMALL_GRID_SIZE !=
+                    (all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].x_location +
+                        game_settings.map_length / 2) /
+                        SMALL_GRID_SIZE ||
+                (previous_y + game_settings.map_height / 2) / SMALL_GRID_SIZE !=
+                    (all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].x_location +
+                        game_settings.map_height / 2) /
+                        SMALL_GRID_SIZE
+            {
+                // Erase the old record for the main circle
+                all_spatial_biosphere_information.collision_detection_grid_small[
+                    ((previous_x + game_settings.map_length / 2) / SMALL_GRID_SIZE) as usize
+                ][((previous_y + game_settings.map_height / 2) / SMALL_GRID_SIZE) as usize].retain(
+                    |&index|
+                        index.identity_number != organism_number ||
+                        index.circle_entity_type != CircleEntityType::Organism
+                );
 
-        // Write the new record for the main circle.
-        all_spatial_biosphere_information.collision_detection_grid_small[
-            ((all_spatial_biosphere_information.organism_information_vec
-                [organism_number].x_location +
-                game_settings.map_length / 2) /
-                SMALL_GRID_SIZE) as usize
-        ][
-            ((all_spatial_biosphere_information.organism_information_vec
-                [organism_number].y_location +
-                game_settings.map_height / 2) /
-                SMALL_GRID_SIZE) as usize
-        ].push(CirclePositionRecord {
-            x: all_spatial_biosphere_information.organism_information_vec
-                [organism_number].x_location,
-            y: all_spatial_biosphere_information.organism_information_vec
-                [organism_number].y_location,
-            radius: all_spatial_biosphere_information.organism_information_vec
-                [organism_number].radius,
-            background: all_spatial_biosphere_information.organism_information_vec
-                [organism_number].background,
-            circle_entity_type: CircleEntityType::Organism,
-            identity_number: organism_number,
-            blob_number: all_spatial_biosphere_information.organism_information_vec
-                [organism_number].blob_number,
-        });
+                // Write the new record for the main circle.
+                all_spatial_biosphere_information.collision_detection_grid_small[
+                    ((all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].x_location +
+                        game_settings.map_length / 2) /
+                        SMALL_GRID_SIZE) as usize
+                ][
+                    ((all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].y_location +
+                        game_settings.map_height / 2) /
+                        SMALL_GRID_SIZE) as usize
+                ].push(CirclePositionRecord {
+                    x: all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].x_location,
+                    y: all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].y_location,
+                    radius: all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].radius,
+                    background: all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].background,
+                    circle_entity_type: CircleEntityType::Organism,
+                    identity_number: organism_number,
+                    blob_number: all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].blob_number,
+                });
+            }
+        } else {
+            // If it changed spots on the grid.
+            if
+                (previous_x + game_settings.map_length / 2) / LARGE_GRID_SIZE !=
+                    (all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].x_location +
+                        game_settings.map_length / 2) /
+                        LARGE_GRID_SIZE ||
+                (previous_y + game_settings.map_height / 2) / LARGE_GRID_SIZE !=
+                    (all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].x_location +
+                        game_settings.map_height / 2) /
+                        LARGE_GRID_SIZE
+            {
+                // Erase the old record for the main circle
+                all_spatial_biosphere_information.collision_detection_grid_large[
+                    ((previous_x + game_settings.map_length / 2) / LARGE_GRID_SIZE) as usize
+                ][((previous_y + game_settings.map_height / 2) / LARGE_GRID_SIZE) as usize].retain(
+                    |&index|
+                        index.identity_number != organism_number ||
+                        index.circle_entity_type != CircleEntityType::Organism
+                );
 
-        // For oblong organisms, then write record for the other circle positions.
-        if all_spatial_biosphere_information.organism_information_vec[organism_number].oblong {
-            // For every previous circle
-            for previous_other_circle in previous_other_circles.iter() {
-                // check to see if it is in a different grid then the main circle
-                if
-                    (previous_other_circle.x + game_settings.map_length / 2) / SMALL_GRID_SIZE !=
-                        (previous_x + game_settings.map_length / 2) / SMALL_GRID_SIZE ||
-                    (previous_other_circle.y + game_settings.map_height / 2) / SMALL_GRID_SIZE !=
-                        (previous_y + game_settings.map_height / 2) / SMALL_GRID_SIZE
-                {
-                    // If it is, then remove the record.
-                    all_spatial_biosphere_information.collision_detection_grid_small[
-                        ((previous_other_circle.x + game_settings.map_length / 2) /
-                            SMALL_GRID_SIZE) as usize
-                    ][
-                        ((previous_other_circle.y + game_settings.map_height / 2) /
-                            SMALL_GRID_SIZE) as usize
+                // Write the new record for the main circle.
+                all_spatial_biosphere_information.collision_detection_grid_large[
+                    ((all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].x_location +
+                        game_settings.map_length / 2) /
+                        LARGE_GRID_SIZE) as usize
+                ][
+                    ((all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].y_location +
+                        game_settings.map_height / 2) /
+                        LARGE_GRID_SIZE) as usize
+                ].push(CirclePositionRecord {
+                    x: all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].x_location,
+                    y: all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].y_location,
+                    radius: all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].radius,
+                    background: all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].background,
+                    circle_entity_type: CircleEntityType::Organism,
+                    identity_number: organism_number,
+                    blob_number: all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].blob_number,
+                });
+            }
+        }
+        // If it is an oblong organism.
+    } else {
+        // These lists allow what new records need to be written and which old records need to be erased.
+
+        let mut list_of_previous_grid_spots = Vec::new();
+
+        let mut list_of_new_grid_spots = Vec::new();
+
+        // If its radius is smaller or equal to the maximum for the small grid.
+        if
+            all_spatial_biosphere_information.organism_information_vec[organism_number].radius <=
+            SMALL_GRID_CIRCLE_MAX_RADIUS
+        {
+            // Add the previous main circle to the list of previous spots.
+            list_of_previous_grid_spots.push(
+                ((previous_x + game_settings.map_length / 2) / SMALL_GRID_SIZE,
+                (previous_y + game_settings.map_height / 2) / SMALL_GRID_SIZE)
+            );
+
+            // Add the new main circle to the list of new spots.
+            list_of_new_grid_spots.push((
+                (all_spatial_biosphere_information.organism_information_vec
+                    [organism_number].x_location +
+                    game_settings.map_length / 2) /
+                    SMALL_GRID_SIZE,
+                (all_spatial_biosphere_information.organism_information_vec
+                    [organism_number].y_location +
+                    game_settings.map_height / 2) /
+                    SMALL_GRID_SIZE,
+            ));
+
+            // Add the previous other circles to the list of old spots.
+            for previous_other_circles in previous_other_circles.iter() {
+                list_of_previous_grid_spots.push((
+                    (previous_other_circles.x + game_settings.map_length / 2) / SMALL_GRID_SIZE,
+                    (previous_other_circles.y + game_settings.map_height / 2) / SMALL_GRID_SIZE
+                ));
+            }
+
+            // Add the new other circles to the list of new spots.
+            for circle in all_spatial_biosphere_information.organism_information_vec[
+                organism_number
+            ].other_circle_positions.iter() {
+                list_of_new_grid_spots.push((
+                    (circle.x + game_settings.map_length / 2) / SMALL_GRID_SIZE,
+                    (circle.y + game_settings.map_height / 2) / SMALL_GRID_SIZE,
+                ));
+            }
+
+            // Erase records for grid spots that are in previous but not in new
+            for grid_spot in list_of_previous_grid_spots.iter() {
+                if !list_of_new_grid_spots.contains(grid_spot) {
+                    all_spatial_biosphere_information.collision_detection_grid_small[grid_spot.0 as usize][
+                        grid_spot.1 as usize
                     ].retain(
                         |&index|
                             index.identity_number != organism_number ||
@@ -82,28 +184,12 @@ pub fn update_for_movement(
                     );
                 }
             }
-
-            // The write for every other circle
-            for circle in all_spatial_biosphere_information.organism_information_vec[
-                organism_number
-            ].other_circle_positions.iter() {
-                all_spatial_biosphere_information.collision_detection_grid_small[
-                    ((circle.x + game_settings.map_length / 2) / SMALL_GRID_SIZE) as usize
-                ][((circle.y + game_settings.map_height / 2) / SMALL_GRID_SIZE) as usize].push(
-                    CirclePositionRecord {
-                        x: circle.x,
-                        y: circle.y,
-                        radius: all_spatial_biosphere_information.organism_information_vec
-                            [organism_number].radius,
-                        background: all_spatial_biosphere_information.organism_information_vec
-                            [organism_number].background,
-                        circle_entity_type: CircleEntityType::Organism,
-                        identity_number: organism_number,
-                        blob_number: all_spatial_biosphere_information.organism_information_vec
-                            [organism_number].blob_number,
-                    }
-                );
-            }
+         
+            // HOUSTON, WE HAVE A PROBLEM............................................................
+                    
+                    
+            // If its radius is larger than the maximum for the small grid.
+        } else {
         }
     }
 }
