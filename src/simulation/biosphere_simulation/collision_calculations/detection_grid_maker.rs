@@ -19,9 +19,9 @@ pub fn make_detection_grids(
     }
 
     if game_settings.map_height % SMALL_GRID_SIZE == 0 {
-        grid_width = (game_settings.map_length / SMALL_GRID_SIZE) as usize;
+        grid_width = (game_settings.map_width / SMALL_GRID_SIZE) as usize;
     } else {
-        grid_width = (game_settings.map_length / SMALL_GRID_SIZE + 1) as usize;
+        grid_width = (game_settings.map_width / SMALL_GRID_SIZE + 1) as usize;
     }
 
     for height in 0..grid_height {
@@ -44,9 +44,9 @@ pub fn make_detection_grids(
     }
 
     if game_settings.map_height % LARGE_GRID_SIZE == 0 {
-        grid_width = (game_settings.map_length / LARGE_GRID_SIZE) as usize;
+        grid_width = (game_settings.map_width / LARGE_GRID_SIZE) as usize;
     } else {
-        grid_width = (game_settings.map_length / LARGE_GRID_SIZE + 1) as usize;
+        grid_width = (game_settings.map_width / LARGE_GRID_SIZE + 1) as usize;
     }
 
     for height in 0..grid_height {

@@ -42,7 +42,7 @@ pub fn move_blob(
         {
             if
                 (all_spatial_biosphere_information.blob_vec[blob_number].center_of_mass_x +
-                    detection_result.x_move).abs() >= game_settings.map_length / 2
+                    detection_result.x_move).abs() >= game_settings.map_width / 2
             {
                 detection_result.x_move = 0;
                 detection_result.y_move = 0;

@@ -26,9 +26,9 @@ pub fn simulate_currents(
                 all_current_info.current_information_vec.push(
                     crate::simulation::CurrentInformation {
                         center_x: (180 - cheap_random.random_0_to_359.next_random()) *
-                        (game_settings.map_length / 360),
+                        (game_settings.map_width / 360),
                         center_y: (180 - cheap_random.random_0_to_359.next_random()) *
-                        (game_settings.map_length / 360),
+                        (game_settings.map_width / 360),
                         angle_in_radians_times_1000: cheap_random.random_0_to_359.next_random() *
                         17,
                         intensity: game_settings.current_intensity *
@@ -45,9 +45,9 @@ pub fn simulate_currents(
             // Makes a current with random direction and intensity 1 to 10.
             all_current_info.current_information_vec.push(crate::simulation::CurrentInformation {
                 center_x: (180 - cheap_random.random_0_to_359.next_random()) *
-                (game_settings.map_length / 360),
+                (game_settings.map_width / 360),
                 center_y: (180 - cheap_random.random_0_to_359.next_random()) *
-                (game_settings.map_length / 360),
+                (game_settings.map_width / 360),
                 angle_in_radians_times_1000: cheap_random.random_0_to_359.next_random() * 17,
                 intensity: game_settings.current_intensity *
                 (cheap_random.random_0_to_359.next_random() / 36 + 1),

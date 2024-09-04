@@ -68,18 +68,12 @@ pub enum AnimationType {
 
 #[derive(Copy, Clone, PartialEq, Default)]
 pub struct CirclePositionRecord {
-    pub x: i32,
-    pub y: i32,
-    pub radius: i32,
-    pub background: bool,
     pub circle_entity_type: CircleEntityType,
     pub identity_number: usize,
-    pub blob_number: usize,
+    pub main_circle: bool,
 }
 
 pub struct DetritusPositionRecord {
-    pub x: i32,
-    pub y: i32,
     pub identity_number: usize,
 }
 

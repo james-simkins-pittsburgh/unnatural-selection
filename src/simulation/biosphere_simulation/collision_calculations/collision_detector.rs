@@ -6,7 +6,6 @@ use crate::{
         biosphere_simulation::blob_mover::CollisionCheckResult,
         AllSpatialBiosphereInformation,
         CircleEntityType,
-        CirclePositionRecord,
     },
     utility_functions::{
         deterministic_trigonometry::DeterministicTrig,
@@ -26,6 +25,13 @@ pub struct ColliderCircleInfo {
     radius: i32,
     distance_to_center_of_mass: i32,
     angle_to_center_of_mass: i32,
+}
+pub struct CollideeCircleInfo {
+    x: i32,
+    y: i32,
+    radius: i32,
+    blob_number: usize,
+    circle_entity_type: CircleEntityType,
 }
 
 pub fn detect_collision(
@@ -80,7 +86,7 @@ fn check_two_circles_translational(
     mineral_involved: &mut bool,
     blob_number: usize,
     collider_circle: &ColliderCircleInfo,
-    collidee_circle: &CirclePositionRecord
+    collidee_circle: &CollideeCircleInfo,
 ) {
     // If the circles are not part of the same blob.
     if
@@ -316,7 +322,7 @@ fn check_two_circles_angular(
     involved_blobs: &mut Vec<usize>,
     mineral_involved: &mut bool,
     blob_number: usize,
-    collidee_circle: &CirclePositionRecord,
+    collidee_circle: &CollideeCircleInfo,
     collider_circle_radius: i32,
     collider_distance_center_of_mass: i32,
     // This is the center of mass after translation.
