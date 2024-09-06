@@ -7,12 +7,7 @@ use crate::{
         AllSpatialBiosphereInformation,
         CircleEntityType,
     },
-    utility_functions::{
-        deterministic_trigonometry::DeterministicTrig,
-        integer_math::square_root_64,
-        quadratic_solver,
-        two_circles_intersection_solver::solve_two_circle_intersection,
-    },
+    utility_functions::deterministic_trigonometry::DeterministicTrig,
 };
 
 // This module makes a list of collider circles.

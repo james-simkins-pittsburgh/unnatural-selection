@@ -1,19 +1,11 @@
-use crate::{
-    settings::GameSettings,
-    simulation::{
-        biosphere_simulation::blob_mover::CollisionCheckResult,
-        AllSpatialBiosphereInformation,
-        CircleEntityType,
-    },
-    utility_functions::{
-        deterministic_trigonometry::DeterministicTrig,
+use crate::{simulation::CircleEntityType, utility_functions::{
         integer_math::square_root_64,
         quadratic_solver,
-        two_circles_intersection_solver::solve_two_circle_intersection,
-    },
-};
+    }};
 
-fn check_two_circles_translational(
+use super::{CollideeCircleInfo, ColliderCircleInfo};
+
+pub fn check_two_circles_translational(
     x_move: &mut i32,
     y_move: &mut i32,
     original_x_move: i32,

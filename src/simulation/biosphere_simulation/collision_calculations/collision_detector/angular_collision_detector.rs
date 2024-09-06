@@ -1,18 +1,14 @@
 use crate::{
-    settings::GameSettings,
-    simulation::{
-        biosphere_simulation::blob_mover::CollisionCheckResult,
-        AllSpatialBiosphereInformation,
-        CircleEntityType,
-    },
+    simulation::CircleEntityType,
     utility_functions::{
         deterministic_trigonometry::DeterministicTrig,
-        integer_math::square_root_64,
-        quadratic_solver,
         two_circles_intersection_solver::solve_two_circle_intersection,
     },
+};
 
-fn check_two_circles_angular(
+use super::CollideeCircleInfo;
+
+pub fn check_two_circles_angular(
     r_move: &mut i32,
     original_r_move: i32,
     involved_blobs: &mut Vec<usize>,
@@ -69,7 +65,7 @@ fn check_two_circles_angular(
                     *mineral_involved = true;
                 }
 
-                // This calculates the two points the collider could collider with the collidee.
+                // This calculates the two points the collider could collide with the collidee.
                 let points_of_collisions = solve_two_circle_intersection(
                     center_of_mass_x_after_xymove,
                     center_of_mass_y_after_xymove,
