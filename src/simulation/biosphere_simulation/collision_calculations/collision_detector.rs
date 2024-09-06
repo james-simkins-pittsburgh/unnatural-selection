@@ -1,3 +1,4 @@
+use collidee_circle_list_maker::make_collidee_circle_list;
 use collider_circle_list_maker::make_collider_circle_list;
 
 use crate::{
@@ -44,7 +45,6 @@ pub fn detect_collision(
     game_settings: &GameSettings,
     deterministic_trig: &DeterministicTrig
 ) -> CollisionCheckResult {
-
     // These store the maximum movement before a collision (if any) occurs.
     let mut x_move = all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity;
     let mut y_move = all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity;
@@ -65,18 +65,33 @@ pub fn detect_collision(
     let mut collision = false;
 
     // This makes a vec of all the circles of the collider blob.
-    let mut collider_circles: Vec<ColliderCircleInfo> = make_collider_circle_list(all_spatial_biosphere_information, blob_number);
+    let mut collider_circles: Vec<ColliderCircleInfo> = make_collider_circle_list(
+        all_spatial_biosphere_information,
+        blob_number
+    );
 
+    // This makes a vec that will hold the potential collidee circles for each collider circle.
+    let mut potential_collidee_circles: Vec<Vec<CollideeCircleInfo>> = Vec::new();
 
-   
-// This is just placeholder code.
-return CollisionCheckResult {
-    collision,
-    x_move,
-    y_move,
-    r_move,
-    involved_blobs,
-    mineral_involved,
-}
+    for index in 0..collider_circles.len() {
+        potential_collidee_circles [index] = make_collidee_circle_list(
+            &collider_circles[index],
+            blob_number,
+            &game_settings,
+            &deterministic_trig,
+            original_x_move,
+            original_y_move,
+            original_r_move
+        );
+    }
 
+    // This is just placeholder code.
+    return CollisionCheckResult {
+        collision,
+        x_move,
+        y_move,
+        r_move,
+        involved_blobs,
+        mineral_involved,
+    };
 }
