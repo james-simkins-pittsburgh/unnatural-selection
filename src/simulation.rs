@@ -70,7 +70,8 @@ pub enum AnimationType {
 pub struct CirclePositionRecord {
     pub circle_entity_type: CircleEntityType,
     pub identity_number: usize,
-    pub main_circle: bool,
+    // This is the number of the other circles or main. 0 is for the main. 1 is for the first other circle, etc.
+    pub circle_number: usize,
 }
 
 pub struct DetritusPositionRecord {

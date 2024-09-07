@@ -28,12 +28,9 @@ pub fn check_two_circles_angular(
     full_collider_y: i32,
     deterministic_trig: &DeterministicTrig
 ) {
-    // If the circles are not part of the same blob.
-
+    // If the circle is not at the center of the blob.
     if
-        collider_distance_center_of_mass != 0 &&
-        (collidee_circle.blob_number != blob_number ||
-            collidee_circle.circle_entity_type == CircleEntityType::Mineral)
+        collider_distance_center_of_mass != 0
     {
         // Check to see if a collision happens.
         if

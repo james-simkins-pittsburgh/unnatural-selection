@@ -81,7 +81,8 @@ pub fn detect_collision(
             &deterministic_trig,
             original_x_move,
             original_y_move,
-            original_r_move
+            original_r_move,
+            all_spatial_biosphere_information,
         );
     }
 
