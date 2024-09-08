@@ -19,6 +19,7 @@ pub struct GameworldBundle {
 #[derive(Component, Default)]
 pub struct AllSpatialBiosphereInformation {
     pub organism_information_vec: Vec<OrganismInformation>,
+    pub mineral_information_vec: Vec<MineralInformation>,
     pub collision_detection_grid_small: Vec<Vec<Vec<CirclePositionRecord>>>,
     pub collision_detection_grid_large: Vec<Vec<Vec<CirclePositionRecord>>>,
     pub detritus_detection_grid: Vec<Vec<Vec<DetritusPositionRecord>>>,
@@ -57,21 +58,18 @@ pub struct OtherCirclePosition {
 }
 
 #[derive(Copy, Clone, PartialEq, Default)]
-pub enum AnimationType {
-    #[default] None,
-    Attacking,
-    Growing,
-    Lysing,
-    Fission,
-    Budding,
-}
-
-#[derive(Copy, Clone, PartialEq, Default)]
 pub struct CirclePositionRecord {
     pub circle_entity_type: CircleEntityType,
     pub identity_number: usize,
     // This is the number of the other circles or main. 0 is for the main. 1 is for the first other circle, etc.
     pub circle_number: usize,
+}
+
+pub struct MineralInformation {
+    x_location: i32,
+    y_location: i32,
+    radius: i32,
+    image_number: i32, 
 }
 
 pub struct DetritusPositionRecord {
@@ -121,6 +119,16 @@ pub struct OrganismBioInformation {
     pub inserting: bool,
     pub animation_type: AnimationType,
     pub animation_counter: usize,
+}
+
+#[derive(Copy, Clone, PartialEq, Default)]
+pub enum AnimationType {
+    #[default] None,
+    Attacking,
+    Growing,
+    Lysing,
+    Fission,
+    Budding,
 }
 
 // This contains all the information about currents.
