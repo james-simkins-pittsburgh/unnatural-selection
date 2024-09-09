@@ -1,5 +1,6 @@
 use collidee_circle_list_maker::make_collidee_circle_list;
 use collider_circle_list_maker::make_collider_circle_list;
+use translational_collision_detector::check_two_circles_translational;
 
 use crate::{
     settings::GameSettings,
@@ -65,16 +66,17 @@ pub fn detect_collision(
     let mut collision = false;
 
     // This makes a vec of all the circles of the collider blob.
-    let mut collider_circles: Vec<ColliderCircleInfo> = make_collider_circle_list(
+    let collider_circles: Vec<ColliderCircleInfo> = make_collider_circle_list(
         all_spatial_biosphere_information,
         blob_number
     );
 
-    // This makes a vec that will hold the potential collidee circles for each collider circle.
+    // This makes a vec of vecs that will hold the potential collidee circles for each collider circle.
     let mut potential_collidee_circles: Vec<Vec<CollideeCircleInfo>> = Vec::new();
 
+    // This populates the vec of vecs with the potential collider circles for each collidee circle.
     for index in 0..collider_circles.len() {
-        potential_collidee_circles [index] = make_collidee_circle_list(
+        potential_collidee_circles[index] = make_collidee_circle_list(
             &collider_circles[index],
             blob_number,
             &game_settings,
@@ -82,8 +84,61 @@ pub fn detect_collision(
             original_x_move,
             original_y_move,
             original_r_move,
-            all_spatial_biosphere_information,
+            all_spatial_biosphere_information
         );
+    }
+
+    // This finds any collisions from translational movements only.
+    for index in 0..collider_circles.len() {
+        for collidee_circle in potential_collidee_circles[index].iter() {
+            check_two_circles_translational(
+                &mut x_move,
+                &mut y_move,
+                original_x_move,
+                original_y_move,
+                &mut involved_blobs,
+                &mut mineral_involved,
+                blob_number,
+                &collider_circles[index],
+                &collidee_circle
+            );
+        }
+    }
+
+    // If no collision has happened yet, then also check angular movement.
+    if involved_blobs.len() <= 1 && !mineral_involved {
+        for index in 0..collider_circles.len() {
+            
+            // LEFT OFF HERE!!!!!!!!!
+            let collider_circle_radius = 0;
+            let collider_distance_center_of_mass = 0;
+            let center_of_mass_x_after_xymove = 0;
+            let center_of_mass_y_after_xymove = 0;
+            let collider_x_after_xymove = 0;
+            let collider_y_after_xymove = 0;
+            let full_collider_x = 0;
+            let full_collider_y = 0;
+
+            for collidee_circle in potential_collidee_circles[index].iter() {
+                check_two_circles_angular(
+                    &mut r_move,
+                    original_r_move,
+                    &mut involved_blobs,
+                    &mut mineral_involved,
+                    blob_number,
+                    &collidee_circle,
+                    collider_circle_radius,
+                    collider_distance_center_of_mass,
+                    center_of_mass_x_after_xymove,
+                    center_of_mass_y_after_xymove,
+                    collider_x_after_xymove,
+                    collider_y_after_xymove,
+                    full_collider_x,
+                    full_collider_y,
+                    &deterministic_trig
+                );
+            }
+        }
     }
 
     // This is just placeholder code.
