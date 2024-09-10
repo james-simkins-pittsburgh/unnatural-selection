@@ -14,6 +14,8 @@ use crate::{
 };
 use super::{ CollideeCircleInfo, ColliderCircleInfo };
 
+// This function makes a vec with all the possible collidee circles in it.
+
 pub fn make_collidee_circle_list(
     collider_circle: &ColliderCircleInfo,
     blob_number: usize,
@@ -28,7 +30,7 @@ pub fn make_collidee_circle_list(
 
     let collider_radius = collider_circle.radius;
 
-    // This calculates the x_move and y_move including rotation if rotation and the translational movement go in the same direction.
+    // This calculates the x_move and y_move and includes the effect of rotation if rotation and the translational movement go in the same direction.
 
     let total_x_move: i32;
 
@@ -174,7 +176,7 @@ pub fn make_collidee_circle_list(
             game_settings.map_width / 2) /
             SMALL_GRID_SIZE) as usize
     } else {
-        all_spatial_biosphere_information.collision_detection_grid_small.len()
+        all_spatial_biosphere_information.collision_detection_grid_small.len() - 1
     };
 
     let y_index_max = if
@@ -194,7 +196,7 @@ pub fn make_collidee_circle_list(
             game_settings.map_height / 2) /
             SMALL_GRID_SIZE) as usize
     } else {
-        all_spatial_biosphere_information.collision_detection_grid_small[0].len()
+        all_spatial_biosphere_information.collision_detection_grid_small[0].len() - 1
     };
 
     let x_index_min = if
@@ -265,7 +267,7 @@ pub fn make_collidee_circle_list(
             game_settings.map_width / 2) /
             LARGE_GRID_SIZE) as usize
     } else {
-        all_spatial_biosphere_information.collision_detection_grid_large.len()
+        all_spatial_biosphere_information.collision_detection_grid_large.len() - 1
     };
 
     let y_index_max = if
@@ -277,7 +279,7 @@ pub fn make_collidee_circle_list(
                 game_settings.map_height / 2) /
                 LARGE_GRID_SIZE) as usize
         ) < all_spatial_biosphere_information.collision_detection_grid_large[0].len()
-    {
+    { 
         ((collider_circle.y +
             (if total_y_move > 0 { total_y_move } else { 0 }) +
             collider_radius +
@@ -285,7 +287,7 @@ pub fn make_collidee_circle_list(
             game_settings.map_height / 2) /
             LARGE_GRID_SIZE) as usize
     } else {
-        all_spatial_biosphere_information.collision_detection_grid_large[0].len()
+        all_spatial_biosphere_information.collision_detection_grid_large[0].len() - 1
     };
 
     let x_index_min = if
@@ -349,7 +351,7 @@ fn add_circles_in_small_grid(
     collidee_circles: &mut Vec<CollideeCircleInfo>
 ) {
     // For every circle that is in the grid square
-    for circle in all_spatial_biosphere_information.collision_detection_grid_large[x_index][
+    for circle in all_spatial_biosphere_information.collision_detection_grid_small[x_index][
         y_index
     ].iter() {
         // If the circle is either a mineral or it is from a different blob.

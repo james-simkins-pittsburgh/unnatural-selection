@@ -1,3 +1,4 @@
+use angular_collision_detector::check_two_circles_angular;
 use collidee_circle_list_maker::make_collidee_circle_list;
 use collider_circle_list_maker::make_collider_circle_list;
 use translational_collision_detector::check_two_circles_translational;
@@ -75,9 +76,9 @@ pub fn detect_collision(
     let mut potential_collidee_circles: Vec<Vec<CollideeCircleInfo>> = Vec::new();
 
     // This populates the vec of vecs with the potential collider circles for each collidee circle.
-    for index in 0..collider_circles.len() {
-        potential_collidee_circles[index] = make_collidee_circle_list(
-            &collider_circles[index],
+    for collider_circle in collider_circles.iter(){
+        potential_collidee_circles.push (make_collidee_circle_list(
+            &collider_circle,
             blob_number,
             &game_settings,
             &deterministic_trig,
@@ -85,7 +86,7 @@ pub fn detect_collision(
             original_y_move,
             original_r_move,
             all_spatial_biosphere_information
-        );
+        ));
     }
 
     // This finds any collisions from translational movements only.
@@ -105,43 +106,79 @@ pub fn detect_collision(
         }
     }
 
-    // If no collision has happened yet, then also check angular movement.
-    if involved_blobs.len() <= 1 && !mineral_involved {
-        for index in 0..collider_circles.len() {
-            
-            // LEFT OFF HERE!!!!!!!!!
-            let collider_circle_radius = 0;
-            let collider_distance_center_of_mass = 0;
-            let center_of_mass_x_after_xymove = 0;
-            let center_of_mass_y_after_xymove = 0;
-            let collider_x_after_xymove = 0;
-            let collider_y_after_xymove = 0;
-            let full_collider_x = 0;
-            let full_collider_y = 0;
+    // If it is rotating
+    if r_move.abs() > 0 {
+        // If no collision has happened yet
+        if involved_blobs.len() <= 1 && !mineral_involved {
+            // For every collider circle
+            for index in 0..collider_circles.len() {
+                // If the collider circle is not exactly as the center of mass
+                if collider_circles[index].distance_to_center_of_mass > 0 {
+                    let collider_circle_radius = collider_circles[index].radius;
+                    let collider_distance_center_of_mass = collider_circles
+                        [index].distance_to_center_of_mass;
+                    let collider_angle_center_of_mass = collider_circles
+                        [index].angle_to_center_of_mass;
 
-            for collidee_circle in potential_collidee_circles[index].iter() {
-                check_two_circles_angular(
-                    &mut r_move,
-                    original_r_move,
-                    &mut involved_blobs,
-                    &mut mineral_involved,
-                    blob_number,
-                    &collidee_circle,
-                    collider_circle_radius,
-                    collider_distance_center_of_mass,
-                    center_of_mass_x_after_xymove,
-                    center_of_mass_y_after_xymove,
-                    collider_x_after_xymove,
-                    collider_y_after_xymove,
-                    full_collider_x,
-                    full_collider_y,
-                    &deterministic_trig
-                );
+                    let center_of_mass_x_after_xymove = collider_circles[index].x + x_move;
+                    let center_of_mass_y_after_xymove = collider_circles[index].y + y_move;
+                    let x_move_from_r =
+                        (collider_distance_center_of_mass *
+                            deterministic_trig.d_trig.cosine((
+                                collider_angle_center_of_mass + r_move,
+                                1000,
+                            )).0 -
+                            collider_circles[index].distance_to_center_of_mass *
+                                deterministic_trig.d_trig.cosine((
+                                    collider_angle_center_of_mass,
+                                    1000,
+                                )).0) /
+                        1000;
+                    let y_move_from_r =
+                        (collider_distance_center_of_mass *
+                            deterministic_trig.d_trig.sine((
+                                collider_angle_center_of_mass + r_move,
+                                1000,
+                            )).0 -
+                            collider_circles[index].distance_to_center_of_mass *
+                                deterministic_trig.d_trig.sine((
+                                    collider_angle_center_of_mass,
+                                    1000,
+                                )).0) /
+                        1000;
+
+                    let collider_x_after_xymove = collider_circles[index].x + x_move;
+                    let collider_y_after_xymove = collider_circles[index].y + y_move;
+                    let full_collider_x = collider_x_after_xymove + x_move_from_r;
+                    let full_collider_y = collider_y_after_xymove + y_move_from_r;
+
+                    for collidee_circle in potential_collidee_circles[index].iter() {
+                        check_two_circles_angular(
+                            &mut r_move,
+                            original_r_move,
+                            &mut involved_blobs,
+                            &mut mineral_involved,
+                            blob_number,
+                            &collidee_circle,
+                            collider_circle_radius,
+                            collider_distance_center_of_mass,
+                            center_of_mass_x_after_xymove,
+                            center_of_mass_y_after_xymove,
+                            collider_x_after_xymove,
+                            collider_y_after_xymove,
+                            full_collider_x,
+                            full_collider_y,
+                            &deterministic_trig
+                        );
+                    }
+                }
             }
         }
     }
+    if involved_blobs.len() > 1 || mineral_involved {
+        collision = true;
+    }
 
-    // This is just placeholder code.
     return CollisionCheckResult {
         collision,
         x_move,

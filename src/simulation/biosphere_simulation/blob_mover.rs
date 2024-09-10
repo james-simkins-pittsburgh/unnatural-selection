@@ -28,10 +28,10 @@ pub fn move_blob(
     {
         
         let mut detection_result = detect_collision(
-            all_spatial_biosphere_information,
+            &all_spatial_biosphere_information,
             blob_number,
-            game_settings,
-            deterministic_trig
+            &game_settings,
+            &deterministic_trig
         );
 
         // Rule out immediate collision before doing expensive calculations.

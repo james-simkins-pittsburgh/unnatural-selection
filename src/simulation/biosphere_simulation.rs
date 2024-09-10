@@ -27,7 +27,7 @@ pub fn simulate_spatial_biosphere(
     for blob_number in 1..all_spatial_biosphere_information.blob_vec.len() {
         current_applicator::apply_current(
             &mut all_spatial_biosphere_information,
-            d_trig,
+            &d_trig,
             &all_current_information,
             blob_number
         );
@@ -37,9 +37,9 @@ pub fn simulate_spatial_biosphere(
         if all_spatial_biosphere_information.blob_vec[blob_number].in_use {
             blob_mover::move_blob(
                 &mut all_spatial_biosphere_information,
-                d_trig,
+                &d_trig,
                 blob_number,
-                game_settings
+                &game_settings
             );
         }
     }
