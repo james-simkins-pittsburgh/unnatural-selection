@@ -2,7 +2,7 @@ use crate::settings::GameSettings;
 use crate::simulation::AllSpatialBiosphereInformation;
 use crate::utility_functions::deterministic_trigonometry::DeterministicTrig;
 use crate::simulation::biosphere_simulation::collision_calculations::collision_detector::detect_collision;
-use crate::simulation::biosphere_simulation::collision_calculations::organism_collisions::apply_collision;
+use crate::simulation::biosphere_simulation::collision_calculations::organism_combination::apply_collision;
 use crate::simulation::biosphere_simulation::collision_calculations::detection_grid_updater;
 
 pub struct CollisionCheckResult {

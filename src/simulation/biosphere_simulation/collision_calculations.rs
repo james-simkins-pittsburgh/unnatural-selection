@@ -7,7 +7,7 @@ pub mod detection_grid_maker;
 pub mod collision_detector;
 
 // This module calculates the results of organisms colliding.
-pub mod organism_collisions;
+pub mod organism_combination;
 
 // This module updates the detection grid;
 pub mod detection_grid_updater;

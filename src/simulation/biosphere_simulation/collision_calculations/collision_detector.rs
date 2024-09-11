@@ -52,7 +52,7 @@ pub fn detect_collision(
     let mut y_move = all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity;
     let mut r_move = all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity;
 
-    // This stores the original moves so it can be references later.
+    // This stores the original moves so it can be referenced later.
     let original_x_move = x_move;
     let original_y_move = y_move;
     let original_r_move = r_move;
