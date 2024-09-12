@@ -275,7 +275,8 @@ pub fn move_blob(
             apply_collision(
                 all_spatial_biosphere_information,
                 &detection_result.involved_blobs,
-                detection_result.mineral_involved
+                detection_result.mineral_involved,
+                &deterministic_trig
             );
         }
     }

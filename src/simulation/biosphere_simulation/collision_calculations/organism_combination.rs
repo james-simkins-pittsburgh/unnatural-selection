@@ -1,4 +1,4 @@
-use crate::simulation::AllSpatialBiosphereInformation;
+use crate::{simulation::AllSpatialBiosphereInformation, utility_functions::deterministic_trigonometry::DeterministicTrig};
 
 struct MassAndCOM {
     center_of_mass_x: i32,
@@ -9,7 +9,8 @@ struct MassAndCOM {
 pub fn apply_collision(
     all_spatial_biosphere_information: &mut AllSpatialBiosphereInformation,
     combination_list: &Vec<usize>,
-    mineral_involved: bool
+    mineral_involved: bool,
+    deterministic_trig: &DeterministicTrig,
 ) {
     let mut x_momentum = 0;
     let mut y_momentum = 0;
@@ -24,7 +25,7 @@ pub fn apply_collision(
         &combination_list
     );
 
-    // If a mineral is not involved, this calculates the new momentums.
+    // If a mineral is not involved, this calculates the new momentum.
     if !mineral_involved {
         calculate_momentum(
             &all_spatial_biosphere_information,
@@ -32,7 +33,8 @@ pub fn apply_collision(
             &new_mass_and_center_of_mass,
             &mut x_momentum,
             &mut y_momentum,
-            &mut r_momentum
+            &mut r_momentum,
+            &deterministic_trig
         );
     }
 
@@ -96,5 +98,22 @@ fn calculate_momentum(
     new_mass_and_center_of_mass: &MassAndCOM,
     mut x_momentum: &mut i32,
     mut y_momentum: &mut i32,
-    mut r_momentum: &mut i32
-) {}
+    mut r_momentum: &mut i32,
+    deterministic_trig: &DeterministicTrig,
+) {
+
+    for member_blob_number in combination_list.iter() {
+
+        // all_spatial_biosphere_information.blob_vec[*member_blob_number];
+
+            // This decomposes the x_momentum of the blob and then adds it to the combined blob.
+
+            
+
+
+
+
+    }
+
+
+}

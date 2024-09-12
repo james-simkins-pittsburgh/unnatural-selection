@@ -55,6 +55,9 @@ pub fn apply_current(
                     let org_mass = i64::from(
                         all_spatial_biosphere_information.organism_information_vec[organism_num].mass
                     );
+                    /* LIKELY PROBLEM WITH THIS NEXT LINE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
                     let angle_to_blob_center = 
                         deterministic_trig.d_trig.arctangent((
                             (((blob_y - organism_y) * 1000) / (blob_x - organism_x)) as i32,
@@ -103,9 +106,9 @@ pub fn apply_current(
                                 (blob_x - organism_x) * (blob_x - organism_x) +
                                     (blob_y - organism_y) * (blob_y - organism_y)
                             )) /
-                        // Divided the moment of inertia
+                        // Divided by the moment of inertia
                         (i64::from(all_spatial_biosphere_information.blob_vec[blob_number].blob_moment_of_inertia) *
-                            // times 1000 to cancel out the d_trig function provided angle times 1000
+                            // Times 1000 to cancel out the d_trig function provided angle times 1000
                             1000)) as i32;
                 } else {
                     // The acceleration can be added directly if the blob is a single organism.
