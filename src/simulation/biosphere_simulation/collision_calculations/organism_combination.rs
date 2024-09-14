@@ -3,7 +3,7 @@ use crate::{
     utility_functions::deterministic_trigonometry::DeterministicTrig,
 };
 
-struct MassAndCOM {
+struct MassAndCenterOfMass {
     center_of_mass_x: i32,
     center_of_mass_y: i32,
     mass: i32,
@@ -28,7 +28,15 @@ pub fn apply_collision(
         &combination_list
     );
 
-    // If a mineral is not involved, this calculates the new momentum.
+    // This calculates the new moment of inertia.
+    let new_moment_of_inertia = calculate_moment_of_inertia(
+        &all_spatial_biosphere_information,
+        &combination_list,
+        new_mass_and_center_of_mass.center_of_mass_x,
+        new_mass_and_center_of_mass.center_of_mass_y,
+    );
+
+    // If a mineral is not involved, this calculates the new momentum. If a mineral is involved, it stays 0.
     if !mineral_involved {
         calculate_momentum(
             &all_spatial_biosphere_information,
@@ -41,7 +49,21 @@ pub fn apply_collision(
         );
     }
 
-    // This is the code to combine all the blobs into the new blob.
+    // This sets the mass, center of mass, and velocity of the new blob.
+    all_spatial_biosphere_information.blob_vec[new_blob_number].blob_mass =
+        new_mass_and_center_of_mass.mass;
+    all_spatial_biosphere_information.blob_vec[new_blob_number].blob_moment_of_inertia =
+        new_moment_of_inertia;
+    all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x =
+        new_mass_and_center_of_mass.center_of_mass_x;
+    all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_y =
+        new_mass_and_center_of_mass.center_of_mass_y;
+    all_spatial_biosphere_information.blob_vec[new_blob_number].blob_x_velocity =
+        x_momentum / new_mass_and_center_of_mass.mass;
+    all_spatial_biosphere_information.blob_vec[new_blob_number].blob_x_velocity =
+        y_momentum / new_mass_and_center_of_mass.mass;
+    all_spatial_biosphere_information.blob_vec[new_blob_number].angular_velocity =
+        r_momentum / new_moment_of_inertia;
 
     // For every blob being combined
     for blob_index in 1..combination_list.len() {
@@ -61,11 +83,10 @@ pub fn apply_collision(
                 organism_number
             );
         }
-
-        // Clear the blob of members
+        // Clears the old blob of members
         all_spatial_biosphere_information.blob_vec[combination_list[blob_index]].blob_members =
             vec![];
-        // Mark the blob as not in use.
+        // Mark the old blob as not in use.
         all_spatial_biosphere_information.blob_vec[combination_list[blob_index]].in_use = false;
     }
 }
@@ -73,7 +94,7 @@ pub fn apply_collision(
 fn calculate_mass_and_center_of_mass(
     all_spatial_biosphere_information: &AllSpatialBiosphereInformation,
     combination_list: &Vec<usize>
-) -> MassAndCOM {
+) -> MassAndCenterOfMass {
     let mut sum_of_moments_x = 0;
     let mut sum_of_moments_y = 0;
     let mut sum_of_mass = 0;
@@ -82,26 +103,62 @@ fn calculate_mass_and_center_of_mass(
         sum_of_mass += all_spatial_biosphere_information.blob_vec[*blob_number].blob_mass;
         sum_of_moments_x +=
             all_spatial_biosphere_information.blob_vec[*blob_number].blob_mass *
-            all_spatial_biosphere_information.blob_vec[*blob_number].blob_x_velocity;
+            all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_x;
         sum_of_moments_y +=
             all_spatial_biosphere_information.blob_vec[*blob_number].blob_mass *
-            all_spatial_biosphere_information.blob_vec[*blob_number].blob_y_velocity;
+            all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_y;
     }
 
-    return MassAndCOM {
+    return MassAndCenterOfMass {
         center_of_mass_x: sum_of_moments_x / sum_of_mass,
         center_of_mass_y: sum_of_moments_y / sum_of_mass,
         mass: sum_of_mass,
     };
 }
 
+fn calculate_moment_of_inertia(
+    all_spatial_biosphere_information: &AllSpatialBiosphereInformation,
+    combination_list: &Vec<usize>,
+    center_of_mass_x: i32,
+    center_of_mass_y: i32
+) -> i32 {
+    let mut moment_of_inertia = 0;
+
+    // For every blob in the combination list.
+    for blob_number in 0..combination_list.len() {
+        // For every organism in each blob.
+        for organism_number in all_spatial_biosphere_information.blob_vec[
+            blob_number
+        ].blob_members.iter() {
+            // Add the distance squared from the center of mass times the mass of the organism to the moment of inertia.
+            moment_of_inertia +=
+                ((all_spatial_biosphere_information.organism_information_vec
+                    [*organism_number].x_location -
+                    center_of_mass_x) *
+                    (all_spatial_biosphere_information.organism_information_vec
+                        [*organism_number].x_location -
+                        center_of_mass_x) +
+                    (all_spatial_biosphere_information.organism_information_vec
+                        [*organism_number].y_location -
+                        center_of_mass_y) *
+                        (all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].y_location -
+                            center_of_mass_y)) *
+                    all_spatial_biosphere_information.organism_information_vec
+                        [*organism_number].mass;
+        }
+    }
+
+    return moment_of_inertia;
+}
+
 fn calculate_momentum(
     all_spatial_biosphere_information: &AllSpatialBiosphereInformation,
     combination_list: &Vec<usize>,
-    new_mass_and_center_of_mass: &MassAndCOM,
-    mut x_momentum: &mut i32,
-    mut y_momentum: &mut i32,
-    mut r_momentum: &mut i32,
+    new_mass_and_center_of_mass: &MassAndCenterOfMass,
+    x_momentum: &mut i32,
+    y_momentum: &mut i32,
+    r_momentum: &mut i32,
     deterministic_trig: &DeterministicTrig
 ) {
     for member_blob_number in combination_list.iter() {
@@ -134,7 +191,7 @@ fn calculate_momentum(
                     deterministic_trig.d_trig.cosine(angle_to_center_of_mass).0) /
             1000;
 
-        // Break the translational component down into x and y.
+        // Breaks the translational component down into x and y.
         let translational_x_component =
             (translational_component *
                 deterministic_trig.d_trig.cosine(angle_to_center_of_mass).0) /
@@ -144,9 +201,16 @@ fn calculate_momentum(
             1000;
 
         // Add the momentum contribution of the blob to the new combined bob.
-        *x_momentum += translational_x_component * all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
-        *y_momentum += translational_y_component * all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
-        *r_momentum += rotational_component * all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
+        *x_momentum +=
+            translational_x_component *
+            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
+        *y_momentum +=
+            translational_y_component *
+            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
+        *r_momentum +=
+            rotational_component *
+            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
 
+        // STILL NEED TO CONSIDER THE CONTRIBUTION OF EXISTING ANGULAR MOMENTUM !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 }
