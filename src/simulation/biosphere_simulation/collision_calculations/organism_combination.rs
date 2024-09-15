@@ -33,7 +33,7 @@ pub fn apply_collision(
         &all_spatial_biosphere_information,
         &combination_list,
         new_mass_and_center_of_mass.center_of_mass_x,
-        new_mass_and_center_of_mass.center_of_mass_y,
+        new_mass_and_center_of_mass.center_of_mass_y
     );
 
     // If a mineral is not involved, this calculates the new momentum. If a mineral is involved, it stays 0.
@@ -144,8 +144,7 @@ fn calculate_moment_of_inertia(
                         (all_spatial_biosphere_information.organism_information_vec
                             [*organism_number].y_location -
                             center_of_mass_y)) *
-                    all_spatial_biosphere_information.organism_information_vec
-                        [*organism_number].mass;
+                all_spatial_biosphere_information.organism_information_vec[*organism_number].mass;
         }
     }
 
@@ -177,7 +176,7 @@ fn calculate_momentum(
             1000,
         ));
 
-        // Uses the rotation matrix. Not sure this is right.
+        // Uses the rotation matrix to spit the translational momentum into translational and rotational components.
         let translational_component =
             (all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_x_velocity *
                 deterministic_trig.d_trig.cosine(angle_to_center_of_mass).0 -
@@ -211,6 +210,9 @@ fn calculate_momentum(
             rotational_component *
             all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
 
-        // STILL NEED TO CONSIDER THE CONTRIBUTION OF EXISTING ANGULAR MOMENTUM !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // Not sure this is right
+        *r_momentum +=
+            all_spatial_biosphere_information.blob_vec[*member_blob_number].angular_velocity *
+            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
     }
 }
