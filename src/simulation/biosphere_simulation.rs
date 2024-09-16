@@ -22,14 +22,14 @@ pub fn simulate_spatial_biosphere(
     mut all_spatial_biosphere_information: &mut AllSpatialBiosphereInformation,
     all_current_information: &AllCurrentInformation,
     admin_information: &AdministrativeInformation,
-    d_trig: &DeterministicTrig,
+    deterministic_trig: &DeterministicTrig,
     game_settings: &GameSettings
 ) {
     // Splits up one out of thirty blobs every turn.
     for blob_number in 1..all_spatial_biosphere_information.blob_vec.len() {
         if all_spatial_biosphere_information.blob_vec[blob_number].in_use {
             if (blob_number as i64) % 30 == admin_information.tick_counter % 30 {
-                split_blob(&mut all_spatial_biosphere_information, &d_trig, blob_number);
+                split_blob(&mut all_spatial_biosphere_information, &deterministic_trig, blob_number);
             }
         }
     }
@@ -38,18 +38,18 @@ pub fn simulate_spatial_biosphere(
     for blob_number in 1..all_spatial_biosphere_information.blob_vec.len() {
         current_applicator::apply_current(
             &mut all_spatial_biosphere_information,
-            &d_trig,
+            &deterministic_trig,
             &all_current_information,
             blob_number
         );
     }
 
-    //
+    // Moves each blob
     for blob_number in 1..all_spatial_biosphere_information.blob_vec.len() {
         if all_spatial_biosphere_information.blob_vec[blob_number].in_use {
             blob_mover::move_blob(
                 &mut all_spatial_biosphere_information,
-                &d_trig,
+                &deterministic_trig,
                 blob_number,
                 &game_settings
             );
