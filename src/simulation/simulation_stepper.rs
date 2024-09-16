@@ -11,7 +11,6 @@ pub fn step_spatial_simulation(
             &mut crate::simulation::AllSpatialBiosphereInformation,
             &mut crate::simulation::AllCurrentInformation,
             &mut crate::simulation::CheapRandomGameworld,
-            &crate::simulation::AllSpeciesInformation,
             &mut crate::simulation::AdministrativeInformation,
         )
     >
@@ -20,7 +19,6 @@ pub fn step_spatial_simulation(
         mut spatial_biosphere,
         mut current,
         mut cheap_random,
-        species_info,
         mut admin_info,
     ) in &mut gameworld {
         // This simulates all current movements for the step of the simulation.
@@ -33,10 +31,8 @@ pub fn step_spatial_simulation(
         // This simulates all biosphere activity for the step of the simulation.
         simulate_spatial_biosphere(
             &mut spatial_biosphere,
-            &species_info,
             &current,
             &admin_info,
-            &mut cheap_random,
             &deterministic_trig,
             &game_settings
         );

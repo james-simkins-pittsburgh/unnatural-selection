@@ -199,7 +199,7 @@ fn calculate_momentum(
             (translational_component * deterministic_trig.d_trig.sine(angle_to_center_of_mass).0) /
             1000;
 
-        // Add the momentum contribution of the blob to the new combined bob.
+        // Add the translational momentum contributions of the blob to the new combined bob.
         *x_momentum +=
             translational_x_component *
             all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
@@ -210,9 +210,9 @@ fn calculate_momentum(
             rotational_component *
             all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
 
-        // Not sure this is right
+        // Add the rotational momentum contributions to the new blow.
         *r_momentum +=
             all_spatial_biosphere_information.blob_vec[*member_blob_number].angular_velocity *
-            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
+            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_moment_of_inertia
     }
 }

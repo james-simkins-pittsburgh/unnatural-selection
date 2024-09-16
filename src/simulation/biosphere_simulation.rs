@@ -1,10 +1,13 @@
+use blob_splitter::split_blob;
+
 use crate::settings::GameSettings;
 use crate::simulation::AllSpatialBiosphereInformation;
-use crate::simulation::AllSpeciesInformation;
 use crate::simulation::AllCurrentInformation;
 use crate::simulation::AdministrativeInformation;
-use crate::simulation::CheapRandomGameworld;
 use crate::utility_functions::deterministic_trigonometry::DeterministicTrig;
+
+// This module splits blobs into organisms
+pub mod blob_splitter;
 
 // This module detects currents and applies the motion to the blob.
 pub mod current_applicator;
@@ -17,13 +20,21 @@ pub mod collision_calculations;
 
 pub fn simulate_spatial_biosphere(
     mut all_spatial_biosphere_information: &mut AllSpatialBiosphereInformation,
-    _all_species_information: &AllSpeciesInformation,
     all_current_information: &AllCurrentInformation,
-    _admin_information: &AdministrativeInformation,
-    mut _cheap_random: &mut CheapRandomGameworld,
+    admin_information: &AdministrativeInformation,
     d_trig: &DeterministicTrig,
     game_settings: &GameSettings
 ) {
+    // Splits up one out of thirty blobs every turn.
+    for blob_number in 1..all_spatial_biosphere_information.blob_vec.len() {
+        if all_spatial_biosphere_information.blob_vec[blob_number].in_use {
+            if (blob_number as i64) % 30 == admin_information.tick_counter % 30 {
+                split_blob(&mut all_spatial_biosphere_information, &d_trig, blob_number);
+            }
+        }
+    }
+
+    // Applies current to each blob
     for blob_number in 1..all_spatial_biosphere_information.blob_vec.len() {
         current_applicator::apply_current(
             &mut all_spatial_biosphere_information,
@@ -33,6 +44,7 @@ pub fn simulate_spatial_biosphere(
         );
     }
 
+    //
     for blob_number in 1..all_spatial_biosphere_information.blob_vec.len() {
         if all_spatial_biosphere_information.blob_vec[blob_number].in_use {
             blob_mover::move_blob(
