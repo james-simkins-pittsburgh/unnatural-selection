@@ -193,6 +193,7 @@ pub fn split_blob(
             // This code calculates attributes for the colony blobs
 
             for colony_blob_number in colony_list {
+
                 // This calculates mass and center of mass.
                 let mut sum_of_moments_x = 0;
                 let mut sum_of_moments_y = 0;
@@ -219,6 +220,39 @@ pub fn split_blob(
                     sum_of_moments_y / sum_of_mass;
 
                 // This calculates the moment of inertia.
+                let mut moment_of_inertia = 0;
+
+                for organism_number in all_spatial_biosphere_information.blob_vec[
+                    colony_blob_number
+                ].blob_members.iter() {
+                    moment_of_inertia +=
+                        ((all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].x_location -
+                            all_spatial_biosphere_information.blob_vec
+                                [colony_blob_number].center_of_mass_x) *
+                            (all_spatial_biosphere_information.organism_information_vec
+                                [*organism_number].x_location -
+                                all_spatial_biosphere_information.blob_vec
+                                    [colony_blob_number].center_of_mass_x) +
+                            (all_spatial_biosphere_information.organism_information_vec
+                                [*organism_number].y_location -
+                                all_spatial_biosphere_information.blob_vec
+                                    [colony_blob_number].center_of_mass_y) *
+                                (all_spatial_biosphere_information.organism_information_vec
+                                    [*organism_number].y_location -
+                                    all_spatial_biosphere_information.blob_vec
+                                        [colony_blob_number].center_of_mass_y)) *
+                        all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].mass;
+                }
+
+                all_spatial_biosphere_information.blob_vec[colony_blob_number].blob_moment_of_inertia = moment_of_inertia;
+
+                // Left off here. Need to calculate x velocity, y velocity, and angular velocity.
+
+                // Need to investigate whether angle to org center is ever used.
+
+
             }
         }
     }

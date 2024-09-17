@@ -100,7 +100,7 @@ pub struct AllBiologicalBiosphereInformation {
     pub organism_bio_information_vec: Vec<OrganismBioInformation>,
 }
 
-// This contains all the spatial data about an individual organism.
+// This contains all the biological data about an individual organism.
 #[derive(Clone, PartialEq, Default)]
 pub struct OrganismBioInformation {
     pub in_use: bool,
@@ -113,12 +113,12 @@ pub struct OrganismBioInformation {
     pub moving_on_its_own: bool,
     pub eating: bool,
     pub eating_target: Vec<usize>,
+    pub animation_type: AnimationType,
+    pub animation_counter: usize,
     pub attached_to_host: bool,
     pub in_host: bool,
     pub viral_host_organism: usize,
     pub inserting: bool,
-    pub animation_type: AnimationType,
-    pub animation_counter: usize,
 }
 
 #[derive(Copy, Clone, PartialEq, Default)]
