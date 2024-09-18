@@ -147,7 +147,12 @@ pub fn split_blob(
                             2;
                     }
 
-                    calculate_new_velocity (all_spatial_biosphere_information, &deterministic_trig, organism_number, &original_blob);
+                    calculate_new_velocity(
+                        all_spatial_biosphere_information,
+                        &deterministic_trig,
+                        organism_number,
+                        &original_blob
+                    );
                 }
             }
             // This code calculates attributes for the colony blobs
@@ -209,10 +214,14 @@ pub fn split_blob(
                     colony_blob_number
                 ].blob_moment_of_inertia = moment_of_inertia;
 
-                // This calculates the new x, y, and rotational velocities 
+                // This calculates the new x, y, and rotational velocities
 
-                calculate_new_velocity (all_spatial_biosphere_information, &deterministic_trig, colony_blob_number, &original_blob);
-                
+                calculate_new_velocity(
+                    all_spatial_biosphere_information,
+                    &deterministic_trig,
+                    colony_blob_number,
+                    &original_blob
+                );
             }
         }
     }
