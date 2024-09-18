@@ -5,6 +5,8 @@ use crate::simulation::biosphere_simulation::collision_calculations::collision_d
 use crate::simulation::biosphere_simulation::collision_calculations::organism_combination::apply_collision;
 use crate::simulation::biosphere_simulation::collision_calculations::detection_grid_updater;
 
+use super::collision_calculations::{ ROTATIONAL_SPEED_LIMIT, SPEED_LIMIT };
+
 pub struct CollisionCheckResult {
     pub collision: bool,
     pub x_move: i32,
@@ -26,6 +28,34 @@ pub fn move_blob(
         all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity != 0 ||
         all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity != 0
     {
+        // Enforce speed limits
+        if
+            all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity.abs() >
+            SPEED_LIMIT
+        {
+            all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity =
+                SPEED_LIMIT *
+                all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity.signum();
+        }
+
+        if
+            all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity.abs() >
+            SPEED_LIMIT
+        {
+            all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity =
+                SPEED_LIMIT *
+                all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity.signum();
+        }
+
+        if
+            all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity.abs() >
+            ROTATIONAL_SPEED_LIMIT
+        {
+            all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity =
+                ROTATIONAL_SPEED_LIMIT *
+                all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity.signum();
+        }
+
         let mut detection_result = detect_collision(
             &all_spatial_biosphere_information,
             blob_number,
@@ -62,21 +92,18 @@ pub fn move_blob(
                 {
                     reverse_y = true;
                 }
-
             }
 
             if reverse_x == true {
                 all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity =
-                    all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity *
-                    -1;
+                    all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity * -1;
 
                 all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity = 0;
             }
 
             if reverse_y == true {
                 all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity =
-                    all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity *
-                    -1;
+                    all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity * -1;
 
                 all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity = 0;
             }

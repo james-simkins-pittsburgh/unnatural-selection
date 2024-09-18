@@ -125,28 +125,44 @@ fn calculate_moment_of_inertia(
 ) -> i32 {
     let mut moment_of_inertia = 0;
 
-    // For every blob in the combination list.
-    for blob_number in 0..combination_list.len() {
-        // For every organism in each blob.
-        for organism_number in all_spatial_biosphere_information.blob_vec[
-            blob_number
-        ].blob_members.iter() {
-            // Add the distance squared from the center of mass times the mass of the organism to the moment of inertia.
-            moment_of_inertia +=
-                ((all_spatial_biosphere_information.organism_information_vec
-                    [*organism_number].x_location -
-                    center_of_mass_x) *
-                    (all_spatial_biosphere_information.organism_information_vec
+    if combination_list.len() > 1 {
+        // For every blob in the combination list.
+        for blob_number in 0..combination_list.len() {
+            // For every organism in each blob.
+            for organism_number in all_spatial_biosphere_information.blob_vec[
+                blob_number
+            ].blob_members.iter() {
+                // Add the distance squared from the center of mass times the mass of the organism to the moment of inertia.
+                moment_of_inertia +=
+                    ((all_spatial_biosphere_information.organism_information_vec
                         [*organism_number].x_location -
-                        center_of_mass_x) +
-                    (all_spatial_biosphere_information.organism_information_vec
-                        [*organism_number].y_location -
-                        center_of_mass_y) *
+                        center_of_mass_x) *
+                        (all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].x_location -
+                            center_of_mass_x) +
                         (all_spatial_biosphere_information.organism_information_vec
                             [*organism_number].y_location -
-                            center_of_mass_y)) *
-                all_spatial_biosphere_information.organism_information_vec[*organism_number].mass;
+                            center_of_mass_y) *
+                            (all_spatial_biosphere_information.organism_information_vec
+                                [*organism_number].y_location -
+                                center_of_mass_y)) *
+                    all_spatial_biosphere_information.organism_information_vec
+                        [*organism_number].mass;
+            }
         }
+    } else {
+        let organism_number = combination_list[0];
+        moment_of_inertia =
+            (all_spatial_biosphere_information.organism_information_vec[organism_number].mass *
+                all_spatial_biosphere_information.organism_information_vec[organism_number].radius *
+                all_spatial_biosphere_information.organism_information_vec
+                    [organism_number].radius) /
+            2;
+    }
+
+    if moment_of_inertia == 0 {
+
+        println!("The length is {}", combination_list.len())
     }
 
     return moment_of_inertia;
