@@ -26,7 +26,6 @@ pub fn move_blob(
         all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity != 0 ||
         all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity != 0
     {
-        
         let mut detection_result = detect_collision(
             &all_spatial_biosphere_information,
             blob_number,
@@ -40,24 +39,46 @@ pub fn move_blob(
             detection_result.y_move != 0 ||
             detection_result.r_move != 0
         {
-            if
-                (all_spatial_biosphere_information.blob_vec[blob_number].center_of_mass_x +
-                    detection_result.x_move).abs() >= game_settings.map_width / 2
-            {
-                detection_result.x_move = 0;
-                detection_result.y_move = 0;
-                all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity =
-                    all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity * -1;
+            /* Start temporary code */
+
+            let mut reverse_x = false;
+            let mut reverse_y = false;
+
+            for organism_number in all_spatial_biosphere_information.blob_vec[
+                blob_number
+            ].blob_members.iter() {
+                if
+                    all_spatial_biosphere_information.organism_information_vec[
+                        *organism_number
+                    ].x_location.abs() >= game_settings.map_width / 2
+                {
+                    reverse_x = true;
+                }
+
+                if
+                    all_spatial_biosphere_information.organism_information_vec[
+                        *organism_number
+                    ].y_location.abs() >= game_settings.map_height / 2
+                {
+                    reverse_y = true;
+                }
+
             }
 
-            if
-                (all_spatial_biosphere_information.blob_vec[blob_number].center_of_mass_y +
-                    detection_result.y_move).abs() >= game_settings.map_height / 2
-            {
-                detection_result.x_move = 0;
-                detection_result.y_move = 0;
+            if reverse_x == true {
+                all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity =
+                    all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity *
+                    -1;
+
+                all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity = 0;
+            }
+
+            if reverse_y == true {
                 all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity =
-                    all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity * -1;
+                    all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity *
+                    -1;
+
+                all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity = 0;
             }
 
             /* End Temporary code!!! */
@@ -78,7 +99,8 @@ pub fn move_blob(
                 */
 
                 let organism_number =
-                    all_spatial_biosphere_information.blob_vec[blob_number].blob_members[member_number];
+                    all_spatial_biosphere_information.blob_vec[blob_number].blob_members
+                        [member_number];
 
                 // Store previous position so the old record can be deleted from the collision detector.
                 let previous_x = all_spatial_biosphere_information.organism_information_vec
@@ -102,11 +124,15 @@ pub fn move_blob(
                     all_spatial_biosphere_information.organism_information_vec[
                         organism_number
                     ].y_location += detection_result.y_move;
-                    all_spatial_biosphere_information.organism_information_vec[organism_number].rotation +=
-                        detection_result.r_move;
+                    all_spatial_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].rotation += detection_result.r_move;
 
                     // Move any extra circles for oblong blobs.
-                    if all_spatial_biosphere_information.organism_information_vec[organism_number].oblong {
+                    if
+                        all_spatial_biosphere_information.organism_information_vec
+                            [organism_number].oblong
+                    {
                         // This is easy if it is not rotating
                         if detection_result.r_move == 0 {
                             for circle in all_spatial_biosphere_information.organism_information_vec[

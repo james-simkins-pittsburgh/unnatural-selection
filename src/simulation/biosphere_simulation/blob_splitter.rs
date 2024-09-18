@@ -1,6 +1,6 @@
 use crate::utility_functions::deterministic_trigonometry::DeterministicTrig;
 
-use crate::simulation::AllSpatialBiosphereInformation;
+use crate::simulation::{ AllSpatialBiosphereInformation, BlobRecord };
 use crate::utility_functions::integer_math::square_root_64;
 
 pub fn split_blob(
@@ -8,7 +8,6 @@ pub fn split_blob(
     deterministic_trig: &DeterministicTrig,
     blob_number: usize
 ) {
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Add a condition here to rule out blobs that only contain members of a single colony !!!!!!!!!!!!!!!!!!
     // If the blob has more than one member.
     if all_spatial_biosphere_information.blob_vec[blob_number].blob_members.len() > 1 {
         // This code checks to see if the blob is all a single colony.
@@ -108,7 +107,7 @@ pub fn split_blob(
                             organism_number
                         ].y_location;
 
-                    // If it is oblong, calculate the moment of inertia.
+                    // Calculate the moment of inertia for oblong.
                     if
                         all_spatial_biosphere_information.organism_information_vec
                             [organism_number].oblong
@@ -134,66 +133,26 @@ pub fn split_blob(
                             organism_number
                         ].blob_moment_of_inertia = moment_of_intertia;
 
-                        // Otherwise just assign 1 as a placeholder value of 1.
+                        // Calculate the moment of inertia for a circle.
                     } else {
                         all_spatial_biosphere_information.blob_vec[
                             organism_number
-                        ].blob_moment_of_inertia = 1;
+                        ].blob_moment_of_inertia =
+                            (all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].mass *
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [organism_number].radius *
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [organism_number].radius) /
+                            2;
                     }
 
-                    // Give the new blob the x and y velocities of the old blob.
-                    all_spatial_biosphere_information.blob_vec[organism_number].blob_x_velocity =
-                        original_blob.blob_x_velocity;
-                    all_spatial_biosphere_information.blob_vec[organism_number].blob_y_velocity =
-                        original_blob.blob_y_velocity;
-
-                    // Then add on the angular velocity.
-
-                    // Calculate the distance between the old blob center and the new blob center.
-                    let x_displacement =
-                        original_blob.center_of_mass_x -
-                        all_spatial_biosphere_information.blob_vec
-                            [organism_number].center_of_mass_x;
-                    let y_displacement =
-                        original_blob.center_of_mass_x -
-                        all_spatial_biosphere_information.blob_vec
-                            [organism_number].center_of_mass_x;
-
-                    let distance_from_blob_center = square_root_64(
-                        (x_displacement as i64) * (x_displacement as i64) +
-                            (y_displacement as i64) * (y_displacement as i64)
-                    ) as i32;
-
-                    // Calculate the linear velocity from the distance and angular velocity.
-                    let linear_velocity =
-                        (distance_from_blob_center * original_blob.angular_velocity) / 1000;
-                    let angle_from_blob_center = deterministic_trig.d_trig.arctangent((
-                        (y_displacement * 1000) / x_displacement,
-                        1000,
-                    )).0;
-
-                    // Figure out the angle of the linear velocity.
-                    let angle_of_tangent = if linear_velocity > 0 {
-                        angle_from_blob_center + 1571
-                    } else {
-                        angle_from_blob_center - 1571
-                    };
-
-                    // Split the linear velocity into x and y components and add it to the blob velocity.
-                    all_spatial_biosphere_information.blob_vec[organism_number].blob_x_velocity =
-                        (linear_velocity *
-                            deterministic_trig.d_trig.cosine((angle_of_tangent, 1000)).0) /
-                        1000;
-                    all_spatial_biosphere_information.blob_vec[organism_number].blob_y_velocity =
-                        (linear_velocity *
-                            deterministic_trig.d_trig.sine((angle_of_tangent, 1000)).0) /
-                        1000;
+                    calculate_new_velocity (all_spatial_biosphere_information, &deterministic_trig, organism_number, &original_blob);
                 }
             }
             // This code calculates attributes for the colony blobs
 
             for colony_blob_number in colony_list {
-
                 // This calculates mass and center of mass.
                 let mut sum_of_moments_x = 0;
                 let mut sum_of_moments_y = 0;
@@ -246,14 +205,66 @@ pub fn split_blob(
                             [*organism_number].mass;
                 }
 
-                all_spatial_biosphere_information.blob_vec[colony_blob_number].blob_moment_of_inertia = moment_of_inertia;
+                all_spatial_biosphere_information.blob_vec[
+                    colony_blob_number
+                ].blob_moment_of_inertia = moment_of_inertia;
 
-                // Left off here. Need to calculate x velocity, y velocity, and angular velocity.
+                // This calculates the new x, y, and rotational velocities 
 
-                // Need to investigate whether angle to org center is ever used.
-
-
+                calculate_new_velocity (all_spatial_biosphere_information, &deterministic_trig, colony_blob_number, &original_blob);
+                
             }
         }
     }
+}
+
+fn calculate_new_velocity(
+    all_spatial_biosphere_information: &mut AllSpatialBiosphereInformation,
+    deterministic_trig: &DeterministicTrig,
+    blob_number: usize,
+    original_blob: &BlobRecord
+) {
+    // Give the new blob the x and y velocities of the old blob.
+    all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity =
+        original_blob.blob_x_velocity;
+    all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity =
+        original_blob.blob_y_velocity;
+
+    // Then add on the angular velocity.
+    // First maintain the rotation.
+    all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity =
+        original_blob.angular_velocity;
+
+    // Calculate the distance between the old blob center and the new blob center.
+    let x_displacement =
+        original_blob.center_of_mass_x -
+        all_spatial_biosphere_information.blob_vec[blob_number].center_of_mass_x;
+    let y_displacement =
+        original_blob.center_of_mass_x -
+        all_spatial_biosphere_information.blob_vec[blob_number].center_of_mass_x;
+
+    let distance_from_blob_center = square_root_64(
+        (x_displacement as i64) * (x_displacement as i64) +
+            (y_displacement as i64) * (y_displacement as i64)
+    ) as i32;
+
+    // Calculate the linear velocity from the distance and angular velocity.
+    let linear_velocity = (distance_from_blob_center * original_blob.angular_velocity) / 1000;
+    let angle_from_blob_center = deterministic_trig.d_trig.arctangent((
+        (y_displacement * 1000) / x_displacement,
+        1000,
+    )).0;
+
+    // Figure out the angle of the linear velocity.
+    let angle_of_tangent = if linear_velocity > 0 {
+        angle_from_blob_center + 1571
+    } else {
+        angle_from_blob_center - 1571
+    };
+
+    // Split the linear velocity into x and y components and add it to the blob velocity.
+    all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity +=
+        (linear_velocity * deterministic_trig.d_trig.cosine((angle_of_tangent, 1000)).0) / 1000;
+    all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity +=
+        (linear_velocity * deterministic_trig.d_trig.sine((angle_of_tangent, 1000)).0) / 1000;
 }

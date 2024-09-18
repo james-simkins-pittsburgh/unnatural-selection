@@ -8,7 +8,6 @@ struct MassAndCenterOfMass {
     center_of_mass_y: i32,
     mass: i32,
 }
-
 pub fn apply_collision(
     all_spatial_biosphere_information: &mut AllSpatialBiosphereInformation,
     combination_list: &Vec<usize>,
@@ -82,6 +81,8 @@ pub fn apply_collision(
             all_spatial_biosphere_information.blob_vec[new_blob_number].blob_members.push(
                 organism_number
             );
+
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Need to add calculation of angle to new blob center for every organism.
         }
         // Clears the old blob of members
         all_spatial_biosphere_information.blob_vec[combination_list[blob_index]].blob_members =
@@ -213,6 +214,6 @@ fn calculate_momentum(
         // Add the rotational momentum contributions to the new blow.
         *r_momentum +=
             all_spatial_biosphere_information.blob_vec[*member_blob_number].angular_velocity *
-            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_moment_of_inertia
+            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_moment_of_inertia;
     }
 }
