@@ -11,4 +11,4 @@ I am writing this game primarily to become a better programmer in the Rust progr
 
 This game is meant to be a much more advanced version of a game I wrote in Scratch called [Bioform Battle](https://scratch.mit.edu/users/EntropyIncorporated/). 
 
-I hope that, with the Bevy game engine, I can support a much larger map with better graphics. I am also adding more complex physics simulation and a greater variety of organism types.
+I hope that, with the Bevy game engine, I can support a much larger map with better graphics. I am also adding a more complex physics simulation, a greater variety of organism types, and a more sophisticated computer player.
