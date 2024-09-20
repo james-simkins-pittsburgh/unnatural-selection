@@ -56,7 +56,7 @@ pub fn move_blob(
                 all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity.signum();
         }
 
-        let detection_result = detect_collision(
+        let mut detection_result = detect_collision(
             &all_spatial_biosphere_information,
             blob_number,
             &game_settings,
@@ -97,15 +97,19 @@ pub fn move_blob(
             if reverse_x == true {
                 all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity =
                     all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity * -1;
-
                 all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity = 0;
+                detection_result.x_move = 0;
+                detection_result.y_move = 0;
+                detection_result.r_move = 0;
             }
 
             if reverse_y == true {
                 all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity =
                     all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity * -1;
-
                 all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity = 0;
+                detection_result.x_move = 0;
+                detection_result.y_move = 0;
+                detection_result.r_move = 0;
             }
 
             /* End Temporary code!!! */

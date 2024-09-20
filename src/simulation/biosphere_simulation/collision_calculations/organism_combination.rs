@@ -67,7 +67,7 @@ pub fn apply_collision(
         r_momentum / new_moment_of_inertia;
 
     // For every blob being combined
-    for blob_index in 1..combination_list.len() {
+    for blob_index in 0..combination_list.len() {
         // For every organism in that blob
         for organism_index in 0..all_spatial_biosphere_information.blob_vec[
             combination_list[blob_index]
@@ -75,14 +75,21 @@ pub fn apply_collision(
             let organism_number =
                 all_spatial_biosphere_information.blob_vec
                     [combination_list[blob_index]].blob_members[organism_index];
-            // Change the organism's blob association.
-            all_spatial_biosphere_information.organism_information_vec[
-                organism_number
-            ].blob_number = new_blob_number;
-            // Add that organism to the new blob list.
-            all_spatial_biosphere_information.blob_vec[new_blob_number].blob_members.push(
-                organism_number
-            );
+
+            if combination_list[blob_index] != new_blob_number {
+                // Change the organism's blob association.
+                all_spatial_biosphere_information.organism_information_vec[
+                    organism_number
+                ].blob_number = new_blob_number;
+                // Add that organism to the new blob list.
+                all_spatial_biosphere_information.blob_vec[new_blob_number].blob_members.push(
+                    organism_number
+                );
+                // Mark that organism as part of a multi-organism blob.
+                all_spatial_biosphere_information.organism_information_vec[
+                    organism_number
+                ].part_of_multi_org_blob = true;
+            }
 
             // Set the angle to the blob center of mass for the organism
             all_spatial_biosphere_information.organism_information_vec[
@@ -130,11 +137,14 @@ pub fn apply_collision(
                 }
             };
         }
-        // Clears the old blob of members
-        all_spatial_biosphere_information.blob_vec[combination_list[blob_index]].blob_members =
-            vec![];
-        // Mark the old blob as not in use.
-        all_spatial_biosphere_information.blob_vec[combination_list[blob_index]].in_use = false;
+
+        if combination_list[blob_index] != new_blob_number {
+            // Clears the old blob of members
+            all_spatial_biosphere_information.blob_vec[combination_list[blob_index]].blob_members =
+                vec![];
+            // Mark the old blob as not in use.
+            all_spatial_biosphere_information.blob_vec[combination_list[blob_index]].in_use = false;
+        }
     }
 }
 

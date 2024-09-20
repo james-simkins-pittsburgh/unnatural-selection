@@ -81,19 +81,27 @@ pub fn split_blob(
                         colony_blob_number
                     ].blob_members.push(organism_number);
 
+                    // Associate the organism with the blob.
+                    all_spatial_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].blob_number = colony_blob_number;
+
                     // If the organism is not part of a colony.
                 } else {
                     // Assign the organism to it's default blob.
                     all_spatial_biosphere_information.organism_information_vec[
                         organism_number
                     ].blob_number = organism_number;
-                    all_spatial_biosphere_information.organism_information_vec[
-                        organism_number
-                    ].angle_to_center_of_mass = 0;
                     // Set the attributes for that blob
                     all_spatial_biosphere_information.blob_vec[organism_number].in_use = true;
                     all_spatial_biosphere_information.blob_vec[organism_number].blob_members =
                         vec![organism_number];
+                    all_spatial_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].part_of_multi_org_blob = false;
+                    all_spatial_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].angle_to_center_of_mass = 0;
                     all_spatial_biosphere_information.blob_vec[organism_number].blob_mass =
                         all_spatial_biosphere_information.organism_information_vec[
                             organism_number
