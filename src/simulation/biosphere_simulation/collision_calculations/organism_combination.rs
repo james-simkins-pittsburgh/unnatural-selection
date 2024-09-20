@@ -21,6 +21,8 @@ pub fn apply_collision(
     // This sets the new blob number to the first blob in the combination list.
     let new_blob_number = combination_list[0];
 
+    // IS THIS CONSIDERING THE CASE OF A SINGLE ORGANISM BLOB!?!?!?!?!?!?!?!??!?!?!?!?!?!??!?!?!?!??!?!?!?!?!??!?!?!?!??!?!??!?!
+
     // This calculates the new mass and center of mass.
     let new_mass_and_center_of_mass = calculate_mass_and_center_of_mass(
         &all_spatial_biosphere_information,
@@ -82,7 +84,51 @@ pub fn apply_collision(
                 organism_number
             );
 
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Need to add calculation of angle to new blob center for every organism.
+            // Set the angle to the blob center of mass for the organism
+            all_spatial_biosphere_information.organism_information_vec[
+                organism_number
+            ].angle_to_center_of_mass = if
+                all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x -
+                    all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].x_location > 0
+            {
+                deterministic_trig.d_trig.arctangent((
+                    (all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_y -
+                        all_spatial_biosphere_information.organism_information_vec
+                            [organism_number].y_location) *
+                        1000,
+                    all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x -
+                        all_spatial_biosphere_information.organism_information_vec
+                            [organism_number].x_location,
+                )).0
+            } else if
+                all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x -
+                    all_spatial_biosphere_information.organism_information_vec
+                        [organism_number].x_location < 0
+            {
+                3142 +
+                    deterministic_trig.d_trig.arctangent((
+                        (all_spatial_biosphere_information.blob_vec
+                            [new_blob_number].center_of_mass_y -
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].y_location) *
+                            1000,
+                        all_spatial_biosphere_information.blob_vec
+                            [new_blob_number].center_of_mass_x -
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].x_location,
+                    )).0
+            } else {
+                if
+                    all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_y -
+                        all_spatial_biosphere_information.organism_information_vec
+                            [organism_number].y_location > 0
+                {
+                    1571
+                } else {
+                    -1571
+                }
+            };
         }
         // Clears the old blob of members
         all_spatial_biosphere_information.blob_vec[combination_list[blob_index]].blob_members =
@@ -130,10 +176,7 @@ fn calculate_moment_of_inertia(
         for blob_number in 0..combination_list.len() {
             // For every organism in each blob.
 
-            if all_spatial_biosphere_information.blob_vec[
-                blob_number
-            ].blob_members.len() == 0{
-
+            if all_spatial_biosphere_information.blob_vec[blob_number].blob_members.len() == 0 {
                 println!("Empty blob alert");
             }
 
@@ -159,8 +202,11 @@ fn calculate_moment_of_inertia(
 
                 if moment_of_inertia == 0 {
                     println!("The length is {}", combination_list.len());
-                    println!("The mass is {}", all_spatial_biosphere_information.organism_information_vec
-                    [*organism_number].mass);
+                    println!(
+                        "The mass is {}",
+                        all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].mass
+                    );
                 }
             }
         }

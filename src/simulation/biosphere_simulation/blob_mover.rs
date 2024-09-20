@@ -56,7 +56,7 @@ pub fn move_blob(
                 all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity.signum();
         }
 
-        let mut detection_result = detect_collision(
+        let detection_result = detect_collision(
             &all_spatial_biosphere_information,
             blob_number,
             &game_settings,

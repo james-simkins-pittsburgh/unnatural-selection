@@ -87,13 +87,13 @@ pub fn split_blob(
                     all_spatial_biosphere_information.organism_information_vec[
                         organism_number
                     ].blob_number = organism_number;
+                    all_spatial_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].angle_to_center_of_mass = 0;
                     // Set the attributes for that blob
                     all_spatial_biosphere_information.blob_vec[organism_number].in_use = true;
                     all_spatial_biosphere_information.blob_vec[organism_number].blob_members =
                         vec![organism_number];
-                    all_spatial_biosphere_information.blob_vec[
-                        organism_number
-                    ].angular_velocity = 0;
                     all_spatial_biosphere_information.blob_vec[organism_number].blob_mass =
                         all_spatial_biosphere_information.organism_information_vec[
                             organism_number
@@ -112,12 +112,12 @@ pub fn split_blob(
                         all_spatial_biosphere_information.organism_information_vec
                             [organism_number].oblong
                     {
-                        let mut moment_of_intertia = 0;
+                        let mut moment_of_inertia = 0;
 
                         for other_circles in all_spatial_biosphere_information.organism_information_vec[
                             organism_number
                         ].other_circle_positions.iter() {
-                            moment_of_intertia =
+                            moment_of_inertia =
                                 (other_circles.distance_from_org_center *
                                     other_circles.distance_from_org_center *
                                     all_spatial_biosphere_information.organism_information_vec
@@ -131,7 +131,7 @@ pub fn split_blob(
                         }
                         all_spatial_biosphere_information.blob_vec[
                             organism_number
-                        ].blob_moment_of_inertia = moment_of_intertia;
+                        ].blob_moment_of_inertia = moment_of_inertia;
 
                         // Calculate the moment of inertia for a circle.
                     } else {
@@ -157,8 +157,11 @@ pub fn split_blob(
             }
             // This code calculates attributes for the colony blobs
 
-            for colony_blob_number in colony_list {
+            for index in 0..colony_list.len() {
+                let colony_blob_number = colony_list[index];
+
                 // This calculates mass and center of mass.
+
                 let mut sum_of_moments_x = 0;
                 let mut sum_of_moments_y = 0;
                 let mut sum_of_mass = 0;
@@ -183,36 +186,149 @@ pub fn split_blob(
                 all_spatial_biosphere_information.blob_vec[colony_blob_number].center_of_mass_y =
                     sum_of_moments_y / sum_of_mass;
 
-                // This calculates the moment of inertia.
-                let mut moment_of_inertia = 0;
+                // This sets the angle to blob center and part of a multi org blob.
 
                 for organism_number in all_spatial_biosphere_information.blob_vec[
                     colony_blob_number
                 ].blob_members.iter() {
-                    moment_of_inertia +=
-                        ((all_spatial_biosphere_information.organism_information_vec
-                            [*organism_number].x_location -
+                    all_spatial_biosphere_information.organism_information_vec[
+                        *organism_number
+                    ].angle_to_center_of_mass = if
+                        all_spatial_biosphere_information.blob_vec
+                            [colony_blob_number].center_of_mass_x -
+                            all_spatial_biosphere_information.organism_information_vec
+                                [*organism_number].x_location > 0
+                    {
+                        deterministic_trig.d_trig.arctangent((
+                            (all_spatial_biosphere_information.blob_vec
+                                [colony_blob_number].center_of_mass_y -
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [*organism_number].y_location) *
+                                1000,
                             all_spatial_biosphere_information.blob_vec
-                                [colony_blob_number].center_of_mass_x) *
-                            (all_spatial_biosphere_information.organism_information_vec
+                                [colony_blob_number].center_of_mass_x -
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [*organism_number].x_location,
+                        )).0
+                    } else if
+                        all_spatial_biosphere_information.blob_vec
+                            [colony_blob_number].center_of_mass_x -
+                            all_spatial_biosphere_information.organism_information_vec
+                                [*organism_number].x_location < 0
+                    {
+                        3142 +
+                            deterministic_trig.d_trig.arctangent((
+                                (all_spatial_biosphere_information.blob_vec
+                                    [colony_blob_number].center_of_mass_y -
+                                    all_spatial_biosphere_information.organism_information_vec
+                                        [*organism_number].y_location) *
+                                    1000,
+                                all_spatial_biosphere_information.blob_vec
+                                    [colony_blob_number].center_of_mass_x -
+                                    all_spatial_biosphere_information.organism_information_vec
+                                        [*organism_number].x_location,
+                            )).0
+                    } else {
+                        if
+                            all_spatial_biosphere_information.blob_vec
+                                [colony_blob_number].center_of_mass_y -
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [*organism_number].y_location > 0
+                        {
+                            1571
+                        } else {
+                            -1571
+                        }
+                    };
+
+                    if
+                        all_spatial_biosphere_information.blob_vec[
+                            colony_blob_number
+                        ].blob_members.len() > 1
+                    {
+                        all_spatial_biosphere_information.organism_information_vec[
+                            *organism_number
+                        ].part_of_multi_org_blob = true;
+                    } else {
+                        all_spatial_biosphere_information.organism_information_vec[
+                            *organism_number
+                        ].part_of_multi_org_blob = false;
+                    }
+                }
+
+                // This calculates the moment of inertia.
+                // This is for the case of a multi-blob colony.
+                if colony_list.len() > 1 {
+                    let mut moment_of_inertia = 0;
+
+                    for organism_number in all_spatial_biosphere_information.blob_vec[
+                        colony_blob_number
+                    ].blob_members.iter() {
+                        moment_of_inertia +=
+                            ((all_spatial_biosphere_information.organism_information_vec
                                 [*organism_number].x_location -
                                 all_spatial_biosphere_information.blob_vec
-                                    [colony_blob_number].center_of_mass_x) +
-                            (all_spatial_biosphere_information.organism_information_vec
-                                [*organism_number].y_location -
-                                all_spatial_biosphere_information.blob_vec
-                                    [colony_blob_number].center_of_mass_y) *
+                                    [colony_blob_number].center_of_mass_x) *
+                                (all_spatial_biosphere_information.organism_information_vec
+                                    [*organism_number].x_location -
+                                    all_spatial_biosphere_information.blob_vec
+                                        [colony_blob_number].center_of_mass_x) +
                                 (all_spatial_biosphere_information.organism_information_vec
                                     [*organism_number].y_location -
                                     all_spatial_biosphere_information.blob_vec
-                                        [colony_blob_number].center_of_mass_y)) *
-                        all_spatial_biosphere_information.organism_information_vec
-                            [*organism_number].mass;
-                }
+                                        [colony_blob_number].center_of_mass_y) *
+                                    (all_spatial_biosphere_information.organism_information_vec
+                                        [*organism_number].y_location -
+                                        all_spatial_biosphere_information.blob_vec
+                                            [colony_blob_number].center_of_mass_y)) *
+                            all_spatial_biosphere_information.organism_information_vec
+                                [*organism_number].mass;
+                    }
 
-                all_spatial_biosphere_information.blob_vec[
-                    colony_blob_number
-                ].blob_moment_of_inertia = moment_of_inertia;
+                    all_spatial_biosphere_information.blob_vec[
+                        colony_blob_number
+                    ].blob_moment_of_inertia = moment_of_inertia;
+                } else {
+                    // Calculate the moment of inertia for oblong.
+                    if
+                        all_spatial_biosphere_information.organism_information_vec
+                            [colony_blob_number].oblong
+                    {
+                        let mut moment_of_inertia = 0;
+
+                        for other_circles in all_spatial_biosphere_information.organism_information_vec[
+                            colony_blob_number
+                        ].other_circle_positions.iter() {
+                            moment_of_inertia =
+                                (other_circles.distance_from_org_center *
+                                    other_circles.distance_from_org_center *
+                                    all_spatial_biosphere_information.organism_information_vec
+                                        [colony_blob_number].mass) /
+                                ((
+                                    all_spatial_biosphere_information.organism_information_vec[
+                                        colony_blob_number
+                                    ].other_circle_positions.len() as i32
+                                ) +
+                                    1);
+                        }
+                        all_spatial_biosphere_information.blob_vec[
+                            colony_blob_number
+                        ].blob_moment_of_inertia = moment_of_inertia;
+
+                        // Calculate the moment of inertia for a circle.
+                    } else {
+                        all_spatial_biosphere_information.blob_vec[
+                            colony_blob_number
+                        ].blob_moment_of_inertia =
+                            (all_spatial_biosphere_information.organism_information_vec
+                                [colony_blob_number].mass *
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [colony_blob_number].radius *
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [colony_blob_number].radius) /
+                            2;
+                    }
+                }
 
                 // This calculates the new x, y, and rotational velocities
 
