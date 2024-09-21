@@ -14,106 +14,90 @@ pub fn apply_collision(
     mineral_involved: bool,
     deterministic_trig: &DeterministicTrig
 ) {
-    let mut x_momentum = 0;
-    let mut y_momentum = 0;
-    let mut r_momentum = 0;
+    if combination_list.len() > 0 {
+        let mut x_momentum = 0;
+        let mut y_momentum = 0;
+        let mut r_momentum = 0;
 
-    // This sets the new blob number to the first blob in the combination list.
-    let new_blob_number = combination_list[0];
+        // This sets the new blob number to the first blob in the combination list.
+        let new_blob_number = combination_list[0];
 
-    // IS THIS CONSIDERING THE CASE OF A SINGLE ORGANISM BLOB!?!?!?!?!?!?!?!??!?!?!?!?!?!??!?!?!?!??!?!?!?!?!??!?!?!?!??!?!??!?!
+        // This calculates the new mass and center of mass.
+        let new_mass_and_center_of_mass = calculate_mass_and_center_of_mass(
+            &all_spatial_biosphere_information,
+            &combination_list
+        );
 
-    // This calculates the new mass and center of mass.
-    let new_mass_and_center_of_mass = calculate_mass_and_center_of_mass(
-        &all_spatial_biosphere_information,
-        &combination_list
-    );
-
-    // This calculates the new moment of inertia.
-    let new_moment_of_inertia = calculate_moment_of_inertia(
-        &all_spatial_biosphere_information,
-        &combination_list,
-        new_mass_and_center_of_mass.center_of_mass_x,
-        new_mass_and_center_of_mass.center_of_mass_y
-    );
-
-    // If a mineral is not involved, this calculates the new momentum. If a mineral is involved, it stays 0.
-    if !mineral_involved {
-        calculate_momentum(
+        // This calculates the new moment of inertia.
+        let new_moment_of_inertia = calculate_moment_of_inertia(
             &all_spatial_biosphere_information,
             &combination_list,
-            &new_mass_and_center_of_mass,
-            &mut x_momentum,
-            &mut y_momentum,
-            &mut r_momentum,
-            &deterministic_trig
+            new_mass_and_center_of_mass.center_of_mass_x,
+            new_mass_and_center_of_mass.center_of_mass_y
         );
-    }
 
-    // This sets the mass, center of mass, and velocity of the new blob.
-    all_spatial_biosphere_information.blob_vec[new_blob_number].blob_mass =
-        new_mass_and_center_of_mass.mass;
-    all_spatial_biosphere_information.blob_vec[new_blob_number].blob_moment_of_inertia =
-        new_moment_of_inertia;
-    all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x =
-        new_mass_and_center_of_mass.center_of_mass_x;
-    all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_y =
-        new_mass_and_center_of_mass.center_of_mass_y;
-    all_spatial_biosphere_information.blob_vec[new_blob_number].blob_x_velocity =
-        x_momentum / new_mass_and_center_of_mass.mass;
-    all_spatial_biosphere_information.blob_vec[new_blob_number].blob_x_velocity =
-        y_momentum / new_mass_and_center_of_mass.mass;
-    all_spatial_biosphere_information.blob_vec[new_blob_number].angular_velocity =
-        r_momentum / new_moment_of_inertia;
+        // If a mineral is not involved, this calculates the new momentum. If a mineral is involved, it stays 0.
+        if !mineral_involved {
+            calculate_momentum(
+                &all_spatial_biosphere_information,
+                &combination_list,
+                &new_mass_and_center_of_mass,
+                &mut x_momentum,
+                &mut y_momentum,
+                &mut r_momentum,
+                &deterministic_trig
+            );
+        }
 
-    // For every blob being combined
-    for blob_index in 0..combination_list.len() {
-        // For every organism in that blob
-        for organism_index in 0..all_spatial_biosphere_information.blob_vec[
-            combination_list[blob_index]
-        ].blob_members.len() {
-            let organism_number =
-                all_spatial_biosphere_information.blob_vec
-                    [combination_list[blob_index]].blob_members[organism_index];
+        // This sets the mass, center of mass, and velocity of the new blob.
+        all_spatial_biosphere_information.blob_vec[new_blob_number].blob_mass =
+            new_mass_and_center_of_mass.mass;
+        all_spatial_biosphere_information.blob_vec[new_blob_number].blob_moment_of_inertia =
+            new_moment_of_inertia;
+        all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x =
+            new_mass_and_center_of_mass.center_of_mass_x;
+        all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_y =
+            new_mass_and_center_of_mass.center_of_mass_y;
+        all_spatial_biosphere_information.blob_vec[new_blob_number].blob_x_velocity =
+            x_momentum / new_mass_and_center_of_mass.mass;
+        all_spatial_biosphere_information.blob_vec[new_blob_number].blob_x_velocity =
+            y_momentum / new_mass_and_center_of_mass.mass;
+        all_spatial_biosphere_information.blob_vec[new_blob_number].angular_velocity =
+            r_momentum / new_moment_of_inertia;
 
-            if combination_list[blob_index] != new_blob_number {
-                // Change the organism's blob association.
+        // For every blob being combined
+        for blob_index in 0..combination_list.len() {
+            // For every organism in that blob
+            for organism_index in 0..all_spatial_biosphere_information.blob_vec[
+                combination_list[blob_index]
+            ].blob_members.len() {
+                let organism_number =
+                    all_spatial_biosphere_information.blob_vec
+                        [combination_list[blob_index]].blob_members[organism_index];
+
+                if combination_list[blob_index] != new_blob_number {
+                    // Change the organism's blob association.
+                    all_spatial_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].blob_number = new_blob_number;
+                    // Add that organism to the new blob list.
+                    all_spatial_biosphere_information.blob_vec[new_blob_number].blob_members.push(
+                        organism_number
+                    );
+                    // Mark that organism as part of a multi-organism blob.
+                    all_spatial_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].part_of_multi_org_blob = true;
+                }
+
+                // Set the angle to the blob center of mass for the organism
                 all_spatial_biosphere_information.organism_information_vec[
                     organism_number
-                ].blob_number = new_blob_number;
-                // Add that organism to the new blob list.
-                all_spatial_biosphere_information.blob_vec[new_blob_number].blob_members.push(
-                    organism_number
-                );
-                // Mark that organism as part of a multi-organism blob.
-                all_spatial_biosphere_information.organism_information_vec[
-                    organism_number
-                ].part_of_multi_org_blob = true;
-            }
-
-            // Set the angle to the blob center of mass for the organism
-            all_spatial_biosphere_information.organism_information_vec[
-                organism_number
-            ].angle_to_center_of_mass = if
-                all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x -
-                    all_spatial_biosphere_information.organism_information_vec
-                        [organism_number].x_location > 0
-            {
-                deterministic_trig.d_trig.arctangent((
-                    (all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_y -
-                        all_spatial_biosphere_information.organism_information_vec
-                            [organism_number].y_location) *
-                        1000,
+                ].angle_to_center_of_mass = if
                     all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x -
                         all_spatial_biosphere_information.organism_information_vec
-                            [organism_number].x_location,
-                )).0
-            } else if
-                all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x -
-                    all_spatial_biosphere_information.organism_information_vec
-                        [organism_number].x_location < 0
-            {
-                3142 +
+                            [organism_number].x_location > 0
+                {
                     deterministic_trig.d_trig.arctangent((
                         (all_spatial_biosphere_information.blob_vec
                             [new_blob_number].center_of_mass_y -
@@ -125,26 +109,53 @@ pub fn apply_collision(
                             all_spatial_biosphere_information.organism_information_vec
                                 [organism_number].x_location,
                     )).0
-            } else {
-                if
-                    all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_y -
+                } else if
+                    all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x -
                         all_spatial_biosphere_information.organism_information_vec
-                            [organism_number].y_location > 0
+                            [organism_number].x_location < 0
                 {
-                    1571
+                    3142 +
+                        deterministic_trig.d_trig.arctangent((
+                            (all_spatial_biosphere_information.blob_vec
+                                [new_blob_number].center_of_mass_y -
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [organism_number].y_location) *
+                                1000,
+                            all_spatial_biosphere_information.blob_vec
+                                [new_blob_number].center_of_mass_x -
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [organism_number].x_location,
+                        )).0
                 } else {
-                    -1571
-                }
-            };
-        }
+                    if
+                        all_spatial_biosphere_information.blob_vec
+                            [new_blob_number].center_of_mass_y -
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].y_location > 0
+                    {
+                        1571
+                    } else {
+                        -1571
+                    }
+                };
+            }
 
-        if combination_list[blob_index] != new_blob_number {
-            // Clears the old blob of members
-            all_spatial_biosphere_information.blob_vec[combination_list[blob_index]].blob_members =
-                vec![];
-            // Mark the old blob as not in use.
-            all_spatial_biosphere_information.blob_vec[combination_list[blob_index]].in_use = false;
+            if combination_list[blob_index] != new_blob_number {
+                // Clears the old blob of members
+                all_spatial_biosphere_information.blob_vec[
+                    combination_list[blob_index]
+                ].blob_members = vec![];
+                // Mark the old blob as not in use.
+                all_spatial_biosphere_information.blob_vec[
+                    combination_list[blob_index]
+                ].in_use = false;
+            }
         }
+    } else {
+        // If is it just one blob and a mineral, then all that needs to happen is 0 the velocities.
+        all_spatial_biosphere_information.blob_vec[combination_list[0]].blob_x_velocity = 0;
+        all_spatial_biosphere_information.blob_vec[combination_list[0]].blob_y_velocity = 0;
+        all_spatial_biosphere_information.blob_vec[combination_list[0]].angular_velocity = 0;
     }
 }
 

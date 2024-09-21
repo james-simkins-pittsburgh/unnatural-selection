@@ -41,6 +41,7 @@ pub fn split_blob(
 
         // If it is not all one colony, then it needs to be split up.
         if not_all_one_colony {
+            
             let mut colony_list: Vec<usize> = Vec::new();
 
             let original_blob = all_spatial_biosphere_information.blob_vec[blob_number].clone();

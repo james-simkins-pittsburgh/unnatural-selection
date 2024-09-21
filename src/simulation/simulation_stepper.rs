@@ -28,7 +28,7 @@ pub fn step_spatial_simulation(
             &mut cheap_random,
             &game_settings,
         );
-        // This simulates all biosphere activity for the step of the simulation.
+        // This simulates all spatial biosphere activity for the step of the simulation.
         simulate_spatial_biosphere(
             &mut spatial_biosphere,
             &current,
@@ -36,6 +36,7 @@ pub fn step_spatial_simulation(
             &deterministic_trig,
             &game_settings
         );
+
         // This increases the simulation tick counter by 1.
         admin_info.tick_counter = admin_info.tick_counter + 1;
     }
