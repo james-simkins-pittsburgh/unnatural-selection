@@ -194,12 +194,10 @@ fn calculate_moment_of_inertia(
 
     if combination_list.len() > 1 {
         // For every blob in the combination list.
-        for blob_number in 0..combination_list.len() {
+        for blob_index in 0..combination_list.len() {
             // For every organism in each blob.
 
-            if all_spatial_biosphere_information.blob_vec[blob_number].blob_members.len() == 0 {
-                println!("Empty blob alert");
-            }
+            let blob_number = combination_list[blob_index];
 
             for organism_number in all_spatial_biosphere_information.blob_vec[
                 blob_number
@@ -220,15 +218,6 @@ fn calculate_moment_of_inertia(
                                 center_of_mass_y)) *
                     all_spatial_biosphere_information.organism_information_vec
                         [*organism_number].mass;
-
-                if moment_of_inertia == 0 {
-                    println!("The length is {}", combination_list.len());
-                    println!(
-                        "The mass is {}",
-                        all_spatial_biosphere_information.organism_information_vec
-                            [*organism_number].mass
-                    );
-                }
             }
         }
     } else {
