@@ -180,12 +180,15 @@ pub fn split_blob(
                 ].blob_members.iter() {
                     sum_of_mass += all_spatial_biosphere_information.organism_information_vec
                         [*organism_number].mass;
+                    // Fixed the next two lines but possible I was confused when fixing it.
                     sum_of_moments_x +=
                         all_spatial_biosphere_information.organism_information_vec
-                            [*organism_number].x_location * sum_of_mass;
+                            [*organism_number].x_location * all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].mass;
                     sum_of_moments_y +=
                         all_spatial_biosphere_information.organism_information_vec
-                            [*organism_number].y_location * sum_of_mass;
+                            [*organism_number].y_location * all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].mass;
                 }
 
                 all_spatial_biosphere_information.blob_vec[colony_blob_number].blob_mass =
