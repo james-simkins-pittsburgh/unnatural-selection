@@ -59,22 +59,4 @@ pub fn simulate_spatial_biosphere(
             );
         }
     }
-
-    // This is code for debugging to be removed later
-
-    for blob_number in 1..all_spatial_biosphere_information.blob_vec.len() {
-        println!("The members of blob {} are:", blob_number);
-
-        for member in all_spatial_biosphere_information.blob_vec[blob_number].blob_members.iter() {
-            println!("{}", *member);
-        }
-    }
-
-    for organism_number in 1..all_spatial_biosphere_information.organism_information_vec.len() {
-        println!(
-            "Organism {} is a member of blob {}",
-            organism_number,
-            all_spatial_biosphere_information.organism_information_vec[organism_number].blob_number
-        );
-    }
 }
