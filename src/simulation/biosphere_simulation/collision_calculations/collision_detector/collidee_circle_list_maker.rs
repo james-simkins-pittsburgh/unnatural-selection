@@ -100,7 +100,7 @@ pub fn make_collidee_circle_list(
 
         // If the y movement from the rotation is in the same direction as the y movement from the translational velocity.
         if
-            y_move.signum ==
+            y_move.signum() ==
             (
                 deterministic_trig.d_trig.sine((
                     collider_circle.angle_to_center_of_mass + r_move,
