@@ -31,119 +31,87 @@ pub fn make_collidee_circle_list(
     let collider_radius = collider_circle.radius;
 
     // This calculates the x_move and y_move and includes the effect of rotation if rotation and the translational movement go in the same direction.
-
     let total_x_move: i32;
-
-    if
-        x_move *
-            ((collider_circle.distance_to_center_of_mass *
-                deterministic_trig.d_trig.cosine((
-                    collider_circle.angle_to_center_of_mass + r_move,
-                    1000,
-                )).0 -
-                collider_circle.distance_to_center_of_mass *
-                    deterministic_trig.d_trig.cosine((
-                        collider_circle.angle_to_center_of_mass,
-                        1000,
-                    )).0)) /
-            1000 > 0
-    {
-        total_x_move =
-            x_move +
-            (collider_circle.distance_to_center_of_mass *
-                deterministic_trig.d_trig.cosine((
-                    collider_circle.angle_to_center_of_mass + r_move,
-                    1000,
-                )).0 -
-                collider_circle.distance_to_center_of_mass *
-                    deterministic_trig.d_trig.cosine((
-                        collider_circle.angle_to_center_of_mass,
-                        1000,
-                    )).0) /
-                1000;
-    } else {
-        if
-            x_move.abs() >
-            (
-                (collider_circle.distance_to_center_of_mass *
-                    deterministic_trig.d_trig.cosine((
-                        collider_circle.angle_to_center_of_mass + r_move,
-                        1000,
-                    )).0 -
-                    collider_circle.distance_to_center_of_mass *
-                        deterministic_trig.d_trig.cosine((
-                            collider_circle.angle_to_center_of_mass,
-                            1000,
-                        )).0) /
-                1000
-            ).abs()
-        {
-            total_x_move = x_move;
-        } else {
-            total_x_move =
-                (collider_circle.distance_to_center_of_mass *
-                    deterministic_trig.d_trig.cosine((
-                        collider_circle.angle_to_center_of_mass + r_move,
-                        1000,
-                    )).0 -
-                    collider_circle.distance_to_center_of_mass *
-                        deterministic_trig.d_trig.cosine((
-                            collider_circle.angle_to_center_of_mass,
-                            1000,
-                        )).0) /
-                1000;
-        }
-    }
-
     let total_y_move: i32;
 
-    if
-        (y_move *
-            (collider_circle.distance_to_center_of_mass *
-                deterministic_trig.d_trig.sine((
-                    collider_circle.angle_to_center_of_mass + r_move,
-                    1000,
-                )).0 -
-                collider_circle.distance_to_center_of_mass *
-                    deterministic_trig.d_trig.sine((
-                        collider_circle.angle_to_center_of_mass,
-                        1000,
-                    )).0)) /
-            1000 > 0
-    {
-        total_y_move =
-            y_move +
-            (collider_circle.distance_to_center_of_mass *
-                deterministic_trig.d_trig.sine((
-                    collider_circle.angle_to_center_of_mass + r_move,
-                    1000,
-                )).0 -
-                collider_circle.distance_to_center_of_mass *
-                    deterministic_trig.d_trig.sine((
-                        collider_circle.angle_to_center_of_mass,
-                        1000,
-                    )).0) /
-                1000;
-    } else {
+    // If rotation in involved.
+    if r_move != 0 {
+        // If the x movement from the rotation is in the same direction as the x movement from the translational velocity.
         if
-            y_move.abs() >
+            x_move.signum() ==
             (
-                (collider_circle.distance_to_center_of_mass *
-                    deterministic_trig.d_trig.sine((
-                        collider_circle.angle_to_center_of_mass + r_move,
-                        1000,
-                    )).0 -
-                    collider_circle.distance_to_center_of_mass *
-                        deterministic_trig.d_trig.sine((
-                            collider_circle.angle_to_center_of_mass,
-                            1000,
-                        )).0) /
-                1000
-            ).abs()
+                deterministic_trig.d_trig.cosine((
+                    collider_circle.angle_to_center_of_mass + r_move,
+                    1000,
+                )).0 -
+                deterministic_trig.d_trig.cosine((collider_circle.angle_to_center_of_mass, 1000)).0
+            ).signum()
         {
-            total_y_move = y_move;
+            // Then add the x movement from rotation to the total x move.
+            total_x_move =
+                x_move +
+                (collider_circle.distance_to_center_of_mass *
+                    deterministic_trig.d_trig.cosine((
+                        collider_circle.angle_to_center_of_mass + r_move,
+                        1000,
+                    )).0 -
+                    collider_circle.distance_to_center_of_mass *
+                        deterministic_trig.d_trig.cosine((
+                            collider_circle.angle_to_center_of_mass,
+                            1000,
+                        )).0) /
+                    1000;
         } else {
+            // In this case where they go in different directions, if the x_move from the translational velocity is greater.
+            if
+                x_move.abs() >
+                (
+                    (collider_circle.distance_to_center_of_mass *
+                        deterministic_trig.d_trig.cosine((
+                            collider_circle.angle_to_center_of_mass + r_move,
+                            1000,
+                        )).0 -
+                        collider_circle.distance_to_center_of_mass *
+                            deterministic_trig.d_trig.cosine((
+                                collider_circle.angle_to_center_of_mass,
+                                1000,
+                            )).0) /
+                    1000
+                ).abs()
+            {
+                // Then the total x_move is just the translational part of the x_move.
+                total_x_move = x_move;
+                // Otherwise if the rotational part is bigger, then the total x_move is the rotational part of the x_move
+            } else {
+                total_x_move =
+                    (collider_circle.distance_to_center_of_mass *
+                        deterministic_trig.d_trig.cosine((
+                            collider_circle.angle_to_center_of_mass + r_move,
+                            1000,
+                        )).0 -
+                        collider_circle.distance_to_center_of_mass *
+                            deterministic_trig.d_trig.cosine((
+                                collider_circle.angle_to_center_of_mass,
+                                1000,
+                            )).0) /
+                    1000;
+            }
+        }
+
+        // If the y movement from the rotation is in the same direction as the y movement from the translational velocity.
+        if
+            y_move.signum ==
+            (
+                deterministic_trig.d_trig.sine((
+                    collider_circle.angle_to_center_of_mass + r_move,
+                    1000,
+                )).0 -
+                deterministic_trig.d_trig.sine((collider_circle.angle_to_center_of_mass, 1000)).0
+            ).signum()
+        {
+            // Then add the y movement from rotation to the total y move.
             total_y_move =
+                y_move +
                 (collider_circle.distance_to_center_of_mass *
                     deterministic_trig.d_trig.sine((
                         collider_circle.angle_to_center_of_mass + r_move,
@@ -154,8 +122,47 @@ pub fn make_collidee_circle_list(
                             collider_circle.angle_to_center_of_mass,
                             1000,
                         )).0) /
-                1000;
+                    1000;
+        } else {
+            // In this case where they go in different directions, if the y_move from the translational velocity is greater.
+            if
+                y_move.abs() >
+                (
+                    (collider_circle.distance_to_center_of_mass *
+                        deterministic_trig.d_trig.sine((
+                            collider_circle.angle_to_center_of_mass + r_move,
+                            1000,
+                        )).0 -
+                        collider_circle.distance_to_center_of_mass *
+                            deterministic_trig.d_trig.sine((
+                                collider_circle.angle_to_center_of_mass,
+                                1000,
+                            )).0) /
+                    1000
+                ).abs()
+            {
+                // Then the total y_move is just the translational part of the y_move.
+                total_y_move = y_move;
+                // Otherwise if the rotational part is bigger, then the total y_move is the rotational part of the y_move
+            } else {
+                total_y_move =
+                    (collider_circle.distance_to_center_of_mass *
+                        deterministic_trig.d_trig.sine((
+                            collider_circle.angle_to_center_of_mass + r_move,
+                            1000,
+                        )).0 -
+                        collider_circle.distance_to_center_of_mass *
+                            deterministic_trig.d_trig.sine((
+                                collider_circle.angle_to_center_of_mass,
+                                1000,
+                            )).0) /
+                    1000;
+            }
         }
+    } else {
+        // If there is no rotations, then the translational portions are the only parts that need to be considered.
+        total_x_move = x_move;
+        total_y_move = y_move;
     }
 
     // This calculates the maximum and minimum x and y indexes for the small grid.
@@ -279,7 +286,7 @@ pub fn make_collidee_circle_list(
                 game_settings.map_height / 2) /
                 LARGE_GRID_SIZE) as usize
         ) < all_spatial_biosphere_information.collision_detection_grid_large[0].len()
-    { 
+    {
         ((collider_circle.y +
             (if total_y_move > 0 { total_y_move } else { 0 }) +
             collider_radius +
@@ -325,7 +332,7 @@ pub fn make_collidee_circle_list(
     } else {
         0
     };
-    
+
     // This adds all large collidees circles within the min and max grid square ranges to the collidee list.
 
     for x_index in x_index_min..=x_index_max {
