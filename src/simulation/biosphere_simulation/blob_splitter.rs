@@ -41,7 +41,6 @@ pub fn split_blob(
 
         // If it is not all one colony, then it needs to be split up.
         if not_all_one_colony {
-            
             let mut colony_list: Vec<usize> = Vec::new();
 
             let original_blob = all_spatial_biosphere_information.blob_vec[blob_number].clone();
@@ -183,11 +182,13 @@ pub fn split_blob(
                     // Fixed the next two lines but possible I was confused when fixing it.
                     sum_of_moments_x +=
                         all_spatial_biosphere_information.organism_information_vec
-                            [*organism_number].x_location * all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].x_location *
+                        all_spatial_biosphere_information.organism_information_vec
                             [*organism_number].mass;
                     sum_of_moments_y +=
                         all_spatial_biosphere_information.organism_information_vec
-                            [*organism_number].y_location * all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].y_location *
+                        all_spatial_biosphere_information.organism_information_vec
                             [*organism_number].mass;
                 }
 
@@ -387,10 +388,12 @@ fn calculate_new_velocity(
 
     // Calculate the linear velocity from the distance and angular velocity.
     let linear_velocity = (distance_from_blob_center * original_blob.angular_velocity) / 1000;
-    let angle_from_blob_center = deterministic_trig.d_trig.arctangent((
-        (y_displacement * 1000) / x_displacement,
-        1000,
-    )).0;
+    let angle_from_blob_center = if x_displacement > 0 {
+        deterministic_trig.d_trig.arctangent(((y_displacement * 1000) / x_displacement, 1000)).0
+    } else {
+        deterministic_trig.d_trig.arctangent(((y_displacement * 1000) / x_displacement, 1000)).0 +
+            3141
+    };
 
     // Figure out the angle of the linear velocity.
     let angle_of_tangent = if linear_velocity > 0 {
