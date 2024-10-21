@@ -56,6 +56,7 @@ pub fn move_blob(
                 all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity.signum();
         }
 
+        // Checks to see if current velocities result in a collision for currently moving blob.
         let mut detection_result = detect_collision(
             &all_spatial_biosphere_information,
             blob_number,
@@ -63,7 +64,7 @@ pub fn move_blob(
             &deterministic_trig
         );
 
-        // Rule out immediate collision before doing expensive calculations.
+        // Rules out immediate collision before doing expensive calculations to determine angular motion.
         if
             detection_result.x_move != 0 ||
             detection_result.y_move != 0 ||

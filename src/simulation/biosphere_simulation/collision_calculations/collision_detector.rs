@@ -76,33 +76,38 @@ pub fn detect_collision(
     let mut potential_collidee_circles: Vec<Vec<CollideeCircleInfo>> = Vec::new();
 
     // This populates the vec of vecs with the potential collider circles for each collidee circle.
-    for collider_circle in collider_circles.iter(){
-        potential_collidee_circles.push (make_collidee_circle_list(
-            &collider_circle,
-            blob_number,
-            &game_settings,
-            &deterministic_trig,
-            original_x_move,
-            original_y_move,
-            original_r_move,
-            all_spatial_biosphere_information
-        ));
+    for collider_circle in collider_circles.iter() {
+        potential_collidee_circles.push(
+            make_collidee_circle_list(
+                &collider_circle,
+                blob_number,
+                &game_settings,
+                &deterministic_trig,
+                original_x_move,
+                original_y_move,
+                original_r_move,
+                all_spatial_biosphere_information
+            )
+        );
     }
 
     // This finds any collisions from translational movements only.
-    for index in 0..collider_circles.len() {
-        for collidee_circle in potential_collidee_circles[index].iter() {
-            check_two_circles_translational(
-                &mut x_move,
-                &mut y_move,
-                original_x_move,
-                original_y_move,
-                &mut involved_blobs,
-                &mut mineral_involved,
-                blob_number,
-                &collider_circles[index],
-                &collidee_circle
-            );
+
+    if original_x_move != 0 || original_y_move != 0 {
+        for index in 0..collider_circles.len() {
+            for collidee_circle in potential_collidee_circles[index].iter() {
+                check_two_circles_translational(
+                    &mut x_move,
+                    &mut y_move,
+                    original_x_move,
+                    original_y_move,
+                    &mut involved_blobs,
+                    &mut mineral_involved,
+                    blob_number,
+                    &collider_circles[index],
+                    &collidee_circle
+                );
+            }
         }
     }
 
@@ -175,10 +180,13 @@ pub fn detect_collision(
             }
         }
     }
+
+    // Checks to see if a collision happened.
     if involved_blobs.len() > 1 || mineral_involved {
         collision = true;
     }
 
+    // Returns the collision result.
     return CollisionCheckResult {
         collision,
         x_move,
