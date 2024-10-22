@@ -41,6 +41,7 @@ pub fn check_two_circles_angular(
                 (collidee_circle.y - full_collider_y) *
                     (collidee_circle.y - full_collider_y)
         {
+            // Save the combined radius to avoid calculating it over and over again.
             let combined_radius_squared =
                 (collider_circle_radius + collidee_circle.radius) *
                 (collider_circle_radius + collidee_circle.radius);
@@ -53,7 +54,7 @@ pub fn check_two_circles_angular(
                     (collidee_circle.y - full_collider_y) *
                         (collidee_circle.y - full_collider_y)
             {
-                // Then reset the collision list because collisions with the current r_move aren't happening.
+                // If it did, then reset the collision list because collisions with the current r_move aren't happening.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
                     *involved_blobs = vec![blob_number, collidee_circle.blob_number];
                     *mineral_involved = false;
@@ -69,7 +70,8 @@ pub fn check_two_circles_angular(
                     collider_distance_center_of_mass,
                     collidee_circle.x,
                     collidee_circle.y,
-                    collidee_circle.radius
+                    // THIS IS A RECENT FIX THAT NEEDS TO BE DOUBLE CHECKED
+                    collidee_circle.radius + collider_circle_radius
                 );
 
                 // This determines which one is closer, which is the one that actually happens.
