@@ -29,17 +29,13 @@ pub fn check_two_circles_angular(
     deterministic_trig: &DeterministicTrig
 ) {
     // If the circle is not at the center of the blob.
-    if
-        collider_distance_center_of_mass != 0
-    {
+    if collider_distance_center_of_mass != 0 {
         // Check to see if a collision happens.
         if
             (collider_circle_radius + collidee_circle.radius) *
                 (collider_circle_radius + collidee_circle.radius) <=
-            (collidee_circle.x - full_collider_x) *
-                (collidee_circle.x - full_collider_x) +
-                (collidee_circle.y - full_collider_y) *
-                    (collidee_circle.y - full_collider_y)
+            (collidee_circle.x - full_collider_x) * (collidee_circle.x - full_collider_x) +
+                (collidee_circle.y - full_collider_y) * (collidee_circle.y - full_collider_y)
         {
             // Save the combined radius to avoid calculating it over and over again.
             let combined_radius_squared =
@@ -49,10 +45,8 @@ pub fn check_two_circles_angular(
             // Check to see if the collision happens before the full rotation completed
             if
                 combined_radius_squared <
-                (collidee_circle.x - full_collider_x) *
-                    (collidee_circle.x - full_collider_x) +
-                    (collidee_circle.y - full_collider_y) *
-                        (collidee_circle.y - full_collider_y)
+                (collidee_circle.x - full_collider_x) * (collidee_circle.x - full_collider_x) +
+                    (collidee_circle.y - full_collider_y) * (collidee_circle.y - full_collider_y)
             {
                 // If it did, then reset the collision list because collisions with the current r_move aren't happening.
                 if collidee_circle.circle_entity_type == CircleEntityType::Organism {
@@ -71,6 +65,7 @@ pub fn check_two_circles_angular(
                     collidee_circle.x,
                     collidee_circle.y,
                     // THIS IS A RECENT FIX THAT NEEDS TO BE DOUBLE CHECKED
+                    /* NOTICE ME %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */
                     collidee_circle.radius + collider_circle_radius
                 );
 
@@ -94,20 +89,20 @@ pub fn check_two_circles_angular(
                         1000,
                     )).0 * (points_of_collisions.1.1 - center_of_mass_y_after_xymove).signum();
 
-                if (final_angle_1 - initial_angle).abs() < final_angle_2 - final_angle_2 {
-                    *r_move = final_angle_1;
+                if (final_angle_1 - initial_angle).abs() < (final_angle_2 - initial_angle).abs() {
+                    *r_move = final_angle_1 - initial_angle;
                 } else {
-                    *r_move = final_angle_2;
+                    *r_move = final_angle_2 - initial_angle;
                 }
 
                 // addresses the possibility a rounding error made it so that there is now overlap.
-                let mut partial_collider_x =
-                center_of_mass_x_after_xymove +
+                let mut rounding_error_collider_x =
+                    center_of_mass_x_after_xymove +
                     (collider_distance_center_of_mass *
                         deterministic_trig.d_trig.cosine((*r_move, 1000)).0) /
                         1000;
-                let mut partial_collider_y =
-                center_of_mass_y_after_xymove +
+                let mut rounding_error_collider_y =
+                    center_of_mass_y_after_xymove +
                     (collider_distance_center_of_mass *
                         deterministic_trig.d_trig.sine((*r_move, 1000)).0) /
                         1000;
@@ -115,21 +110,21 @@ pub fn check_two_circles_angular(
                 while
                     (collider_circle_radius + collidee_circle.radius) *
                         (collider_circle_radius + collidee_circle.radius) <
-                        (collidee_circle.x - partial_collider_x) *
-                            (collidee_circle.x - partial_collider_x) +
-                            (collidee_circle.y - partial_collider_y) *
-                                (collidee_circle.y - partial_collider_y) &&
-                    *r_move > 0
+                        (collidee_circle.x - rounding_error_collider_x) *
+                            (collidee_circle.x - rounding_error_collider_x) +
+                            (collidee_circle.y - rounding_error_collider_y) *
+                                (collidee_circle.y - rounding_error_collider_y) &&
+                    r_move.abs() > 0
                 {
                     *r_move = *r_move - r_move.signum();
 
-                    partial_collider_x =
-                    center_of_mass_x_after_xymove +
+                    rounding_error_collider_x =
+                        center_of_mass_x_after_xymove +
                         (collider_distance_center_of_mass *
                             deterministic_trig.d_trig.cosine((*r_move, 1000)).0) /
                             1000;
-                    partial_collider_y =
-                    center_of_mass_y_after_xymove +
+                    rounding_error_collider_y =
+                        center_of_mass_y_after_xymove +
                         (collider_distance_center_of_mass *
                             deterministic_trig.d_trig.sine((*r_move, 1000)).0) /
                             1000;
