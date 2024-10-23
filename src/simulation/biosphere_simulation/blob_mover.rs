@@ -64,6 +64,17 @@ pub fn move_blob(
             &deterministic_trig
         );
 
+        /* Start temporary test code ########################################################################## */
+
+        if detection_result.x_move.abs() > all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity.abs() || detection_result.y_move.abs() > all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity.abs() {
+
+            println!("Teleportation warning!!!!!!!");
+            
+        }
+
+        
+        /* End temporary test code ########################################################################## */
+
         // Rules out immediate collision before doing expensive calculations to determine angular motion.
         if
             detection_result.x_move != 0 ||
