@@ -1,6 +1,6 @@
 use crate::{
     simulation::CircleEntityType,
-    utility_functions::{ integer_math::square_root_64, quadratic_solver },
+    utility_functions::{ integer_math::square_root_128, quadratic_solver },
 };
 
 use super::{ CollideeCircleInfo, ColliderCircleInfo };
@@ -180,25 +180,26 @@ pub fn check_two_circles_translational(
                     let y_of_collider_at_collision_one =
                         collidee_circle.y +
                         (
-                            square_root_64(
-                                combined_radii_squared - current_x_distance_squared
-                            ) as i32
+                            square_root_128(
+                                combined_radii_squared as i128 * 100 - current_x_distance_squared as i128 * 100
+                            ) as i32 / 10
                         );
 
                     // This is the other solution to the quadratic.
                     let y_of_collider_at_collision_two =
                         collidee_circle.y -
                         (
-                            square_root_64(
-                                combined_radii_squared - current_x_distance_squared
-                            ) as i32
+                            square_root_128(
+                                combined_radii_squared as i128 * 100 - current_x_distance_squared as i128 * 100
+                            ) as i32 / 10
                         );
 
+                    // Recent fix, could have introduced new error !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
                     // Set y_move to the closer of the two.
-                    if y_of_collider_at_collision_one.abs() < y_of_collider_at_collision_two.abs() {
-                        *y_move = y_of_collider_at_collision_one;
+                    if (y_of_collider_at_collision_one - collider_circle.y).abs() < (y_of_collider_at_collision_two - collider_circle.y).abs() {
+                        *y_move = y_of_collider_at_collision_one - collider_circle.y;
                     } else {
-                        *y_move = y_of_collider_at_collision_two;
+                        *y_move = y_of_collider_at_collision_two - collider_circle.y;
                     }
 
                     // Check to make sure rounding errors didn't move this past the collision point. Fix it if it did.

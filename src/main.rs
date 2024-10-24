@@ -60,5 +60,5 @@ fn main() {
 /* This limits the framerate to 30 fps. This is a deliberate decision to deemphasize graphic quality
 in order to double the potential size of the simulation since this is a CPU bound application. */
 fn framepace_setup(mut settings: ResMut<bevy_framepace::FramepaceSettings>) {
-    settings.limiter = bevy_framepace::Limiter::from_framerate(5.0);
+    settings.limiter = bevy_framepace::Limiter::from_framerate(30.0);
 }
