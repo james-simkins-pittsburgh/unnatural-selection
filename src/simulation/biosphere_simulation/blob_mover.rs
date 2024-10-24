@@ -64,17 +64,6 @@ pub fn move_blob(
             &deterministic_trig
         );
 
-        /* Start temporary test code ########################################################################## */
-
-        if detection_result.x_move.abs() > all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity.abs() || detection_result.y_move.abs() > all_spatial_biosphere_information.blob_vec[blob_number].blob_y_velocity.abs() {
-
-            println!("Teleportation warning!!!!!!!");
-            
-        }
-
-        
-        /* End temporary test code ########################################################################## */
-
         // Rules out immediate collision before doing expensive calculations to determine angular motion.
         if
             detection_result.x_move != 0 ||
@@ -90,17 +79,17 @@ pub fn move_blob(
                 blob_number
             ].blob_members.iter() {
                 if
-                    all_spatial_biosphere_information.organism_information_vec[
+                    (all_spatial_biosphere_information.organism_information_vec[
                         *organism_number
-                    ].x_location.abs() >= game_settings.map_width / 2
+                    ].x_location + detection_result.x_move).abs() >= game_settings.map_width / 2
                 {
                     reverse_x = true;
                 }
 
                 if
-                    all_spatial_biosphere_information.organism_information_vec[
+                    (all_spatial_biosphere_information.organism_information_vec[
                         *organism_number
-                    ].y_location.abs() >= game_settings.map_height / 2
+                    ].y_location+ detection_result.y_move).abs() >= game_settings.map_height / 2
                 {
                     reverse_y = true;
                 }

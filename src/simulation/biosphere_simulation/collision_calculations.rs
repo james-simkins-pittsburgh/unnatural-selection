@@ -18,4 +18,4 @@ pub const SMALL_GRID_CIRCLE_MAX_RADIUS: i32 = 2500;
 pub const LARGE_GRID_CIRCLE_MAX_RADIUS: i32 = 5500;
 pub const SPEED_LIMIT: i32 = 900;
 // Set to 0 for troubleshooting purposes
-pub const ROTATIONAL_SPEED_LIMIT: i32 = 0;
+pub const ROTATIONAL_SPEED_LIMIT: i32 = 200;
