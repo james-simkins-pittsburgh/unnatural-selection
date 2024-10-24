@@ -390,9 +390,16 @@ fn calculate_new_velocity(
     let linear_velocity = (distance_from_blob_center * original_blob.angular_velocity) / 1000;
     let angle_from_blob_center = if x_displacement > 0 {
         deterministic_trig.d_trig.arctangent(((y_displacement * 1000) / x_displacement, 1000)).0
-    } else {
+    } else if x_displacement < 0
+    {
         deterministic_trig.d_trig.arctangent(((y_displacement * 1000) / x_displacement, 1000)).0 +
             3141
+    } else {
+        if y_displacement > 0 {
+            1571
+        } else {
+            4712
+        }
     };
 
     // Figure out the angle of the linear velocity.
