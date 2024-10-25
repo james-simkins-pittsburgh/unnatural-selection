@@ -139,20 +139,20 @@ pub fn split_blob(
                         }
                         all_spatial_biosphere_information.blob_vec[
                             organism_number
-                        ].blob_moment_of_inertia = moment_of_inertia;
+                        ].blob_moment_of_inertia = moment_of_inertia as i64;
 
                         // Calculate the moment of inertia for a circle.
                     } else {
                         all_spatial_biosphere_information.blob_vec[
                             organism_number
                         ].blob_moment_of_inertia =
-                            (all_spatial_biosphere_information.organism_information_vec
+                            ((all_spatial_biosphere_information.organism_information_vec
                                 [organism_number].mass *
                                 all_spatial_biosphere_information.organism_information_vec
                                     [organism_number].radius *
                                 all_spatial_biosphere_information.organism_information_vec
                                     [organism_number].radius) /
-                            2;
+                            2) as i64;
                     }
 
                     calculate_new_velocity(
@@ -300,7 +300,7 @@ pub fn split_blob(
 
                     all_spatial_biosphere_information.blob_vec[
                         colony_blob_number
-                    ].blob_moment_of_inertia = moment_of_inertia;
+                    ].blob_moment_of_inertia = moment_of_inertia as i64;
                 } else {
                     // Calculate the moment of inertia for oblong.
                     if
@@ -326,20 +326,20 @@ pub fn split_blob(
                         }
                         all_spatial_biosphere_information.blob_vec[
                             colony_blob_number
-                        ].blob_moment_of_inertia = moment_of_inertia;
+                        ].blob_moment_of_inertia = moment_of_inertia as i64;
 
                         // Calculate the moment of inertia for a circle.
                     } else {
                         all_spatial_biosphere_information.blob_vec[
                             colony_blob_number
                         ].blob_moment_of_inertia =
-                            (all_spatial_biosphere_information.organism_information_vec
+                            ((all_spatial_biosphere_information.organism_information_vec
                                 [colony_blob_number].mass *
                                 all_spatial_biosphere_information.organism_information_vec
                                     [colony_blob_number].radius *
                                 all_spatial_biosphere_information.organism_information_vec
                                     [colony_blob_number].radius) /
-                            2;
+                            2) as i64;
                     }
                 }
 

@@ -63,7 +63,7 @@ pub fn apply_collision(
         all_spatial_biosphere_information.blob_vec[new_blob_number].blob_x_velocity =
             y_momentum / new_mass_and_center_of_mass.mass;
         all_spatial_biosphere_information.blob_vec[new_blob_number].angular_velocity =
-            r_momentum / new_moment_of_inertia;
+            (r_momentum as i64 / new_moment_of_inertia) as i32;
 
         // For every blob being combined
         for blob_index in 0..combination_list.len() {
@@ -189,8 +189,8 @@ fn calculate_moment_of_inertia(
     combination_list: &Vec<usize>,
     center_of_mass_x: i32,
     center_of_mass_y: i32
-) -> i32 {
-    let mut moment_of_inertia = 0;
+) -> i64 {
+    let mut moment_of_inertia: i64 = 0;
 
     if combination_list.len() > 1 {
         // For every blob in the combination list.
@@ -204,7 +204,7 @@ fn calculate_moment_of_inertia(
             ].blob_members.iter() {
                 // Add the distance squared from the center of mass times the mass of the organism to the moment of inertia.
                 moment_of_inertia +=
-                    ((all_spatial_biosphere_information.organism_information_vec
+                    (((all_spatial_biosphere_information.organism_information_vec
                         [*organism_number].x_location -
                         center_of_mass_x) *
                         (all_spatial_biosphere_information.organism_information_vec
@@ -217,17 +217,17 @@ fn calculate_moment_of_inertia(
                                 [*organism_number].y_location -
                                 center_of_mass_y)) *
                     all_spatial_biosphere_information.organism_information_vec
-                        [*organism_number].mass;
+                        [*organism_number].mass) as i64;
             }
         }
     } else {
         let organism_number = combination_list[0];
         moment_of_inertia =
-            (all_spatial_biosphere_information.organism_information_vec[organism_number].mass *
+            ((all_spatial_biosphere_information.organism_information_vec[organism_number].mass *
                 all_spatial_biosphere_information.organism_information_vec[organism_number].radius *
                 all_spatial_biosphere_information.organism_information_vec
                     [organism_number].radius) /
-            2;
+            2) as i64;
     }
 
     if moment_of_inertia == 0 {
@@ -243,7 +243,7 @@ fn calculate_momentum(
     new_mass_and_center_of_mass: &MassAndCenterOfMass,
     x_momentum: &mut i32,
     y_momentum: &mut i32,
-    r_momentum: &mut i32,
+    r_momentum: &mut i64,
     deterministic_trig: &DeterministicTrig
 ) {
     for member_blob_number in combination_list.iter() {
@@ -293,12 +293,12 @@ fn calculate_momentum(
             translational_y_component *
             all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
         *r_momentum +=
-            rotational_component *
-            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
+            (rotational_component *
+            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass) as i64;
 
         // Add the rotational momentum contributions to the new blow.
         *r_momentum +=
-            all_spatial_biosphere_information.blob_vec[*member_blob_number].angular_velocity *
+            all_spatial_biosphere_information.blob_vec[*member_blob_number].angular_velocity as i64 *
             all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_moment_of_inertia;
     }
 }
