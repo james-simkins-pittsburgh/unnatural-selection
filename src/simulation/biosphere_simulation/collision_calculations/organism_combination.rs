@@ -176,9 +176,12 @@ fn calculate_mass_and_center_of_mass(
         sum_of_moments_x +=
             all_spatial_biosphere_information.blob_vec[*blob_number].blob_mass *
             all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_x;
+            println!("Blob #: {} ", blob_number);
+            println!("x: {}", all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_x);
         sum_of_moments_y +=
             all_spatial_biosphere_information.blob_vec[*blob_number].blob_mass *
             all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_y;
+            println!("y: {}", all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_y);
     }
 
     println!(
@@ -239,7 +242,19 @@ fn calculate_moment_of_inertia(
             2) as i64;
     }
 
-    println!("Moment of intertia: {}", moment_of_inertia);
+    // Code so the program doesn't panic if two organisms accidentally overlap.
+    if moment_of_inertia == 0 {
+        for index in 0.. combination_list.len() {
+        let organism_number = combination_list[index];
+        moment_of_inertia += ((all_spatial_biosphere_information.organism_information_vec
+            [organism_number].mass *
+            all_spatial_biosphere_information.organism_information_vec[organism_number].radius *
+            all_spatial_biosphere_information.organism_information_vec[organism_number].radius) /
+            2) as i64;
+        }
+    }
+
+    println!("Moment of inertia: {}", moment_of_inertia);
 
     return moment_of_inertia;
 }
@@ -265,18 +280,22 @@ fn calculate_momentum(
             all_spatial_biosphere_information.blob_vec[*member_blob_number].center_of_mass_y;
 
         // This calculates the angle of the line between the two centers of mass compared to the positive x axis.
-        let angle_to_center_of_mass = (if x_distance_to_center > 0 {
-            deterministic_trig.d_trig.arctangent(
-                ((1000 * y_distance_to_center) / x_distance_to_center, 1000)
-            ).0
-        } else if x_distance_to_center < 0 {
-            deterministic_trig.d_trig.arctangent((
-                (1000 * y_distance_to_center) / x_distance_to_center,
-                1000,
-            )).0 + 3142
-        } else {
-            if y_distance_to_center > 0 { 1571 } else { -1571 }
-        }, 1000);
+        let angle_to_center_of_mass = (
+            if x_distance_to_center > 0 {
+                deterministic_trig.d_trig.arctangent((
+                    (1000 * y_distance_to_center) / x_distance_to_center,
+                    1000,
+                )).0
+            } else if x_distance_to_center < 0 {
+                deterministic_trig.d_trig.arctangent((
+                    (1000 * y_distance_to_center) / x_distance_to_center,
+                    1000,
+                )).0 + 3142
+            } else {
+                if y_distance_to_center > 0 { 1571 } else { -1571 }
+            },
+            1000,
+        );
 
         // Uses the rotation matrix to spit the translational momentum into translational and rotational components.
         let translational_component =
