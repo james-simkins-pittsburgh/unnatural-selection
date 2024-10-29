@@ -265,10 +265,18 @@ fn calculate_momentum(
             all_spatial_biosphere_information.blob_vec[*member_blob_number].center_of_mass_y;
 
         // This calculates the angle of the line between the two centers of mass compared to the positive x axis.
-        let angle_to_center_of_mass = deterministic_trig.d_trig.arctangent((
-            (1000 * y_distance_to_center) / x_distance_to_center,
-            1000,
-        ));
+        let angle_to_center_of_mass = (if x_distance_to_center > 0 {
+            deterministic_trig.d_trig.arctangent(
+                ((1000 * y_distance_to_center) / x_distance_to_center, 1000)
+            ).0
+        } else if x_distance_to_center < 0 {
+            deterministic_trig.d_trig.arctangent((
+                (1000 * y_distance_to_center) / x_distance_to_center,
+                1000,
+            )).0 + 3142
+        } else {
+            if y_distance_to_center > 0 { 1571 } else { -1571 }
+        }, 1000);
 
         // Uses the rotation matrix to spit the translational momentum into translational and rotational components.
         let translational_component =
@@ -301,8 +309,8 @@ fn calculate_momentum(
             translational_y_component *
             all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass;
         *r_momentum +=
-            rotational_component as i64 *
-            all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass as i64 *
+            (rotational_component as i64) *
+            (all_spatial_biosphere_information.blob_vec[*member_blob_number].blob_mass as i64) *
             square_root_64(
                 (x_distance_to_center as i64) * (x_distance_to_center as i64) +
                     (y_distance_to_center as i64) * (y_distance_to_center as i64)
