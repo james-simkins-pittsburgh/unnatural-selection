@@ -333,7 +333,9 @@ fn calculate_momentum(
             square_root_64(
                 (x_distance_to_center as i64) * (x_distance_to_center as i64) +
                     (y_distance_to_center as i64) * (y_distance_to_center as i64)
-            );
+            ) * 1000;
+
+        println!("Momentum: {}", r_momentum);
 
         // Add the rotational momentum contributions to the new blow.
         *r_momentum +=

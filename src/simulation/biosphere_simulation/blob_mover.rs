@@ -56,6 +56,15 @@ pub fn move_blob(
                 all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity.signum();
         }
 
+        // Test code !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if
+            all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity.abs() > 0 {
+
+                println!("Angular velocity exits.");
+            }
+        
+        // End Test code !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         // Checks to see if current velocities result in a collision for currently moving blob.
         let mut detection_result = detect_collision(
             &all_spatial_biosphere_information,

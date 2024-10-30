@@ -127,12 +127,10 @@ pub fn apply_current(
                                     (blob_y - organism_y) * (blob_y - organism_y)
                             )) /
                             // Divided by the moment of inertia
-                            (i64::from(
+                            i64::from(
                                 all_spatial_biosphere_information.blob_vec
                                     [blob_number].blob_moment_of_inertia
-                            ) *
-                                // Times 1000 to cancel out the d_trig function provided angle times 1000
-                                1000)) as i32;
+                            )) as i32;
                 } else {
                     // The acceleration can be added directly if the blob is a single organism.
                     all_spatial_biosphere_information.blob_vec[blob_number].blob_x_velocity +=
