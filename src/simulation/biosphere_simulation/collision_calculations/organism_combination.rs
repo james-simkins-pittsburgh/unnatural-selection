@@ -63,7 +63,7 @@ pub fn apply_collision(
             new_mass_and_center_of_mass.center_of_mass_y;
         all_spatial_biosphere_information.blob_vec[new_blob_number].blob_x_velocity =
             x_momentum / new_mass_and_center_of_mass.mass;
-        all_spatial_biosphere_information.blob_vec[new_blob_number].blob_x_velocity =
+        all_spatial_biosphere_information.blob_vec[new_blob_number].blob_y_velocity =
             y_momentum / new_mass_and_center_of_mass.mass;
         all_spatial_biosphere_information.blob_vec[new_blob_number].angular_velocity = ((
             r_momentum as i64
