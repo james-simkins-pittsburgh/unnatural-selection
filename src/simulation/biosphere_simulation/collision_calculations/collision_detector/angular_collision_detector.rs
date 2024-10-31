@@ -64,8 +64,6 @@ pub fn check_two_circles_angular(
                     collider_distance_center_of_mass,
                     collidee_circle.x,
                     collidee_circle.y,
-                    // THIS IS A RECENT FIX THAT NEEDS TO BE DOUBLE CHECKED
-                    /* NOTICE ME %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */
                     collidee_circle.radius + collider_circle_radius
                 );
 
@@ -76,18 +74,42 @@ pub fn check_two_circles_angular(
                             collider_distance_center_of_mass,
                         1000,
                     )).0 * (collider_y_after_xymove - center_of_mass_y_after_xymove).signum();
-                let final_angle_1 =
+
+                let final_angle_1 = if
+                    ((points_of_collisions.0.0 - center_of_mass_x_after_xymove) * 1000) /
+                        collider_distance_center_of_mass > 1
+                {
+                    0
+                } else if
+                    ((points_of_collisions.0.0 - center_of_mass_x_after_xymove) * 1000) /
+                        collider_distance_center_of_mass < -1
+                {
+                    3142
+                } else {
                     deterministic_trig.d_trig.arccosine((
                         ((points_of_collisions.0.0 - center_of_mass_x_after_xymove) * 1000) /
                             collider_distance_center_of_mass,
                         1000,
-                    )).0 * (points_of_collisions.0.1 - center_of_mass_y_after_xymove).signum();
-                let final_angle_2 =
+                    )).0 * (points_of_collisions.0.1 - center_of_mass_y_after_xymove).signum()
+                };
+
+                let final_angle_2 = if
+                    ((points_of_collisions.1.0 - center_of_mass_x_after_xymove) * 1000) /
+                        collider_distance_center_of_mass > 1
+                {
+                    0
+                } else if
+                    ((points_of_collisions.1.0 - center_of_mass_x_after_xymove) * 1000) /
+                        collider_distance_center_of_mass < -1
+                {
+                    3142
+                } else {
                     deterministic_trig.d_trig.arccosine((
                         ((points_of_collisions.1.0 - center_of_mass_x_after_xymove) * 1000) /
                             collider_distance_center_of_mass,
                         1000,
-                    )).0 * (points_of_collisions.1.1 - center_of_mass_y_after_xymove).signum();
+                    )).0 * (points_of_collisions.1.1 - center_of_mass_y_after_xymove).signum()
+                };
 
                 if (final_angle_1 - initial_angle).abs() < (final_angle_2 - initial_angle).abs() {
                     *r_move = final_angle_1 - initial_angle;
