@@ -142,6 +142,33 @@ pub fn apply_collision(
                         -1571
                     }
                 };
+
+                // Set the distance to the center of mass.
+
+                all_spatial_biosphere_information.organism_information_vec[
+                    organism_number
+                ].distance_from_center_of_mass = square_root_64(
+                    (new_mass_and_center_of_mass.center_of_mass_x as i64) -
+                        (
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].x_location as i64
+                        ) *
+                            (new_mass_and_center_of_mass.center_of_mass_x as i64) -
+                        (
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].x_location as i64
+                        ) +
+                        (new_mass_and_center_of_mass.center_of_mass_y as i64) -
+                        (
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].y_location as i64
+                        ) *
+                            (new_mass_and_center_of_mass.center_of_mass_y as i64) -
+                        (
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].y_location as i64
+                        )
+                ) as i32;
             }
 
             if combination_list[blob_index] != new_blob_number {
@@ -176,12 +203,18 @@ fn calculate_mass_and_center_of_mass(
         sum_of_moments_x +=
             all_spatial_biosphere_information.blob_vec[*blob_number].blob_mass *
             all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_x;
-            println!("Blob #: {} ", blob_number);
-            println!("x: {}", all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_x);
+        println!("Blob #: {} ", blob_number);
+        println!(
+            "x: {}",
+            all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_x
+        );
         sum_of_moments_y +=
             all_spatial_biosphere_information.blob_vec[*blob_number].blob_mass *
             all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_y;
-            println!("y: {}", all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_y);
+        println!(
+            "y: {}",
+            all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_y
+        );
     }
 
     println!(
@@ -244,13 +277,16 @@ fn calculate_moment_of_inertia(
 
     // Code so the program doesn't panic if two organisms accidentally overlap.
     if moment_of_inertia == 0 {
-        for index in 0.. combination_list.len() {
-        let organism_number = combination_list[index];
-        moment_of_inertia += ((all_spatial_biosphere_information.organism_information_vec
-            [organism_number].mass *
-            all_spatial_biosphere_information.organism_information_vec[organism_number].radius *
-            all_spatial_biosphere_information.organism_information_vec[organism_number].radius) /
-            2) as i64;
+        println!("Overlapping organism alert!");
+
+        for index in 0..combination_list.len() {
+            let organism_number = combination_list[index];
+            moment_of_inertia += ((all_spatial_biosphere_information.organism_information_vec
+                [organism_number].mass *
+                all_spatial_biosphere_information.organism_information_vec[organism_number].radius *
+                all_spatial_biosphere_information.organism_information_vec
+                    [organism_number].radius) /
+                2) as i64;
         }
     }
 
@@ -333,7 +369,8 @@ fn calculate_momentum(
             square_root_64(
                 (x_distance_to_center as i64) * (x_distance_to_center as i64) +
                     (y_distance_to_center as i64) * (y_distance_to_center as i64)
-            ) * 1000;
+            ) *
+            1000;
 
         println!("Momentum: {}", r_momentum);
 

@@ -102,6 +102,9 @@ pub fn split_blob(
                     all_spatial_biosphere_information.organism_information_vec[
                         organism_number
                     ].angle_to_center_of_mass = 0;
+                    all_spatial_biosphere_information.organism_information_vec[
+                        organism_number
+                    ].distance_from_center_of_mass = 0;
                     all_spatial_biosphere_information.blob_vec[organism_number].blob_mass =
                         all_spatial_biosphere_information.organism_information_vec[
                             organism_number

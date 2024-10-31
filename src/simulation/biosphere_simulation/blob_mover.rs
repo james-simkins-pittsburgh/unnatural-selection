@@ -143,7 +143,7 @@ pub fn move_blob(
                     all_spatial_biosphere_information.blob_vec[blob_number].blob_members
                         [member_number];
 
-                // Store previous position so the old record can be deleted from the collision detector.
+                // Store previous position so the old record can be deleted from the detection grid.
                 let previous_x = all_spatial_biosphere_information.organism_information_vec
                     [organism_number].x_location;
                 let previous_y = all_spatial_biosphere_information.organism_information_vec
@@ -250,13 +250,15 @@ pub fn move_blob(
                         }
                         // This is the most complex case of a rotating multi-blob organism.
                     } else {
-                        // Move the organism itself
+                        // Rotate the organism
                         all_spatial_biosphere_information.organism_information_vec[
                             organism_number
                         ].rotation += detection_result.r_move;
+                        // Adjust the angle to the center of mass
                         all_spatial_biosphere_information.organism_information_vec[
                             organism_number
                         ].angle_to_center_of_mass += detection_result.r_move;
+                        // Store variables for calculations below.
                         let distance = all_spatial_biosphere_information.organism_information_vec
                             [organism_number].distance_from_center_of_mass;
                         let angle = all_spatial_biosphere_information.organism_information_vec
@@ -265,6 +267,7 @@ pub fn move_blob(
                             [blob_number].center_of_mass_x;
                         let center_y = all_spatial_biosphere_information.blob_vec
                             [blob_number].center_of_mass_y;
+                        // Calculates new x location after rotation
                         all_spatial_biosphere_information.organism_information_vec[
                             organism_number
                         ].x_location =
