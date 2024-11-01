@@ -2,7 +2,12 @@ use bevy::prelude::*;
 
 // This module will hold the code that updates each graphical entity based on its corresponding simulation organism.
 pub fn update_graphical_world(
-    gameworld: Query<(&crate::simulation::AllSpatialBiosphereInformation, &crate::simulation::AllBiologicalBiosphereInformation)>,
+    gameworld: Query<
+        (
+            &crate::simulation::AllSpatialBiosphereInformation,
+            &crate::simulation::AllBiologicalBiosphereInformation,
+        )
+    >,
     mut assigned_graphical_entities: Query<
         (
             &mut crate::graphical_world::MainGraphicsOfOrganism,
@@ -38,7 +43,6 @@ pub fn update_graphical_world(
             // This updates the index.
             graphical_entity.2.index = z_and_index_and_texture_number.1;
         } else {
-
             // This updates the texture (image).
             *graphical_entity.4 =
                 texture_atlas_handles.texture_atlas_array[
@@ -70,10 +74,17 @@ pub fn update_graphical_world(
             z: z_and_index_and_texture_number.0,
         };
 
+        // Code to update the rotation of the entity.
+
+        graphical_entity.1.rotation = Quat::from_rotation_z(
+            (
+                spatial_biosphere.organism_information_vec
+                    [graphical_entity.0.corresponding_organism_number].rotation as f32
+            ) / 1000.0
+        );
+
+    
+
         *graphical_entity.3 = Visibility::Visible;
-
-        // Code to update the rotation of the sprite should go here.
-
-        /* =================== NEED CODE HERE!!!! ====================== */
     }
 }

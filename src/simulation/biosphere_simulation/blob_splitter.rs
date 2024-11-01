@@ -92,7 +92,7 @@ pub fn split_blob(
                     all_spatial_biosphere_information.organism_information_vec[
                         organism_number
                     ].blob_number = organism_number;
-                    // Set the attributes for that blob
+                    // Set the attributes for that blob and organism
                     all_spatial_biosphere_information.blob_vec[organism_number].in_use = true;
                     all_spatial_biosphere_information.blob_vec[organism_number].blob_members =
                         vec![organism_number];

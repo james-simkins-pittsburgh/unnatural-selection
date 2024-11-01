@@ -103,15 +103,16 @@ pub fn apply_collision(
                             [organism_number].x_location > 0
                 {
                     deterministic_trig.d_trig.arctangent((
-                        (all_spatial_biosphere_information.blob_vec
+                        ((all_spatial_biosphere_information.blob_vec
                             [new_blob_number].center_of_mass_y -
                             all_spatial_biosphere_information.organism_information_vec
                                 [organism_number].y_location) *
-                            1000,
-                        all_spatial_biosphere_information.blob_vec
-                            [new_blob_number].center_of_mass_x -
+                            1000) /
+                            all_spatial_biosphere_information.blob_vec
+                                [new_blob_number].center_of_mass_x -
                             all_spatial_biosphere_information.organism_information_vec
                                 [organism_number].x_location,
+                        1000,
                     )).0
                 } else if
                     all_spatial_biosphere_information.blob_vec[new_blob_number].center_of_mass_x -
@@ -120,15 +121,16 @@ pub fn apply_collision(
                 {
                     3142 +
                         deterministic_trig.d_trig.arctangent((
-                            (all_spatial_biosphere_information.blob_vec
+                            ((all_spatial_biosphere_information.blob_vec
                                 [new_blob_number].center_of_mass_y -
                                 all_spatial_biosphere_information.organism_information_vec
                                     [organism_number].y_location) *
-                                1000,
-                            all_spatial_biosphere_information.blob_vec
-                                [new_blob_number].center_of_mass_x -
+                                1000) /
+                                all_spatial_biosphere_information.blob_vec
+                                    [new_blob_number].center_of_mass_x -
                                 all_spatial_biosphere_information.organism_information_vec
                                     [organism_number].x_location,
+                            1000,
                         )).0
                 } else {
                     if
@@ -148,26 +150,38 @@ pub fn apply_collision(
                 all_spatial_biosphere_information.organism_information_vec[
                     organism_number
                 ].distance_from_center_of_mass = square_root_64(
-                    (new_mass_and_center_of_mass.center_of_mass_x as i64) -
+                    ((
+                        all_spatial_biosphere_information.blob_vec
+                            [new_blob_number].center_of_mass_x as i64
+                    ) -
                         (
                             all_spatial_biosphere_information.organism_information_vec
                                 [organism_number].x_location as i64
-                        ) *
-                            (new_mass_and_center_of_mass.center_of_mass_x as i64) -
-                        (
-                            all_spatial_biosphere_information.organism_information_vec
-                                [organism_number].x_location as i64
-                        ) +
-                        (new_mass_and_center_of_mass.center_of_mass_y as i64) -
-                        (
-                            all_spatial_biosphere_information.organism_information_vec
-                                [organism_number].y_location as i64
-                        ) *
-                            (new_mass_and_center_of_mass.center_of_mass_y as i64) -
-                        (
-                            all_spatial_biosphere_information.organism_information_vec
-                                [organism_number].y_location as i64
-                        )
+                        )) *
+                        ((
+                            all_spatial_biosphere_information.blob_vec
+                                [new_blob_number].center_of_mass_x as i64
+                        ) -
+                            (
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [organism_number].x_location as i64
+                            )) +
+                        ((
+                            all_spatial_biosphere_information.blob_vec
+                                [new_blob_number].center_of_mass_y as i64
+                        ) -
+                            (
+                                all_spatial_biosphere_information.organism_information_vec
+                                    [organism_number].y_location as i64
+                            )) *
+                            ((
+                                all_spatial_biosphere_information.blob_vec
+                                    [new_blob_number].center_of_mass_y as i64
+                            ) -
+                                (
+                                    all_spatial_biosphere_information.organism_information_vec
+                                        [organism_number].y_location as i64
+                                ))
                 ) as i32;
             }
 
