@@ -122,10 +122,29 @@ pub fn check_two_circles_angular(
                     )).0 * (points_of_collisions.1.1 - center_of_mass_y_after_xymove).signum()
                 };
 
-                if (final_angle_1 - initial_angle).abs() < (final_angle_2 - initial_angle).abs() {
-                    *r_move = final_angle_1 - initial_angle;
+                let angle_1_change = if
+                    initial_angle.signum() == final_angle_1.signum() ||
+                    initial_angle.abs() < 1571
+                {
+                    final_angle_1 - initial_angle
                 } else {
-                    *r_move = final_angle_2 - initial_angle;
+                    final_angle_1 + 3142 * initial_angle.signum() - initial_angle
+                };
+
+                let angle_2_change = if
+                    initial_angle.signum() == final_angle_2.signum() ||
+                    initial_angle.abs() < 1571
+                {
+                    final_angle_2 - initial_angle
+                } else {
+                    final_angle_2 + 3142 * initial_angle.signum() - initial_angle
+                };
+
+                if angle_1_change.abs() < angle_2_change.abs() {
+                    
+                    *r_move = angle_1_change;
+                } else {
+                    *r_move = angle_2_change;
                 }
 
                 // addresses the possibility a rounding error made it so that there is now overlap.
