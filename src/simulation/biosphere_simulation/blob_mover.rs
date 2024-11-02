@@ -56,15 +56,6 @@ pub fn move_blob(
                 all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity.signum();
         }
 
-        // Test code !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if
-            all_spatial_biosphere_information.blob_vec[blob_number].angular_velocity.abs() > 0 {
-
-                println!("Angular velocity exits.");
-            }
-        
-        // End Test code !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
         // Checks to see if current velocities result in a collision for currently moving blob.
         let mut detection_result = detect_collision(
             &all_spatial_biosphere_information,
@@ -88,17 +79,19 @@ pub fn move_blob(
                 blob_number
             ].blob_members.iter() {
                 if
-                    (all_spatial_biosphere_information.organism_information_vec[
-                        *organism_number
-                    ].x_location + detection_result.x_move).abs() >= game_settings.map_width / 2
+                    (
+                        all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].x_location + detection_result.x_move
+                    ).abs() >= game_settings.map_width / 2
                 {
                     reverse_x = true;
                 }
 
                 if
-                    (all_spatial_biosphere_information.organism_information_vec[
-                        *organism_number
-                    ].y_location+ detection_result.y_move).abs() >= game_settings.map_height / 2
+                    (
+                        all_spatial_biosphere_information.organism_information_vec
+                            [*organism_number].y_location + detection_result.y_move
+                    ).abs() >= game_settings.map_height / 2
                 {
                     reverse_y = true;
                 }
@@ -168,6 +161,22 @@ pub fn move_blob(
                     all_spatial_biosphere_information.organism_information_vec[
                         organism_number
                     ].rotation += detection_result.r_move;
+
+                    if
+                        all_spatial_biosphere_information.organism_information_vec
+                            [organism_number].rotation > 3142
+                    {
+                        all_spatial_biosphere_information.organism_information_vec[
+                            organism_number
+                        ].rotation += -6283;
+                    } else if
+                        all_spatial_biosphere_information.organism_information_vec
+                            [organism_number].rotation < -3142
+                    {
+                        all_spatial_biosphere_information.organism_information_vec[
+                            organism_number
+                        ].rotation += 6283;
+                    }
 
                     // Move any extra circles for oblong blobs.
                     if
@@ -254,10 +263,43 @@ pub fn move_blob(
                         all_spatial_biosphere_information.organism_information_vec[
                             organism_number
                         ].rotation += detection_result.r_move;
+                        if
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].rotation > 3142
+                        {
+                            all_spatial_biosphere_information.organism_information_vec[
+                                organism_number
+                            ].rotation += -6283;
+                        } else if
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].rotation < -3142
+                        {
+                            all_spatial_biosphere_information.organism_information_vec[
+                                organism_number
+                            ].rotation += 6283;
+                        }
+
                         // Adjust the angle to the center of mass
                         all_spatial_biosphere_information.organism_information_vec[
                             organism_number
                         ].angle_to_center_of_mass += detection_result.r_move;
+
+                        if
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].angle_to_center_of_mass > 3142
+                        {
+                            all_spatial_biosphere_information.organism_information_vec[
+                                organism_number
+                            ].angle_to_center_of_mass += -6283;
+                        } else if
+                            all_spatial_biosphere_information.organism_information_vec
+                                [organism_number].angle_to_center_of_mass < -3142
+                        {
+                            all_spatial_biosphere_information.organism_information_vec[
+                                organism_number
+                            ].angle_to_center_of_mass += 6283;
+                        }
+
                         // Store variables for calculations below.
                         let distance = all_spatial_biosphere_information.organism_information_vec
                             [organism_number].distance_from_center_of_mass;

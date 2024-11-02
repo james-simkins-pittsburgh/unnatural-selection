@@ -37,8 +37,6 @@ pub fn solve_two_circle_intersection(
 
     let ry = dx * h / d;
 
-    println!("{}" , h);
-
     return ((x2 + rx, y2 + ry),(x2 - rx, y2 - ry))
 }
 

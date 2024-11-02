@@ -217,26 +217,11 @@ fn calculate_mass_and_center_of_mass(
         sum_of_moments_x +=
             all_spatial_biosphere_information.blob_vec[*blob_number].blob_mass *
             all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_x;
-        println!("Blob #: {} ", blob_number);
-        println!(
-            "x: {}",
-            all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_x
-        );
+
         sum_of_moments_y +=
             all_spatial_biosphere_information.blob_vec[*blob_number].blob_mass *
             all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_y;
-        println!(
-            "y: {}",
-            all_spatial_biosphere_information.blob_vec[*blob_number].center_of_mass_y
-        );
     }
-
-    println!(
-        "Center x: {}, Center y: {}, Mass: {}.",
-        sum_of_moments_x / sum_of_mass,
-        sum_of_moments_y / sum_of_mass,
-        sum_of_mass
-    );
 
     return MassAndCenterOfMass {
         center_of_mass_x: sum_of_moments_x / sum_of_mass,
@@ -303,8 +288,6 @@ fn calculate_moment_of_inertia(
                 2) as i64;
         }
     }
-
-    println!("Moment of inertia: {}", moment_of_inertia);
 
     return moment_of_inertia;
 }
@@ -385,8 +368,6 @@ fn calculate_momentum(
                     (y_distance_to_center as i64) * (y_distance_to_center as i64)
             ) *
             1000;
-
-        println!("Momentum: {}", r_momentum);
 
         // Add the rotational momentum contributions to the new blow.
         *r_momentum +=
