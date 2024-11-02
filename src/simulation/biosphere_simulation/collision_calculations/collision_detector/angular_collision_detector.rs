@@ -68,21 +68,32 @@ pub fn check_two_circles_angular(
                 );
 
                 // This determines which one is closer, which is the one that actually happens.
-                let initial_angle =
+                let initial_angle = if
+                    ((collider_x_after_xymove - center_of_mass_x_after_xymove) * 1000) /
+                        collider_distance_center_of_mass > 1000
+                {
+                    0
+                } else if
+                    ((collider_x_after_xymove - center_of_mass_x_after_xymove) * 1000) /
+                        collider_distance_center_of_mass < -1000
+                {
+                    3142
+                } else {
                     deterministic_trig.d_trig.arccosine((
                         ((collider_x_after_xymove - center_of_mass_x_after_xymove) * 1000) /
                             collider_distance_center_of_mass,
                         1000,
-                    )).0 * (collider_y_after_xymove - center_of_mass_y_after_xymove).signum();
+                    )).0 * (collider_y_after_xymove - center_of_mass_y_after_xymove).signum()
+                };
 
                 let final_angle_1 = if
                     ((points_of_collisions.0.0 - center_of_mass_x_after_xymove) * 1000) /
-                        collider_distance_center_of_mass > 1
+                        collider_distance_center_of_mass > 1000
                 {
                     0
                 } else if
                     ((points_of_collisions.0.0 - center_of_mass_x_after_xymove) * 1000) /
-                        collider_distance_center_of_mass < -1
+                        collider_distance_center_of_mass < -1000
                 {
                     3142
                 } else {
@@ -95,12 +106,12 @@ pub fn check_two_circles_angular(
 
                 let final_angle_2 = if
                     ((points_of_collisions.1.0 - center_of_mass_x_after_xymove) * 1000) /
-                        collider_distance_center_of_mass > 1
+                        collider_distance_center_of_mass > 1000
                 {
                     0
                 } else if
                     ((points_of_collisions.1.0 - center_of_mass_x_after_xymove) * 1000) /
-                        collider_distance_center_of_mass < -1
+                        collider_distance_center_of_mass < -1000
                 {
                     3142
                 } else {

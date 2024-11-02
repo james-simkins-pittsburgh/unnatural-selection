@@ -117,7 +117,7 @@ pub fn detect_collision(
         if involved_blobs.len() <= 1 && !mineral_involved {
             // For every collider circle
             for index in 0..collider_circles.len() {
-                // If the collider circle is not exactly as the center of mass
+                // If the collider circle is not exactly at the center of mass
                 if collider_circles[index].distance_to_center_of_mass > 0 {
                     let collider_circle_radius = collider_circles[index].radius;
                     let collider_distance_center_of_mass = collider_circles
