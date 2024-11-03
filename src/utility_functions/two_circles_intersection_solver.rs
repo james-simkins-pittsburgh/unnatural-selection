@@ -43,5 +43,6 @@ pub fn solve_two_circle_intersection(
 #[test] 
 
 fn test_circle_intersection_solver () {
-    assert_eq!(solve_two_circle_intersection (3230, 4213, 2000, 7324, 3413, 3000), ((4944,5242),(4432,2614)))
+    assert_eq!(solve_two_circle_intersection (3230, 4213, 2000, 7324, 3413, 3000), ((4944,5242),(4432,2614)));
+    assert_eq!(solve_two_circle_intersection (-200, -250, 630, 150, -400, 447), ((386,-20),(38,-832)));
 }

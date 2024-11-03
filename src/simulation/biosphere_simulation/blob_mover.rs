@@ -70,7 +70,7 @@ pub fn move_blob(
             detection_result.y_move != 0 ||
             detection_result.r_move != 0
         {
-            /* Start temporary code */
+            /* Start temporary code !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
             let mut reverse_x = false;
             let mut reverse_y = false;
@@ -115,7 +115,7 @@ pub fn move_blob(
                 detection_result.r_move = 0;
             }
 
-            /* End Temporary code!!! */
+            /* End Temporary code !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
             // The blob center of mass needs to be moved.
             all_spatial_biosphere_information.blob_vec[blob_number].center_of_mass_x +=

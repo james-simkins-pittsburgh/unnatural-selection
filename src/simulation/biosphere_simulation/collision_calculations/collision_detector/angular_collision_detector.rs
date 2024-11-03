@@ -141,7 +141,6 @@ pub fn check_two_circles_angular(
                 };
 
                 if angle_1_change.abs() < angle_2_change.abs() {
-                    
                     *r_move = angle_1_change;
                 } else {
                     *r_move = angle_2_change;
@@ -182,6 +181,8 @@ pub fn check_two_circles_angular(
                             1000;
                 }
 
+                println!("original_r_move: {} r_move: {}", original_r_move, r_move);
+
                 // This covers the case in which another collision occurs exactly at the r_move
             } else {
                 // If is has already collided with something else.
@@ -197,4 +198,52 @@ pub fn check_two_circles_angular(
             }
         }
     }
+}
+
+#[test]
+fn test_angular_collision_detector() {
+    let collidee_circle = CollideeCircleInfo {
+        x: 50,
+        y: 3086,
+        radius: 2000,
+        blob_number: 2,
+        circle_entity_type: CircleEntityType::Organism,
+    };
+
+    let deterministic_trig = &DeterministicTrig::default();
+
+    let mut r_move = 100;
+    let original_r_move = 100;
+    let mut involved_blobs = vec![];
+    let mut mineral_involved = false;
+    let blob_number = 1;
+    let collider_circle_radius = 2000;
+    let collider_distance_center_of_mass = 5000;
+    let center_of_mass_x_after_xymove = 50;
+    let center_of_mass_y_after_xymove = 100;
+    let collider_x_after_xymove = 4060;
+    let collider_y_after_xymove = 3086;
+    let full_collider_x = 3742;
+    let full_collider_y = 3471;
+
+
+    check_two_circles_angular(
+        &mut r_move,
+        original_r_move,
+        &mut involved_blobs,
+        &mut mineral_involved,
+        blob_number,
+        &collidee_circle,
+        collider_circle_radius,
+        collider_distance_center_of_mass,
+        center_of_mass_x_after_xymove,
+        center_of_mass_y_after_xymove,
+        collider_x_after_xymove,
+        collider_y_after_xymove,
+        full_collider_x,
+        full_collider_y,
+        deterministic_trig
+    );
+
+    assert_eq!(r_move, 3);
 }
