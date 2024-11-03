@@ -33,7 +33,7 @@ pub fn check_two_circles_angular(
         // Check to see if a collision happens.
         if
             (collider_circle_radius + collidee_circle.radius) *
-                (collider_circle_radius + collidee_circle.radius) <=
+                (collider_circle_radius + collidee_circle.radius) >=
             (collidee_circle.x - full_collider_x) * (collidee_circle.x - full_collider_x) +
                 (collidee_circle.y - full_collider_y) * (collidee_circle.y - full_collider_y)
         {
@@ -225,7 +225,6 @@ fn test_angular_collision_detector() {
     let collider_y_after_xymove = 3086;
     let full_collider_x = 3742;
     let full_collider_y = 3471;
-
 
     check_two_circles_angular(
         &mut r_move,
