@@ -2,7 +2,7 @@ use crate::{
     simulation::AllSpatialBiosphereInformation,
     utility_functions::{
         deterministic_trigonometry::DeterministicTrig,
-        integer_math::{ square_root_128, square_root_64 },
+        integer_math::square_root_64,
     },
 };
 

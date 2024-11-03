@@ -44,7 +44,7 @@ pub fn check_two_circles_angular(
 
             // Check to see if the collision happens before the full rotation completed
             if
-                combined_radius_squared <
+                combined_radius_squared >
                 (collidee_circle.x - full_collider_x) * (collidee_circle.x - full_collider_x) +
                     (collidee_circle.y - full_collider_y) * (collidee_circle.y - full_collider_y)
             {
@@ -160,7 +160,7 @@ pub fn check_two_circles_angular(
 
                 while
                     (collider_circle_radius + collidee_circle.radius) *
-                        (collider_circle_radius + collidee_circle.radius) <
+                        (collider_circle_radius + collidee_circle.radius) >
                         (collidee_circle.x - rounding_error_collider_x) *
                             (collidee_circle.x - rounding_error_collider_x) +
                             (collidee_circle.y - rounding_error_collider_y) *
@@ -244,5 +244,5 @@ fn test_angular_collision_detector() {
         deterministic_trig
     );
 
-    assert_eq!(r_move, 3);
+    assert_eq!(r_move, 4);
 }
