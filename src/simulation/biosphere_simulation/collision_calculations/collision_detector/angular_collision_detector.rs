@@ -203,8 +203,8 @@ pub fn check_two_circles_angular(
 #[test]
 fn test_angular_collision_detector() {
     let collidee_circle = CollideeCircleInfo {
-        x: 50,
-        y: 3086,
+        x: -6871,
+        y: -6482,
         radius: 2000,
         blob_number: 2,
         circle_entity_type: CircleEntityType::Organism,
@@ -212,19 +212,19 @@ fn test_angular_collision_detector() {
 
     let deterministic_trig = &DeterministicTrig::default();
 
-    let mut r_move = 100;
-    let original_r_move = 100;
+    let mut r_move = -150;
+    let original_r_move = -150;
     let mut involved_blobs = vec![];
     let mut mineral_involved = false;
     let blob_number = 1;
     let collider_circle_radius = 2000;
-    let collider_distance_center_of_mass = 5000;
-    let center_of_mass_x_after_xymove = 50;
-    let center_of_mass_y_after_xymove = 100;
-    let collider_x_after_xymove = 4060;
-    let collider_y_after_xymove = 3086;
-    let full_collider_x = 3742;
-    let full_collider_y = 3471;
+    let collider_distance_center_of_mass = 6000;
+    let center_of_mass_x_after_xymove = -2000;
+    let center_of_mass_y_after_xymove = -1000;
+    let collider_x_after_xymove = -2500;
+    let collider_y_after_xymove = -6982;
+    let full_collider_x = -3387;
+    let full_collider_y = -6837;
 
     check_two_circles_angular(
         &mut r_move,
@@ -244,5 +244,5 @@ fn test_angular_collision_detector() {
         deterministic_trig
     );
 
-    assert_eq!(r_move, 4);
+    assert_eq!(r_move, -66);
 }
