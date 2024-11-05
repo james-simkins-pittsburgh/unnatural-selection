@@ -140,13 +140,15 @@ pub fn check_two_circles_angular(
                     final_angle_2 + 3142 * initial_angle.signum() - initial_angle
                 };
 
+                // This sets the r_move to whichever is the smaller change in angle. 
+
                 if angle_1_change.abs() < angle_2_change.abs() {
                     *r_move = angle_1_change;
                 } else {
                     *r_move = angle_2_change;
                 }
 
-                // addresses the possibility a rounding error made it so that there is now overlap.
+                // Addresses the possibility a rounding error made it so that there is now overlap.
                 let mut rounding_error_collider_x =
                     center_of_mass_x_after_xymove +
                     (collider_distance_center_of_mass *
@@ -183,7 +185,7 @@ pub fn check_two_circles_angular(
 
                 println!("original_r_move: {} r_move: {}", original_r_move, r_move);
 
-                // This covers the case in which another collision occurs exactly at the r_move
+                // This covers the case in which the collision occurs exactly at the r_move.
             } else {
                 // If is has already collided with something else.
                 if *r_move != original_r_move {

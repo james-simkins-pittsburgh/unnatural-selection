@@ -178,6 +178,9 @@ pub fn detect_collision(
                     }
                 }
             }
+        } else {
+            // Sets r_move to 0 is collisions already occurred from translational motion.
+            r_move = 0;
         }
     }
 
