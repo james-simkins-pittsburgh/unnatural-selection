@@ -183,7 +183,9 @@ pub fn check_two_circles_angular(
                             1000;
                 }
 
-                println!("original_r_move: {} r_move: {}", original_r_move, r_move);
+                println!("Collider x: {} Collider y {}", collider_x_after_xymove, collider_y_after_xymove);
+                println!("Collidee x: {} Collidee y {}", collidee_circle.x, collidee_circle.y);
+                println!("Original_r_move: {} R_move: {}", original_r_move, r_move);
 
                 // This covers the case in which the collision occurs exactly at the r_move.
             } else {
