@@ -140,7 +140,7 @@ pub fn check_two_circles_angular(
                     final_angle_2 + 3142 * initial_angle.signum() - initial_angle
                 };
 
-                // This sets the r_move to whichever is the smaller change in angle. 
+                // This sets the r_move to whichever is the smaller change in angle.
 
                 if angle_1_change.abs() < angle_2_change.abs() {
                     *r_move = angle_1_change;
@@ -183,9 +183,21 @@ pub fn check_two_circles_angular(
                             1000;
                 }
 
-                println!("Collider x: {} Collider y {}", collider_x_after_xymove, collider_y_after_xymove);
-                println!("Collidee x: {} Collidee y {}", collidee_circle.x, collidee_circle.y);
-                println!("Original_r_move: {} R_move: {}", original_r_move, r_move);
+                // Test code
+
+                println!("center_of_mass_x_after_xymove: {}", center_of_mass_x_after_xymove);
+                println!("center_of_mass_y_after_xymove: {}", center_of_mass_y_after_xymove);
+                println!("collider_distance_center_of_mass: {}", collider_distance_center_of_mass);
+                println!("collidee_circle.x: {}", collidee_circle.x);
+                println!("collidee_circle.y: {}", collidee_circle.y);
+                println!(
+                    "collidee_circle.radius + collider_circle_radius: {}",
+                    collidee_circle.radius + collider_circle_radius
+                );
+
+                print!("points_of_collisions x1: {}, y1: {} x2: {} y2: {}", points_of_collisions.0.0, points_of_collisions.0.1, points_of_collisions.1.0, points_of_collisions.1.1);
+
+                // End test code
 
                 // This covers the case in which the collision occurs exactly at the r_move.
             } else {
